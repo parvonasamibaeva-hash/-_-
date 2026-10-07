@@ -931,7 +931,14 @@ const lessons=[
 ];
 let allTasks=[]; lessons.forEach(l=>l.tasks.forEach(t=>{t.lessonId=l.id;t.key=`${l.id}-${t.id}`;if(l.id===4)t.theory=lesson4Theory[t.id]||'Используй теорию занятия и быстрый маршрут решения.';allTasks.push(t)}));
 const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null')||{};
-const state={currentKey:saved.currentKey||'2-1',openLessons:saved.openLessons||{2:true,3:false,4:false,5:false},codes:saved.codes||{},attempts:saved.attempts||{},failedCodes:saved.failedCodes||{},hints:saved.hints||{},solved:saved.solved||{},ratings:saved.ratings||{},inputs:saved.inputs||{},manualRunPassed:saved.manualRunPassed||{}};
+// При первом открытии сайта все занятия свернуты. Если ученик уже пользовался сайтом раньше,
+// один раз исправляем старое состояние, в котором Занятие 2 могло сохраняться открытым.
+if(!saved.__collapsedLessonsInitialized){
+  saved.openLessons={2:false,3:false,4:false,5:false};
+  saved.__collapsedLessonsInitialized=true;
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(saved));
+}
+const state={currentKey:saved.currentKey||'2-1',openLessons:saved.openLessons||{2:false,3:false,4:false,5:false},codes:saved.codes||{},attempts:saved.attempts||{},failedCodes:saved.failedCodes||{},hints:saved.hints||{},solved:saved.solved||{},ratings:saved.ratings||{},inputs:saved.inputs||{},manualRunPassed:saved.manualRunPassed||{}};
 const taskTitle=document.getElementById('taskTitle'),taskShort=document.getElementById('taskShort'),taskProblem=document.getElementById('taskProblem'),taskImageWrap=document.getElementById('taskImageWrap'),taskImage=document.getElementById('taskImage'),taskExamples=document.getElementById('taskExamples'),taskTheory=document.getElementById('taskTheory'),lessonBadge=document.getElementById('lessonBadge'),lessonNav=document.getElementById('lessonNav'),solvedCount=document.getElementById('solvedCount'),hardestTask=document.getElementById('hardestTask'),hardestList=document.getElementById('hardestList'),progress=document.getElementById('progress'),status=document.getElementById('status'),hintBox=document.getElementById('hintBox'),runButton=document.getElementById('runButton'),hintButton=document.getElementById('hintButton'),clearButton=document.getElementById('clearButton'),theoryButton=document.getElementById('theoryButton'),theoryModal=document.getElementById('theoryModal'),closeTheory=document.getElementById('closeTheory'),modalTitle=document.getElementById('modalTitle'),modalBody=document.getElementById('modalBody'),ratingCard=document.getElementById('ratingCard'),ratingStars=document.getElementById('ratingStars'),ratingLabel=document.getElementById('ratingLabel'),attemptFill=document.getElementById('attemptFill');
 const editor=CodeMirror.fromTextArea(document.getElementById('code'),{mode:'python',lineNumbers:true,indentUnit:4,tabSize:4,viewportMargin:Infinity});
 const interactiveRunButton=document.getElementById('interactiveRunButton');const consoleBox=document.getElementById('console');const consoleOutput=document.getElementById('consoleOutput');const stdinInput=document.getElementById('stdinInput');
