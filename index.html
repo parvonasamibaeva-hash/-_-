@@ -1,12 +1,354 @@
 <!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Маршрутные листы — Python</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css"><style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f6fb;color:#20242c}.app{display:flex;min-height:100vh}.sidebar{width:330px;background:#1f2430;color:white;padding:20px 14px;flex-shrink:0;position:sticky;top:0;height:100vh;overflow:auto}.sidebar h1{font-size:21px;margin:0 8px 4px}.teacher-name{color:#fff;font-size:13px;font-weight:600;line-height:1.35;margin:0 8px 4px}.sidebar-subtitle{color:#aeb6c5;font-size:12px;line-height:1.4;margin:0 8px 16px}.result-card{background:#2b3241;border-radius:12px;padding:14px;margin:0 4px 16px}.result-title{font-size:11px;font-weight:bold;color:#aeb6c5;text-transform:uppercase;letter-spacing:.5px}.result-number{font-size:22px;font-weight:bold;margin-top:5px}.result-small{margin-top:5px;color:#aeb6c5;font-size:12px}.lesson{margin:8px 0;border:1px solid #303747;border-radius:12px;overflow:hidden}.lesson-head{width:100%;border:0;background:#252b39;color:#fff;padding:13px 12px;text-align:left;cursor:pointer;display:flex;align-items:center;gap:9px;font-weight:bold}.lesson-head:hover{background:#2b3241}.lesson-arrow{margin-left:auto;transition:.2s}.lesson.open .lesson-arrow{transform:rotate(90deg)}.lesson-body{display:none;padding:6px}.lesson.open .lesson-body{display:block}.lesson-theory-link{width:100%;border:0;background:#303747;color:#d9deea;text-align:left;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:12px;margin:2px 0 6px}.level-title{color:#778196;font-size:10px;font-weight:bold;text-transform:uppercase;letter-spacing:.8px;margin:10px 6px 5px}.task-button{width:100%;border:0;background:transparent;color:#d9deea;text-align:left;padding:8px 8px;border-radius:8px;cursor:pointer;margin-bottom:3px;font-size:12px;display:flex;align-items:center;gap:7px}.task-button:hover{background:#2b3241}.task-button.active{background:#4d65d9;color:white}.task-button.solved{color:#83e39b}.task-button.active.solved{color:white}.task-stars{width:32px;flex-shrink:0;color:#f0b429;font-size:10px;letter-spacing:-2px}.task-check{margin-left:auto;font-size:13px}.main{flex:1;min-width:0;padding:28px}.top{max-width:1100px;margin:0 auto 18px}.badge{display:inline-block;background:#e7ebff;color:#4458c5;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:bold;margin-bottom:8px}h2{margin:0 0 8px;font-size:30px}.description{margin:0;line-height:1.6;color:#555d6d}.card{max-width:1100px;margin:0 auto 18px;background:white;border-radius:16px;padding:22px;box-shadow:0 8px 30px rgba(28,36,54,.07)}.card h3{margin-top:0}.problem{white-space:pre-line;line-height:1.65;font-size:15px}.theory{background:#f8f9fd;border-left:4px solid #596fe4;padding:14px 16px;border-radius:8px;line-height:1.55;white-space:pre-line}.theory code{background:#e9ecf5;padding:2px 5px;border-radius:4px}.editor-wrap{border:1px solid #dce1eb;border-radius:10px;overflow:hidden}.CodeMirror{height:330px;font-size:15px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}button.action{border:0;border-radius:9px;padding:11px 16px;cursor:pointer;font-size:14px;font-weight:bold}.run{background:#4d65d9;color:white}.run:hover{background:#4056c7}.hint{background:#f0b429;color:#241b00}.hint:disabled{opacity:.45;cursor:not-allowed}.clear{background:#edf0f5;color:#343b49}.theory-button{background:#eef1f8;color:#3b4352}.status{margin-top:15px;padding:14px 16px;border-radius:10px;display:none;line-height:1.5;white-space:pre-wrap}.status.show{display:block}.status.info{background:#eef3ff;color:#354c9f}.status.success{background:#e9f8ed;color:#23723a}.status.error{background:#fff0f0;color:#a52c2c}.status.warning{background:#fff8df;color:#805e00}.progress{margin-top:12px;font-size:13px;color:#656d7c}.hint-box{margin-top:14px;padding:14px 16px;background:#fff8df;border-radius:10px;border:1px solid #f0d36d;display:none;line-height:1.55}.hint-box.show{display:block}.small{color:#727a88;font-size:12px;margin-top:9px}.examples{margin-top:14px;padding:13px 15px;background:#f8f9fd;border-radius:10px;font-size:13px;line-height:1.55}.examples strong{color:#404857}.modal{position:fixed;inset:0;background:rgba(20,25,35,.58);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}.modal.show{display:flex}.modal-card{width:min(900px,100%);max-height:85vh;overflow:auto;background:white;border-radius:18px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.25)}.modal-head{display:flex;justify-content:space-between;align-items:center;gap:15px}.modal-head h3{margin:0}.close{border:0;background:#edf0f5;border-radius:9px;width:36px;height:36px;cursor:pointer;font-size:18px}.theory-block{margin-top:18px;line-height:1.6}.theory-block h4{margin-bottom:6px}.lesson-intro{padding:10px 10px 4px;color:#aeb6c5;font-size:11px;line-height:1.45}
-.input-panel{margin-top:16px;padding:16px;background:#f8f9fd;border:1px solid #e1e5ee;border-radius:12px}.input-panel-title{font-weight:bold;font-size:15px}.input-panel-subtitle{font-size:12px;color:#707887;margin-top:4px;line-height:1.45}.input-fields{display:grid;gap:9px;margin-top:12px}.input-row{display:flex;align-items:center;gap:9px}.input-row label{min-width:78px;font-size:12px;color:#5d6574;font-weight:bold}.input-row input{flex:1;border:1px solid #cfd5e1;border-radius:8px;padding:10px 11px;font-size:14px;background:white;outline:none}.input-row input:focus{border-color:#596fe4;box-shadow:0 0 0 3px rgba(89,111,228,.1)}.input-empty{margin-top:11px;font-size:12px;color:#707887}.interactive-run{background:#2eaa72;color:white}.interactive-run:hover{background:#238c5c}.console{margin-top:14px;border-radius:10px;overflow:hidden;background:#151a25;color:#e9edf5;display:none}.console.show{display:block}.console-head{padding:9px 12px;background:#202738;font-size:12px;font-weight:bold;color:#bfc7d7}.console-output{padding:14px;min-height:70px;white-space:pre-wrap;font-family:Consolas,monospace;font-size:13px;line-height:1.55}.console-output.empty{color:#7f899c}.input-note{margin-top:9px;color:#707887;font-size:11px;line-height:1.45}@media(max-width:900px){.app{display:block}.sidebar{width:100%;height:auto;position:relative}.main{padding:16px}h2{font-size:24px}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f6fb;color:#20242c}.app{display:flex;min-height:100vh}.sidebar{width:330px;background:#1f2430;color:white;padding:20px 14px;flex-shrink:0;position:sticky;top:0;height:100vh;overflow:auto}.sidebar h1{font-size:21px;margin:0 8px 4px}.teacher-name{color:#fff;font-size:13px;font-weight:600;line-height:1.35;margin:0 8px 4px}.sidebar-subtitle{color:#aeb6c5;font-size:12px;line-height:1.4;margin:0 8px 16px}.result-card{background:#2b3241;border-radius:12px;padding:14px;margin:0 4px 16px}.result-title{font-size:11px;font-weight:bold;color:#aeb6c5;text-transform:uppercase;letter-spacing:.5px}.result-number{font-size:22px;font-weight:bold;margin-top:5px}.result-small{margin-top:5px;color:#aeb6c5;font-size:12px}.lesson{margin:8px 0;border:1px solid #303747;border-radius:12px;overflow:hidden}.lesson-head{width:100%;border:0;background:#252b39;color:#fff;padding:13px 12px;text-align:left;cursor:pointer;display:flex;align-items:center;gap:9px;font-weight:bold}.lesson-head:hover{background:#2b3241}.lesson-head-title{flex:1;line-height:1.35}.lesson-head-title strong{font-weight:800}.lesson-head-title span{font-weight:600;color:#d9deea}.lesson-head-arrow{flex-shrink:0;margin-left:auto;transition:.2s}.lesson.open .lesson-head-arrow{transform:rotate(90deg)}.lesson-arrow{margin-left:auto;transition:.2s}.lesson-body{display:none;padding:6px}.lesson.open .lesson-body{display:block}.lesson-theory-link{width:100%;border:0;background:#303747;color:#d9deea;text-align:left;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:12px;margin:2px 0 6px}.level-title{color:#778196;font-size:10px;font-weight:bold;text-transform:uppercase;letter-spacing:.8px;margin:10px 6px 5px}.task-button{width:100%;border:0;background:transparent;color:#d9deea;text-align:left;padding:8px 8px;border-radius:8px;cursor:pointer;margin-bottom:3px;font-size:12px;display:flex;align-items:center;gap:7px}.task-button:hover{background:#2b3241}.task-button.active{background:#4d65d9;color:white}.task-button.solved{color:#83e39b}.task-button.active.solved{color:white}.task-stars{width:32px;flex-shrink:0;color:#f0b429;font-size:10px;letter-spacing:-2px}.task-check{margin-left:auto;font-size:13px}.main{flex:1;min-width:0;padding:28px}.top{max-width:1100px;margin:0 auto 18px}.badge{display:inline-block;background:#e7ebff;color:#4458c5;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:bold;margin-bottom:8px}h2{margin:0 0 8px;font-size:30px}.description{margin:0;line-height:1.6;color:#555d6d}.card{max-width:1100px;margin:0 auto 18px;background:white;border-radius:16px;padding:22px;box-shadow:0 8px 30px rgba(28,36,54,.07)}.card h3{margin-top:0}.problem{white-space:pre-line;line-height:1.65;font-size:15px}.theory{background:#f8f9fd;border-left:4px solid #596fe4;padding:14px 16px;border-radius:8px;line-height:1.55;white-space:pre-line}.theory code{background:#e9ecf5;padding:2px 5px;border-radius:4px}.editor-wrap{border:1px solid #dce1eb;border-radius:10px;overflow:hidden}.CodeMirror{height:330px;font-size:15px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;margin-bottom:22px}button.action{border:0;border-radius:9px;padding:11px 16px;cursor:pointer;font-size:14px;font-weight:bold}.run{background:#4d65d9;color:white}.run:hover{background:#4056c7}.hint{background:#f0b429;color:#241b00}.hint:disabled{opacity:.45;cursor:not-allowed}.clear{background:#edf0f5;color:#343b49}.theory-button{background:#eef1f8;color:#3b4352}.status{margin-top:15px;padding:14px 16px;border-radius:10px;display:none;line-height:1.5;white-space:pre-wrap}.status.show{display:block}.status.info{background:#eef3ff;color:#354c9f}.status.success{background:#e9f8ed;color:#23723a}.status.error{background:#fff0f0;color:#a52c2c}.status.warning{background:#fff8df;color:#805e00}.progress{margin-top:12px;font-size:13px;color:#656d7c}.hint-box{margin-top:14px;padding:14px 16px;background:#fff8df;border-radius:10px;border:1px solid #f0d36d;display:none;line-height:1.55}.hint-box.show{display:block}.small{color:#727a88;font-size:12px;margin-top:9px}.examples{margin-top:14px;padding:13px 15px;background:#f8f9fd;border-radius:10px;font-size:13px;line-height:1.55}.examples strong{color:#404857}.modal{position:fixed;inset:0;background:rgba(20,25,35,.58);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}.modal.show{display:flex}.modal-card{width:min(900px,100%);max-height:85vh;overflow:auto;background:white;border-radius:18px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.25)}.modal-head{display:flex;justify-content:space-between;align-items:center;gap:15px}.modal-head h3{margin:0}.close{border:0;background:#edf0f5;border-radius:9px;width:36px;height:36px;cursor:pointer;font-size:18px}.theory-block{margin-top:18px;line-height:1.6}.theory-block h4{margin-bottom:6px}.lesson-intro{padding:10px 10px 4px;color:#aeb6c5;font-size:11px;line-height:1.45}
+.test-data{margin-top:0}.test-data-empty{padding:14px 16px;background:#f8f9fd;border-radius:10px;color:#697284;font-size:13px;line-height:1.55}.test-table{width:100%;border-collapse:collapse;font-size:13px}.test-table th{background:#f5f6f9;color:#525b6b;text-align:left;font-weight:bold;padding:10px;border-bottom:1px solid #e0e4ec}.test-table td{padding:10px;border-bottom:1px solid #e7eaf0;vertical-align:top}.test-table tr:last-child td{border-bottom:0}.test-number{width:52px;color:#707887}.test-code{display:block;background:#f5f6f9;border-radius:7px;padding:8px 10px;font-family:Consolas,monospace;white-space:pre-wrap;color:#222936}.test-use{border:0;background:#eef1f8;color:#3b4352;border-radius:7px;padding:7px 9px;cursor:pointer;font-size:12px;font-weight:bold;margin-top:7px}.test-use:hover{background:#e2e6f1}.interactive-run{background:#2eaa72;color:white}.interactive-run:hover{background:#238c5c}.io-block{margin-top:18px;padding:16px;background:#f8f9fd;border:1px solid #e1e5ee;border-radius:12px}.io-title{font-weight:bold;font-size:15px}.io-subtitle{font-size:12px;color:#707887;margin-top:4px;line-height:1.45}.stdin-input{display:block;width:100%;min-height:110px;resize:vertical;margin-top:12px;border:1px solid #cfd5e1;border-radius:9px;padding:11px 12px;font-family:Consolas,monospace;font-size:14px;line-height:1.5;background:white;color:#20242c;outline:none}.stdin-input:focus{border-color:#596fe4;box-shadow:0 0 0 3px rgba(89,111,228,.1)}.io-note{margin-top:8px;color:#707887;font-size:11px;line-height:1.45}.console{margin-top:12px;border-radius:10px;overflow:hidden;background:#151a25;color:#e9edf5;display:none}.console.show{display:block}.console-head{padding:9px 12px;background:#202738;font-size:12px;font-weight:bold;color:#bfc7d7}.console-output{padding:14px;min-height:70px;white-space:pre-wrap;font-family:Consolas,monospace;font-size:13px;line-height:1.55}.console-output.empty{color:#7f899c}.console-output.error{color:#ffb8b8}.result-label{font-size:13px;font-weight:bold;color:#525b6b;margin-top:14px}@media(max-width:900px){.app{display:block}.sidebar{width:100%;height:auto;position:relative}.main{padding:16px}h2{font-size:24px}
 
-.rating-card{margin-top:16px;padding:16px;background:#f8f9fd;border:1px solid #e3e7f0;border-radius:12px}.rating-title{font-weight:bold;font-size:15px}.rating-subtitle{font-size:12px;color:#707887;margin-top:4px}.rating-stars{display:flex;gap:5px;margin-top:12px}.rating-star{border:0;background:transparent;padding:0;cursor:pointer;font-size:28px;line-height:1;color:#cbd1dc;transition:.15s}.rating-star:hover,.rating-star.selected{color:#f0b429;transform:scale(1.08)}.rating-star:disabled{cursor:not-allowed;opacity:.45;transform:none}.rating-label{margin-top:7px;font-size:12px;color:#656d7c}.hardest-details{margin-top:10px;color:#d9deea;font-size:11px}.hardest-details summary{cursor:pointer;color:#fff;font-weight:bold}.hardest-list-item{margin:8px 0;color:#d9deea;line-height:1.4}.hardest-list-empty{margin-top:8px;color:#aeb6c5}.hardest-details[open]{background:#252b39;padding:8px;border-radius:8px}.hardest-details summary::marker{color:#aeb6c5}.result-card .hardest-details{color:#d9deea}
+.task-bottom-panel{margin-top:18px;padding:18px 20px;background:linear-gradient(135deg,#f8f9ff 0%,#f5f7fc 100%);border:1px solid #e3e7f0;border-radius:16px}.attempt-panel{padding-bottom:17px}.attempt-head{display:flex;align-items:center;justify-content:space-between;gap:14px}.attempt-title{font-size:13px;font-weight:800;color:#343b49}.attempt-value{font-size:12px;font-weight:700;color:#6b7484;white-space:nowrap}.attempt-bar{height:7px;margin-top:10px;background:#e7eaf1;border-radius:999px;overflow:hidden}.attempt-fill{height:100%;width:0;background:linear-gradient(90deg,#596fe4,#4d65d9);border-radius:999px;transition:width .25s ease}.rating-card{margin-top:0;padding:17px 0 0;border:0;border-top:1px solid #e2e6ef;border-radius:0;background:transparent}.rating-head{display:flex;align-items:flex-start;gap:12px}.rating-icon{width:38px;height:38px;flex:0 0 38px;display:flex;align-items:center;justify-content:center;border-radius:11px;background:#fff1c7;color:#d79a13;font-size:18px;box-shadow:inset 0 0 0 1px #f2dfab}.rating-title{font-weight:800;font-size:15px;color:#303746;line-height:1.25}.rating-subtitle{font-size:12px;color:#707887;margin-top:4px;line-height:1.45}.rating-stars{display:flex;gap:7px;margin-top:13px}.rating-star{width:42px;height:38px;border:1px solid #d9deea;background:white;border-radius:9px;padding:0;cursor:pointer;font-size:20px;line-height:1;color:#c6ccd7;transition:transform .15s ease,background .15s ease,border-color .15s ease,color .15s ease,box-shadow .15s ease}.rating-star:hover:not(:disabled){color:#e3a51a;border-color:#efcf76;background:#fffaf0;transform:translateY(-2px);box-shadow:0 5px 12px rgba(45,54,75,.08)}.rating-star.selected{color:#e3a51a;border-color:#edcf7d;background:#fff8e6}.rating-star:disabled{cursor:not-allowed;opacity:.55;background:#f1f3f7}.rating-label{margin-top:9px;font-size:12px;color:#656d7c;min-height:17px}.hardest-details{margin-top:10px;color:#d9deea;font-size:11px}.hardest-details summary{cursor:pointer;color:#fff;font-weight:bold}.hardest-list-item{margin:8px 0;color:#d9deea;line-height:1.4}.hardest-list-empty{margin-top:8px;color:#aeb6c5}.hardest-details[open]{background:#252b39;padding:8px;border-radius:8px}.hardest-details summary::marker{color:#aeb6c5}.result-card .hardest-details{color:#d9deea}
 
-.input-modal{position:fixed;inset:0;background:rgba(20,25,35,.62);display:none;align-items:center;justify-content:center;padding:20px;z-index:80}.input-modal.show{display:flex}.input-modal-card{width:min(520px,100%);background:white;border-radius:18px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.28)}.input-modal-card h3{margin:0 0 8px;font-size:20px}.input-modal-subtitle{color:#697284;font-size:13px;line-height:1.5}.input-prompt{margin-top:18px;padding:14px;background:#f8f9fd;border-radius:10px;color:#303746;font-size:14px;line-height:1.5}.input-prompt strong{color:#4d65d9}.input-modal-input{width:100%;margin-top:14px;border:2px solid #cfd5e1;border-radius:10px;padding:12px 13px;font-size:16px;outline:none}.input-modal-input:focus{border-color:#596fe4;box-shadow:0 0 0 4px rgba(89,111,228,.1)}.input-modal-actions{display:flex;gap:9px;margin-top:14px}.input-modal-actions button{border:0;border-radius:9px;padding:11px 15px;cursor:pointer;font-size:14px;font-weight:bold}.input-modal-next{background:#4d65d9;color:white;flex:1}.input-modal-cancel{background:#edf0f5;color:#343b49}.input-step{margin-top:10px;color:#707887;font-size:12px}.input-panel.active{border-color:#596fe4;box-shadow:0 0 0 3px rgba(89,111,228,.06)}
-</style></head><body><div class="app"><aside class="sidebar"><h1>Маршрутные листы</h1><div class="teacher-name">Педагог Самибаева Парвона Мансуровна</div><p class="sidebar-subtitle">Python · теория · задачи · практика</p><div class="result-card"><div class="result-title">Мой результат</div><div class="result-number" id="solvedCount">0 / 57</div><div class="result-small" id="hardestTask">Самая сложная задача: —</div><details class="hardest-details"><summary>Посмотреть список сложных задач</summary><div id="hardestList">Пока нет оценённых решённых задач.</div></details></div><div id="lessonNav"></div></aside><main class="main"><div class="top"><span class="badge" id="lessonBadge">ЗАНЯТИЕ 2</span><h2 id="taskTitle"></h2><p class="description" id="taskShort"></p></div><section class="card"><h3>Условие</h3><div class="problem" id="taskProblem"></div><div class="examples" id="taskExamples"></div></section><section class="card"><h3>Теория к задаче</h3><div class="theory" id="taskTheory"></div><div class="actions"><button class="action theory-button" id="theoryButton">📖 Открыть всю теорию занятия</button></div></section><section class="card"><h3>Твоя программа</h3><div class="editor-wrap"><textarea id="code"></textarea></div><div class="actions"><button class="action interactive-run" id="interactiveRunButton">▶ Запустить программу</button><button class="action run" id="runButton">✓ Проверить программу</button><button class="action hint" id="hintButton" disabled>💡 Подсказка</button><button class="action clear" id="clearButton">Очистить</button></div><div class="console" id="console"><div class="console-head">Терминал программы</div><div class="console-output empty" id="consoleOutput">Здесь появится результат работы программы.</div></div><div class="progress" id="progress">Неудачных проверок: 0 / 5</div><div class="rating-card" id="ratingCard"><div class="rating-title">⭐ Оцени сложность задачи</div><div class="rating-subtitle">После решения выбери от 1 до 5 звёздочек.</div><div class="rating-stars" id="ratingStars"></div><div class="rating-label" id="ratingLabel">Оцени после решения задачи</div></div><div class="status" id="status"></div><div class="hint-box" id="hintBox"></div><div class="small">Программа проверяется на скрытых тестах. Входные данные проверок не показываются ученику.</div></section></main></div><div class="modal" id="theoryModal"><div class="modal-card"><div class="modal-head"><h3 id="modalTitle">Теория</h3><button class="close" id="closeTheory">×</button></div><div id="modalBody"></div></div></div><div class="input-modal" id="inputModal"><div class="input-modal-card"><h3>⌨ Программа ждёт ввода</h3><div class="input-modal-subtitle">Это работает как <b>input()</b> в PyCharm или Visual Studio. Введи значение, которое программа сейчас просит, и нажми «Ввести».</div><div class="input-step" id="inputStep">Ввод 1</div><div class="input-prompt" id="inputPrompt">Введите значение:</div><input class="input-modal-input" id="inputModalField" autocomplete="off" autofocus><div class="input-modal-actions"><button class="input-modal-cancel" id="inputModalCancel">Отмена</button><button class="input-modal-next" id="inputModalNext">Ввести →</button></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script><script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script><script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script><script>
+
+.task-image-wrap{margin-top:18px;padding:10px;background:#f8f9fd;border:1px solid #e1e5ee;border-radius:14px;text-align:center;overflow:hidden}.task-image{display:block;max-width:100%;max-height:520px;width:auto;height:auto;margin:0 auto;border-radius:10px;object-fit:contain}.task-image-wrap[hidden]{display:none!important}
+
+.quiz-view{display:none;max-width:1100px;margin:0 auto;padding-bottom:40px}
+body.quiz-mode .top,body.quiz-mode #taskView{display:none}
+body.quiz-mode .quiz-view{display:block}
+.quiz-shell{max-width:1000px;margin:0 auto}
+.quiz-hero{background:linear-gradient(135deg,#eef1ff 0%,#f8f9ff 100%);border:1px solid #dfe4f5;border-radius:20px;padding:28px 30px;margin-bottom:16px}
+.quiz-kicker{font-size:11px;font-weight:800;letter-spacing:1px;color:#596fe4;text-transform:uppercase;margin-bottom:8px}
+.quiz-hero h2{margin:0;font-size:30px;color:#252b39}
+.quiz-hero p{margin:9px 0 0;color:#697384;line-height:1.55;font-size:14px}
+.quiz-name-card,.quiz-progress-card,.quiz-teacher-card{background:#fff;border:1px solid #e3e7f0;border-radius:16px;padding:18px 20px;box-shadow:0 7px 24px rgba(28,36,54,.05);margin-bottom:14px}
+.quiz-name-card{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.quiz-name-title{font-size:15px;font-weight:800;color:#303746}
+.quiz-name-subtitle{font-size:12px;color:#737d8d;margin-top:4px}
+.quiz-name-input{width:280px;max-width:100%;border:1px solid #d7ddea;border-radius:10px;padding:11px 13px;font-size:14px;outline:none}
+.quiz-name-input:focus{border-color:#596fe4;box-shadow:0 0 0 3px rgba(89,111,228,.12)}
+.quiz-progress-top{display:flex;justify-content:space-between;gap:15px;font-size:12px;font-weight:800;color:#596273}
+.quiz-progress-track{height:8px;background:#e9ecf3;border-radius:999px;overflow:hidden;margin-top:10px}
+.quiz-progress-fill{height:100%;width:10%;background:linear-gradient(90deg,#596fe4,#4d65d9);border-radius:999px;transition:width .25s ease}
+.quiz-question-card{background:#fff;border:1px solid #e3e7f0;border-radius:18px;padding:24px;box-shadow:0 8px 30px rgba(28,36,54,.06)}
+.quiz-question-number{font-size:11px;color:#596fe4;font-weight:800;letter-spacing:.8px;text-transform:uppercase}
+.quiz-question-title{font-size:20px;line-height:1.4;font-weight:800;color:#252b39;margin:8px 0 17px}
+.quiz-code{background:#202532;color:#eef2f8;border-radius:12px;padding:17px 18px;font-family:Consolas,Monaco,monospace;font-size:14px;line-height:1.6;white-space:pre-wrap;overflow:auto;margin-bottom:16px}
+.quiz-options{display:grid;gap:10px}
+.quiz-option{width:100%;text-align:left;border:1px solid #dce1eb;background:#fff;border-radius:12px;padding:13px 15px;cursor:pointer;font-size:14px;color:#303746;transition:.15s ease;display:flex;gap:11px;align-items:flex-start}
+.quiz-option:hover:not(:disabled){border-color:#9ba8e8;background:#f8f9ff;transform:translateY(-1px)}
+.quiz-option:disabled{cursor:default}
+.quiz-option-letter{font-weight:800;color:#596fe4;min-width:22px}
+.quiz-option.correct{border-color:#71c98b;background:#effaf2}
+.quiz-option.wrong{border-color:#e28a8a;background:#fff2f2}
+.quiz-feedback{margin-top:15px;border-radius:12px;padding:14px 16px;line-height:1.55;font-size:13px;background:#f7f8fb;color:#4c5666}
+.quiz-feedback.correct{background:#effaf2;border:1px solid #cdebd5;color:#25633a}
+.quiz-feedback.wrong{background:#fff2f2;border:1px solid #f1cccc;color:#8b3434}
+.quiz-correct-answer{margin-top:7px;font-weight:800}
+.quiz-actions{display:flex;justify-content:flex-end;gap:10px;margin:14px 0}
+.quiz-next,.quiz-finish,.quiz-teacher-button{border:0;border-radius:10px;padding:11px 16px;font-weight:800;cursor:pointer}
+.quiz-next{background:#4d65d9;color:#fff}
+.quiz-next:disabled{opacity:.45;cursor:not-allowed}
+.quiz-finish{background:#28a66b;color:#fff}
+.quiz-teacher-button{background:#edf0f6;color:#343b49}
+.quiz-result{background:#fff;border:1px solid #dfe4f0;border-radius:18px;padding:25px;margin:15px 0;box-shadow:0 8px 25px rgba(28,36,54,.05)}
+.quiz-result-score{font-size:32px;font-weight:900;color:#4d65d9}
+.quiz-result-text{margin-top:6px;color:#5e6878;line-height:1.5}
+.quiz-teacher-head{display:flex;align-items:center;justify-content:space-between;gap:15px}
+.quiz-teacher-title{font-size:15px;font-weight:800;color:#303746}
+.quiz-teacher-subtitle{font-size:12px;color:#737d8d;margin-top:4px}
+.quiz-teacher-results{margin-top:14px;border-top:1px solid #e3e7f0;padding-top:12px}
+.quiz-result-row{display:grid;grid-template-columns:1fr 100px 170px;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid #eef0f4;font-size:13px}
+.quiz-result-row:last-child{border-bottom:0}
+.quiz-result-name{font-weight:800;color:#303746}
+.quiz-result-score-cell{font-weight:800;color:#4d65d9}
+.quiz-result-date{color:#7a8392;text-align:right}
+.quiz-back{width:100%;margin-bottom:14px;background:#303747;color:#d9deea;border:0;border-radius:9px;padding:9px 10px;cursor:pointer;font-size:12px;text-align:left}
+@media(max-width:760px){.quiz-name-card,.quiz-teacher-head{align-items:stretch;flex-direction:column}.quiz-name-input{width:100%}.quiz-hero h2{font-size:25px}.quiz-question-title{font-size:18px}.quiz-result-row{grid-template-columns:1fr 90px}.quiz-result-date{grid-column:1/-1;text-align:left}}
+</style>
+<style id="quiz-design-fix">
+/* ===== ВИКТОРИНА — ЕДИНЫЙ СТИЛЬ С САЙТОМ ===== */
+body{background:#f4f6fb;color:#20242c;font-family:Arial,sans-serif}
+body.quiz-mode .app{display:flex;min-height:100vh}
+body.quiz-mode .sidebar{display:block;width:330px;min-width:330px;background:#1f2430;color:#fff;padding:20px 14px;position:sticky;top:0;height:100vh;overflow:auto}
+body.quiz-mode .main{display:block;flex:1;min-width:0;padding:28px 34px 50px;background:#f4f6fb}
+body.quiz-mode .quiz-view{display:block!important;max-width:1100px;margin:0 auto;padding:0 0 50px}
+body.quiz-mode .top,body.quiz-mode #taskView{display:none!important}
+.quiz-shell{width:100%;max-width:1040px;margin:0 auto}
+.quiz-hero{position:relative;background:linear-gradient(135deg,#eef1ff 0%,#f8f9ff 100%);border:1px solid #dce2f2;border-radius:20px;padding:28px 30px 30px;margin-bottom:18px;box-shadow:0 8px 28px rgba(31,38,56,.06)}
+.quiz-back{display:inline-flex!important;align-items:center;gap:6px;width:auto!important;margin:0 0 22px!important;background:#fff!important;color:#303746!important;border:1px solid #d8deeb!important;border-radius:9px!important;padding:8px 12px!important;cursor:pointer;font-size:12px!important;font-weight:700!important;text-align:left;box-shadow:0 2px 8px rgba(31,38,56,.04)}
+.quiz-back:hover{background:#f7f8fc!important;border-color:#bcc5d8!important}
+.quiz-kicker{font-size:11px;font-weight:800;letter-spacing:1px;color:#596fe4;text-transform:uppercase;margin-bottom:7px}
+.quiz-hero h2{margin:0;color:#252b39;font-size:32px;line-height:1.15;font-weight:800}
+.quiz-hero p{margin:10px 0 0;color:#697384;font-size:14px;line-height:1.55;max-width:780px}
+.quiz-name-card,.quiz-progress-card,.quiz-teacher-card{background:#fff;border:1px solid #e0e5ef;border-radius:16px;padding:19px 21px;box-shadow:0 6px 22px rgba(28,36,54,.045);margin-bottom:15px}
+.quiz-name-card{display:flex;align-items:center;justify-content:space-between;gap:24px}
+.quiz-name-title{font-size:15px;font-weight:800;color:#303746}
+.quiz-name-subtitle{font-size:12px;color:#737d8d;margin-top:5px;line-height:1.45}
+.quiz-name-input{width:280px;max-width:100%;border:1px solid #d7ddea;border-radius:10px;padding:11px 13px;font-size:14px;outline:none;background:#fff;color:#20242c}
+.quiz-name-input:focus{border-color:#596fe4;box-shadow:0 0 0 3px rgba(89,111,228,.12)}
+.quiz-progress-top{display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:12px;font-weight:800;color:#4d5666;margin-bottom:9px}
+#quizScoreText{color:#596fe4}
+.quiz-progress-track{height:8px;background:#e9edf5;border-radius:999px;overflow:hidden}
+.quiz-progress-fill{height:100%;width:0;background:linear-gradient(90deg,#596fe4,#7487ed);border-radius:999px;transition:width .25s ease}
+.quiz-question-card{background:#fff;border:1px solid #e0e5ef;border-radius:18px;padding:24px;box-shadow:0 8px 28px rgba(28,36,54,.055)}
+.quiz-question-number{font-size:11px;color:#596fe4;font-weight:800;letter-spacing:.9px;text-transform:uppercase;margin-bottom:8px}
+.quiz-question-title{font-size:20px;line-height:1.45;font-weight:800;color:#252b39;margin:0 0 17px}
+.quiz-code{background:#202532;color:#eef2f8;border-radius:12px;padding:17px 18px;font-family:Consolas,Monaco,monospace;font-size:14px;line-height:1.65;white-space:pre-wrap;overflow:auto;margin-bottom:17px;border:1px solid #303747}
+.quiz-options{display:grid;gap:10px}
+.quiz-option{width:100%;text-align:left;border:1px solid #dce1eb;background:#fff;border-radius:12px;padding:13px 15px;cursor:pointer;font-size:14px;color:#303746;transition:.15s ease;display:flex;gap:11px;align-items:flex-start;line-height:1.45}
+.quiz-option:hover:not(:disabled){border-color:#9ba8e8;background:#f8f9ff;transform:translateY(-1px)}
+.quiz-option:disabled{cursor:default}
+.quiz-option-letter{font-weight:800;color:#596fe4;min-width:22px}
+.quiz-option.correct{border-color:#71c98b;background:#effaf2;color:#245e37}
+.quiz-option.wrong{border-color:#e28a8a;background:#fff2f2;color:#873535}
+.quiz-feedback{margin-top:15px;border-radius:12px;padding:14px 16px;line-height:1.55;font-size:13px;background:#f7f8fb;color:#4c5666}
+.quiz-feedback.correct{background:#effaf2;border:1px solid #cdebd5;color:#25633a}
+.quiz-feedback.wrong{background:#fff2f2;border:1px solid #f1cccc;color:#8b3434}
+.quiz-correct-answer{margin-top:7px;font-weight:800}
+.quiz-actions{display:flex;justify-content:flex-end;gap:10px;margin:16px 0}
+.quiz-next,.quiz-finish,.quiz-teacher-button{border:0;border-radius:10px;padding:11px 17px;font-weight:800;cursor:pointer;font-size:13px}
+.quiz-next{background:#4d65d9;color:#fff;box-shadow:0 4px 12px rgba(77,101,217,.18)}
+.quiz-next:hover:not(:disabled){background:#4158c9}
+.quiz-next:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.quiz-finish{background:#28a66b;color:#fff}
+.quiz-teacher-button{background:#edf0f6;color:#343b49}
+.quiz-result{background:#fff;border:1px solid #dfe4f0;border-radius:18px;padding:25px; margin:15px 0;box-shadow:0 8px 25px rgba(28,36,54,.05)}
+.quiz-result-score{font-size:34px;font-weight:900;color:#4d65d9}
+.quiz-result-text{margin-top:6px;color:#5e6878;line-height:1.5}
+.quiz-teacher-head{display:flex;align-items:center;justify-content:space-between;gap:15px}
+.quiz-teacher-title{font-size:15px;font-weight:800;color:#303746}
+.quiz-teacher-subtitle{font-size:12px;color:#737d8d;margin-top:4px;line-height:1.45}
+.quiz-teacher-results{margin-top:14px;border-top:1px solid #e3e7f0;padding-top:12px}
+.quiz-result-row{display:grid;grid-template-columns:1fr 100px 170px;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid #eef0f4;font-size:13px}
+.quiz-result-row:last-child{border-bottom:0}
+.quiz-result-name{font-weight:800;color:#303746}
+.quiz-result-score-cell{font-weight:800;color:#4d65d9}
+.quiz-result-date{color:#7a8392;text-align:right}
+@media(max-width:900px){body.quiz-mode .sidebar{width:270px;min-width:270px}body.quiz-mode .main{padding:20px}.quiz-hero{padding:24px}.quiz-name-card{align-items:stretch;flex-direction:column}.quiz-name-input{width:100%}}
+@media(max-width:680px){body.quiz-mode .app{display:block}body.quiz-mode .sidebar{position:relative;width:100%;min-width:0;height:auto;max-height:none}body.quiz-mode .main{padding:14px}.quiz-hero h2{font-size:26px}.quiz-question-card{padding:18px}.quiz-question-title{font-size:18px}.quiz-result-row{grid-template-columns:1fr 90px}.quiz-result-date{grid-column:1/-1;text-align:left}}
+</style>
+
+<style id="teacher-dashboard-style">
+.teacher-dashboard-button{width:calc(100% - 8px);margin:0 4px 16px;border:1px solid #465064;background:#303747;color:#fff;border-radius:10px;padding:11px 12px;cursor:pointer;font-size:12px;font-weight:800;text-align:left}
+.teacher-dashboard-button:hover{background:#394254;border-color:#5a6780}
+body.teacher-dashboard-mode .top,body.teacher-dashboard-mode #taskView,body.teacher-dashboard-mode #quizView{display:none!important}
+body.teacher-dashboard-mode .teacher-dashboard-view{display:block!important}
+.teacher-dashboard-view{display:none;max-width:1100px;margin:0 auto;padding-bottom:50px}
+.teacher-dashboard-shell{width:100%}
+.teacher-dashboard-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:18px}
+.teacher-dashboard-kicker{font-size:11px;font-weight:800;letter-spacing:1px;color:#596fe4;text-transform:uppercase;margin-bottom:7px}
+.teacher-dashboard-title{margin:0;font-size:32px;line-height:1.15;color:#252b39}
+.teacher-dashboard-subtitle{margin:9px 0 0;color:#697384;font-size:14px;line-height:1.55}
+.teacher-dashboard-actions{display:flex;gap:8px;flex-wrap:wrap}
+.teacher-dashboard-action{border:1px solid #d8deeb;background:#fff;color:#343b49;border-radius:10px;padding:10px 13px;cursor:pointer;font-size:12px;font-weight:800}
+.teacher-dashboard-action:hover{background:#f7f8fc}
+.teacher-dashboard-action.primary{background:#4d65d9;color:#fff;border-color:#4d65d9}
+.teacher-dashboard-action.primary:hover{background:#4056c7}
+.teacher-dashboard-status{display:none;background:#eef3ff;color:#354c9f;border-radius:10px;padding:12px 14px;margin-bottom:15px;font-size:13px;line-height:1.45}
+.teacher-dashboard-status.show{display:block}
+.teacher-stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:15px}
+.teacher-stat-card{background:#fff;border:1px solid #e0e5ef;border-radius:15px;padding:17px 18px;box-shadow:0 6px 22px rgba(28,36,54,.045)}
+.teacher-stat-label{font-size:11px;color:#737d8d;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
+.teacher-stat-value{font-size:27px;font-weight:900;color:#252b39;margin-top:5px}
+.teacher-stat-note{font-size:11px;color:#7a8392;margin-top:3px}
+.teacher-dashboard-card{background:#fff;border:1px solid #e0e5ef;border-radius:16px;padding:19px 20px;box-shadow:0 6px 22px rgba(28,36,54,.045);margin-bottom:15px}
+.teacher-dashboard-card h3{margin:0;color:#303746;font-size:17px}
+.teacher-dashboard-card-subtitle{margin-top:4px;color:#737d8d;font-size:12px;line-height:1.45}
+.teacher-task-grid{display:grid;gap:9px;margin-top:15px}
+.teacher-task-row{display:grid;grid-template-columns:42px minmax(180px,1fr) 115px minmax(150px,1fr) 70px;align-items:center;gap:12px;padding:11px 12px;border:1px solid #e8ebf1;border-radius:11px;background:#fafbfc}
+.teacher-task-number{font-size:12px;color:#737d8d;font-weight:800}
+.teacher-task-name{font-size:13px;font-weight:800;color:#303746;line-height:1.35}
+.teacher-task-count{font-size:13px;font-weight:900;color:#4d65d9}
+.teacher-task-track{height:8px;background:#e8ecf3;border-radius:999px;overflow:hidden}
+.teacher-task-fill{height:100%;background:#596fe4;border-radius:999px}
+.teacher-task-percent{font-size:12px;font-weight:900;text-align:right;color:#4f5969}
+.teacher-student-table{width:100%;border-collapse:collapse;margin-top:14px;font-size:13px}
+.teacher-student-table th{padding:10px 8px;text-align:left;background:#f5f6f9;color:#596273;font-size:11px;text-transform:uppercase;letter-spacing:.4px}
+.teacher-student-table td{padding:11px 8px;border-bottom:1px solid #edf0f4;color:#303746;vertical-align:middle}
+.teacher-student-table tr:last-child td{border-bottom:0}
+.teacher-student-name{font-weight:900}
+.teacher-student-progress{font-weight:900;color:#4d65d9;white-space:nowrap}
+.teacher-progress-track{height:7px;background:#e8ecf3;border-radius:999px;overflow:hidden;min-width:130px}
+.teacher-progress-fill{height:100%;background:#596fe4;border-radius:999px}
+.teacher-dashboard-empty{padding:18px;border-radius:11px;background:#f8f9fd;color:#697384;font-size:13px;line-height:1.55;margin-top:14px}
+.teacher-dashboard-note{font-size:11px;color:#7a8392;line-height:1.5;margin-top:10px}
+.teacher-hardest{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.teacher-hardest-item{border:1px solid #e8ebf1;border-radius:11px;padding:12px;background:#fafbfc}
+.teacher-hardest-title{font-size:13px;font-weight:900;color:#303746}
+.teacher-hardest-meta{font-size:11px;color:#737d8d;margin-top:4px;line-height:1.45}
+.teacher-loading{padding:18px;text-align:center;color:#737d8d;font-size:13px}
+@media(max-width:900px){.teacher-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.teacher-dashboard-head{flex-direction:column}.teacher-task-row{grid-template-columns:34px minmax(150px,1fr) 80px}.teacher-task-track{grid-column:2/4}.teacher-task-percent{grid-column:4;grid-row:2}.teacher-hardest{grid-template-columns:1fr}}
+@media(max-width:600px){.teacher-stat-grid{grid-template-columns:1fr 1fr}.teacher-dashboard-title{font-size:26px}.teacher-dashboard-card{padding:15px}.teacher-task-row{grid-template-columns:34px 1fr 70px;gap:8px}.teacher-task-track{grid-column:2/4}.teacher-task-percent{grid-column:3;grid-row:2}.teacher-student-table{font-size:12px}.teacher-student-table th:nth-child(3),.teacher-student-table td:nth-child(3){display:none}.teacher-progress-track{min-width:80px}}
+.teacher-lesson-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}.teacher-lesson-card{border:1px solid #e1e5ee;background:#fff;border-radius:16px;padding:20px;cursor:pointer;text-align:left;box-shadow:0 6px 22px rgba(28,36,54,.045);transition:.18s;min-height:150px;display:flex;flex-direction:column;justify-content:space-between}.teacher-lesson-card:hover{transform:translateY(-2px);border-color:#aeb9ea;box-shadow:0 10px 28px rgba(28,36,54,.09)}.teacher-lesson-number{font-size:12px;font-weight:900;color:#596fe4;text-transform:uppercase;letter-spacing:.6px}.teacher-lesson-title{font-size:20px;font-weight:900;color:#252b39;margin-top:8px}.teacher-lesson-subtitle{font-size:12px;color:#737d8d;line-height:1.45;margin-top:5px}.teacher-lesson-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px}.teacher-lesson-progress{font-size:12px;font-weight:900;color:#4d65d9}.teacher-lesson-arrow{font-size:18px;color:#7a8495}.teacher-dashboard-overview{display:block}.teacher-dashboard-detail{display:none}.teacher-dashboard-mode.teacher-detail .teacher-dashboard-overview{display:none}.teacher-dashboard-mode.teacher-detail .teacher-dashboard-detail{display:block}.teacher-dashboard-mode.teacher-detail .teacher-dashboard-head{display:flex}.teacher-dashboard-overview-head{margin-bottom:18px}.teacher-dashboard-overview-title{margin:0;font-size:32px;line-height:1.15;color:#252b39}.teacher-dashboard-overview-subtitle{margin:9px 0 0;color:#697384;font-size:14px;line-height:1.55}.teacher-dashboard-back-overview{margin-bottom:16px}.teacher-dashboard-mode.teacher-detail .teacher-dashboard-overview{display:none}.teacher-dashboard-mode.teacher-detail .teacher-dashboard-detail{display:block}.teacher-dashboard-detail .teacher-dashboard-head{display:flex}
+@media(max-width:600px){.teacher-lesson-grid{grid-template-columns:1fr}.teacher-dashboard-overview-title{font-size:26px}}
+</style>
+
+<style id="student-dashboard-style">
+.student-dashboard-button{width:calc(100% - 8px);margin:0 4px 10px;border:1px solid #303747;background:#252b39;color:#fff;border-radius:10px;padding:11px 12px;cursor:pointer;font-size:12px;font-weight:800;text-align:left}
+.student-dashboard-button:hover{background:#303747;border-color:#4b5870}.student-dashboard-button.active{background:#4d65d9;border-color:#667be6;color:#fff}.teacher-dashboard-button.active{background:#4d65d9;border-color:#667be6;color:#fff}
+body.student-dashboard-mode .top,body.student-dashboard-mode #taskView,body.student-dashboard-mode #quizView,body.student-dashboard-mode #teacherDashboardView{display:none!important}
+body.student-dashboard-mode .student-dashboard-view{display:block!important}
+.student-dashboard-view{display:none;max-width:1100px;margin:0 auto;padding-bottom:50px}
+.student-dashboard-shell{width:100%}
+.student-dashboard-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:18px}
+.student-dashboard-kicker{font-size:11px;font-weight:800;letter-spacing:1px;color:#596fe4;text-transform:uppercase;margin-bottom:7px}
+.student-dashboard-title{margin:0;font-size:32px;line-height:1.15;color:#252b39}
+.student-dashboard-subtitle{margin:9px 0 0;color:#697384;font-size:14px;line-height:1.55}
+.student-dashboard-actions{display:flex;gap:8px;flex-wrap:wrap}
+.student-dashboard-action{border:1px solid #d8deeb;background:#fff;color:#343b49;border-radius:10px;padding:10px 13px;cursor:pointer;font-size:12px;font-weight:800}
+.student-dashboard-action:hover{background:#f7f8fc}
+.student-dashboard-action.primary{background:#4d65d9;color:#fff;border-color:#4d65d9}
+.student-dashboard-action.primary:hover{background:#4056c7}
+.student-profile-card{background:#fff;border:1px solid #e0e5ef;border-radius:16px;padding:20px;box-shadow:0 6px 22px rgba(28,36,54,.045);margin-bottom:15px}
+.student-profile-row{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}
+.student-profile-name{font-size:22px;font-weight:900;color:#252b39}
+.student-profile-note{font-size:12px;color:#737d8d;margin-top:4px}
+.student-name-input{width:min(360px,100%);border:1px solid #d7ddea;border-radius:10px;padding:12px 13px;font-size:14px;outline:none}
+.student-name-input:focus{border-color:#7a89df;box-shadow:0 0 0 3px rgba(77,101,217,.1)}
+.student-dashboard-status{display:none;background:#eef3ff;color:#354c9f;border-radius:10px;padding:12px 14px;margin-bottom:15px;font-size:13px;line-height:1.45}
+.student-dashboard-status.show{display:block}
+.student-progress-hero{display:grid;grid-template-columns:180px 1fr;gap:20px;align-items:center}
+.student-progress-number{font-size:36px;font-weight:900;color:#252b39}
+.student-progress-label{font-size:12px;color:#737d8d;margin-top:3px}
+.student-progress-track{height:12px;background:#edf0f5;border-radius:999px;overflow:hidden;margin-top:10px}
+.student-progress-fill{height:100%;background:#596fe4;border-radius:999px;transition:width .25s}
+.student-progress-percent{font-size:13px;font-weight:900;color:#4d65d9;margin-top:7px}
+.student-lesson-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:15px}
+.student-lesson-card{background:#fff;border:1px solid #e0e5ef;border-radius:16px;padding:19px 20px;box-shadow:0 6px 22px rgba(28,36,54,.045)}
+.student-lesson-number{font-size:11px;font-weight:900;color:#596fe4;text-transform:uppercase;letter-spacing:.6px}
+.student-lesson-title{font-size:18px;font-weight:900;color:#252b39;margin-top:7px}
+.student-lesson-subtitle{font-size:12px;color:#737d8d;line-height:1.45;margin-top:4px}
+.student-lesson-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:15px}
+.student-lesson-count{font-size:12px;font-weight:900;color:#343b49}
+.student-lesson-percent{font-size:12px;font-weight:900;color:#4d65d9}
+.student-lesson-track{height:8px;background:#edf0f5;border-radius:999px;overflow:hidden;margin-top:10px}
+.student-lesson-fill{height:100%;background:#596fe4;border-radius:999px}
+.student-dashboard-empty{padding:18px;border-radius:11px;background:#f8f9fd;color:#697384;font-size:13px;line-height:1.55;margin-top:14px}
+.student-dashboard-note{font-size:11px;color:#7a8392;line-height:1.5;margin-top:10px}
+@media(max-width:700px){.student-progress-hero{grid-template-columns:1fr}.student-lesson-grid{grid-template-columns:1fr}.student-dashboard-head{flex-direction:column}.student-dashboard-title{font-size:27px}.student-dashboard-actions{width:100%}}
+</style>
+</head><body><div class="app"><aside class="sidebar"><h1>Маршрутные листы</h1><div class="teacher-name">Педагог Самибаева Парвона Мансуровна</div><p class="sidebar-subtitle">Python · теория · задачи · практика</p><div class="result-card"><div class="result-title">Мой результат</div><div class="result-number" id="solvedCount">0 / 57</div><div class="result-small" id="hardestTask">Самая сложная задача: —</div><details class="hardest-details"><summary>Посмотреть список сложных задач</summary><div id="hardestList">Пока нет оценённых решённых задач.</div></details></div><button type="button" class="student-dashboard-button" id="studentDashboardButton">👨‍🎓 Кабинет ученика</button><button type="button" class="teacher-dashboard-button" id="teacherDashboardButton">👩‍🏫 Кабинет преподавателя</button><div id="lessonNav"></div></aside><main class="main"><div class="top"><span class="badge" id="lessonBadge">ЗАНЯТИЕ 2</span><h2 id="taskTitle"></h2><p class="description" id="taskShort"></p></div><div id="taskView"><section class="card"><h3>Условие</h3><div class="problem" id="taskProblem"></div><div class="task-image-wrap" id="taskImageWrap" hidden><img id="taskImage" class="task-image" alt=""></div></section><section class="card"><h3>Небольшая теория</h3><div class="theory" id="taskTheory"></div><div class="actions"><button class="action theory-button" id="theoryButton">📖 Открыть всю теорию занятия</button></div></section><section class="card"><h3>Тестовые данные</h3><div class="test-data" id="taskExamples"></div></section><section class="card"><h3>Напишите программу</h3><div class="editor-wrap"><textarea id="code"></textarea></div><div class="io-block"><div class="io-title">Тестовый ввод и вывод</div><div class="io-subtitle">Введи данные для своей программы так же, как они поступали бы с клавиатуры. Если программа вызывает <b>input()</b> несколько раз — каждое значение пиши с новой строки.</div><textarea class="stdin-input" id="stdinInput" spellcheck="false" placeholder="Например:
+15"></textarea><div class="io-note">Запуск программы здесь не считается попыткой решения. Можно запускать программу сколько угодно раз, исправлять код и пробовать снова.</div><div class="result-label">Результат запуска</div><div class="console" id="console"><div class="console-head">Терминал программы</div><div class="console-output empty" id="consoleOutput">Здесь появится результат работы программы.</div></div></div><div class="actions"><button class="action interactive-run" id="interactiveRunButton">▶ Запустить код</button><button class="action run" id="runButton">✓ Отправить на проверку</button><button class="action hint" id="hintButton" disabled>💡 Подсказка</button><button class="action clear" id="clearButton">Очистить</button></div><div class="status" id="status"></div><div class="task-bottom-panel"><div class="attempt-panel"><div class="attempt-head"><span class="attempt-title">Проверка решения</span><span class="attempt-value" id="progress">Неудачных проверок: 0 / 5</span></div><div class="attempt-bar"><div class="attempt-fill" id="attemptFill"></div></div></div><div class="rating-card" id="ratingCard"><div class="rating-head"><div class="rating-icon">★</div><div><div class="rating-title">Насколько сложной была задача?</div><div class="rating-subtitle">Оценить задачу можно после успешного решения. Выбери от 1 до 5.</div></div></div><div class="rating-stars" id="ratingStars"></div><div class="rating-label" id="ratingLabel">Сначала реши задачу, затем оцени её.</div></div></div><div class="hint-box" id="hintBox"></div><div class="small">Кнопка «Запустить код» проверяет программу на твоих данных. Кнопка «Отправить на проверку» запускает скрытые тесты. Входные данные скрытых проверок ученику не показываются.</div></section></div>
+<section id="teacherDashboardView" class="teacher-dashboard-view" aria-hidden="true">
+  <div class="teacher-dashboard-shell">
+    <div class="teacher-dashboard-overview">
+      <div class="teacher-dashboard-overview-head">
+        <div class="teacher-dashboard-kicker">ПАНЕЛЬ ПРЕПОДАВАТЕЛЯ</div>
+        <h2 class="teacher-dashboard-overview-title">Кабинет преподавателя</h2>
+        <p class="teacher-dashboard-overview-subtitle">Выбери занятие, чтобы посмотреть статистику группы и прогресс учеников.</p>
+      </div>
+      <div id="teacherLessonCards" class="teacher-lesson-grid">
+        <div class="teacher-loading">Загружаем данные из Google Таблицы…</div>
+      </div>
+    </div>
+
+    <div class="teacher-dashboard-detail">
+      <div class="teacher-dashboard-head">
+        <div>
+          <div class="teacher-dashboard-kicker">ПАНЕЛЬ ПРЕПОДАВАТЕЛЯ</div>
+          <h2 class="teacher-dashboard-title" id="teacherDetailTitle">Занятие 5</h2>
+          <p class="teacher-dashboard-subtitle" id="teacherDetailSubtitle">Прогресс учеников по задачам</p>
+        </div>
+        <div class="teacher-dashboard-actions">
+          <button type="button" class="teacher-dashboard-action" id="teacherDashboardBack">← К занятиям</button>
+          <button type="button" class="teacher-dashboard-action primary" id="teacherDashboardRefresh">↻ Обновить данные</button>
+        </div>
+      </div>
+      <div id="teacherDashboardStatus" class="teacher-dashboard-status"></div>
+      <div id="teacherDashboardContent">
+        <div class="teacher-loading">Загружаем данные из Google Таблицы…</div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="studentDashboardView" class="student-dashboard-view" aria-hidden="true">
+  <div class="student-dashboard-shell">
+    <div class="student-dashboard-head">
+      <div>
+        <div class="student-dashboard-kicker">ЛИЧНЫЙ ПРОГРЕСС</div>
+        <h2 class="student-dashboard-title">Кабинет ученика</h2>
+        <p class="student-dashboard-subtitle">Твой прогресс сохраняется в общей системе. На новом компьютере достаточно ввести то же имя.</p>
+      </div>
+      <div class="student-dashboard-actions">
+        <button type="button" class="student-dashboard-action" id="studentDashboardBack">← К задачам</button>
+        <button type="button" class="student-dashboard-action primary" id="studentDashboardRefresh">↻ Обновить прогресс</button>
+      </div>
+    </div>
+
+    <div id="studentDashboardStatus" class="student-dashboard-status"></div>
+
+    <section class="student-profile-card">
+      <div class="student-profile-row">
+        <div>
+          <div class="student-profile-name" id="studentProfileName">Ученик</div>
+          <div class="student-profile-note">Имя используется для поиска твоего прогресса в системе.</div>
+        </div>
+        <div class="student-dashboard-actions">
+          <input id="studentNameInput" class="student-name-input" type="text" maxlength="60" placeholder="Например, Маша">
+          <button type="button" class="student-dashboard-action primary" id="studentNameSave">Сохранить имя</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="student-profile-card">
+      <div class="student-progress-hero">
+        <div>
+          <div class="student-progress-number" id="studentOverallCount">0 / 0</div>
+          <div class="student-progress-label">решённых задач за все занятия</div>
+        </div>
+        <div>
+          <div class="student-progress-track"><div class="student-progress-fill" id="studentOverallFill" style="width:0%"></div></div>
+          <div class="student-progress-percent" id="studentOverallPercent">0%</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="student-profile-card">
+      <h3 style="margin:0;color:#303746">Мои занятия</h3>
+      <div class="student-dashboard-note">Здесь отображается прогресс по каждому маршрутному листу.</div>
+      <div id="studentLessonCards" class="student-lesson-grid">
+        <div class="student-dashboard-empty">Введите имя, чтобы загрузить прогресс.</div>
+      </div>
+    </section>
+  </div>
+</section>
+<section id="quizView" class="quiz-view" aria-hidden="true">
+  <div class="quiz-shell">
+    <div class="quiz-hero"><button class="quiz-back" id="quizBackButton">← Вернуться к задачам</button>
+      <div class="quiz-kicker">ЗАНЯТИЕ 5 · ПОВТОРЕНИЕ</div>
+      <h2>Повторение изученного</h2>
+      <p>10 вопросов по материалам предыдущих занятий. Сначала выбери ответ самостоятельно, затем сразу увидишь результат и объяснение.</p>
+    </div>
+    <div class="quiz-name-card">
+      <div>
+        <div class="quiz-name-title">Как тебя зовут?</div>
+        <div class="quiz-name-subtitle">Имя нужно, чтобы преподаватель мог увидеть результат викторины.</div>
+      </div>
+      <input id="quizStudentName" class="quiz-name-input" type="text" maxlength="60" placeholder="Например, Маша">
+    </div>
+    <div class="quiz-progress-card">
+      <div class="quiz-progress-top"><span id="quizProgressText">Вопрос 1 из 10</span><span id="quizScoreText">0 правильных</span></div>
+      <div class="quiz-progress-track"><div id="quizProgressFill" class="quiz-progress-fill"></div></div>
+    </div>
+    <div id="quizQuestionArea"></div>
+    <div class="quiz-actions">
+      <button id="quizNextButton" class="quiz-next" disabled>Следующий вопрос →</button>
+      <button id="quizFinishButton" class="quiz-finish" hidden>Завершить викторину</button>
+    </div>
+    <div id="quizResult" class="quiz-result" hidden></div>
+    <div class="quiz-teacher-card">
+      <div class="quiz-teacher-head">
+        <div>
+          <div class="quiz-teacher-title">Результаты для преподавателя</div>
+          <div class="quiz-teacher-subtitle">Результаты сохраняются в браузере на этом устройстве.</div>
+        </div>
+        <button id="quizTeacherButton" class="quiz-teacher-button">👩‍🏫 Посмотреть результаты</button>
+      </div>
+      <div id="quizTeacherResults" class="quiz-teacher-results" hidden></div>
+    </div>
+  </div>
+</section>
+</main></div><div class="modal" id="theoryModal"><div class="modal-card"><div class="modal-head"><h3 id="modalTitle">Теория</h3><button class="close" id="closeTheory">×</button></div><div id="modalBody"></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script><script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script><script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script><script>
 const STORAGE_KEY='python_route_sheet_v4';
+
+// Google Apps Script: результаты викторины отправляются в таблицу преподавателя.
+const QUIZ_RESULTS_URL='https://script.google.com/macros/s/AKfycbxkr_vOxmYGG-8X120MGo3m3sNZVUTr8KyCatdBxvnfK5q2XQl2Mb6oyktrVG9MZDEFTg/exec';
+const STUDENT_NAME_KEY='python_student_name_v1';
 const MAX_FAILED_ATTEMPTS=5;
 const lesson2Tasks=[{"id": 1, "title": "Задача 1. Цифры по разрядам", "level": "past", "stars": "", "short": "Выведи каждую цифру пятизначного числа с названием разряда.", "problem": "Дано пятизначное число n = 58321. Выведите каждую цифру на отдельной строке с пояснением: Десятки тысяч, Тысячи, Сотни, Десятки, Единицы.", "examples": "58321 → пять строк с цифрами по разрядам.", "starter": "n = 58321\n\n# Напиши программу\n", "hint": "Для каждой цифры используй // и %. Начни с самой старшей: n // 10000.", "theory": "Чтобы работать с цифрами числа, нужны // и %. Операция // отбрасывает хвост, а % 10 получает последнюю цифру.", "tests": [{"input": [], "expected": "Десятки тысяч: 5\nТысячи: 8\nСотни: 3\nДесятки: 2\nЕдиницы: 1"}]}, {"id": 2, "title": "Задача 2. Сумма цифр", "level": "past", "stars": "", "short": "Найди сумму всех цифр пятизначного числа.", "problem": "Дано пятизначное число n = 58321. Найдите сумму всех его цифр.", "examples": "58321 → 19", "starter": "n = 58321\n\n# Напиши программу\n", "hint": "Сначала достань пять цифр в отдельные переменные, затем сложи их.", "theory": "% 10 берёт последнюю цифру, а // 10 удаляет последнюю цифру. Так можно повторять операцию для всех разрядов.", "tests": [{"input": [], "expected": "19"}]}, {"id": 3, "title": "Задача 3. Произведение цифр", "level": "past", "stars": "", "short": "Найди произведение цифр четырёхзначного числа.", "problem": "Дано четырёхзначное число n = 1234. Найдите произведение всех его цифр.", "examples": "1234 → 24", "starter": "n = 1234\n\n# Напиши программу\n", "hint": "Достань четыре цифры и перемножь их. Не превращай число в строку.", "theory": "Для извлечения цифр используй математический способ: // и %. Затем умножь полученные значения.", "tests": [{"input": [], "expected": "24"}]}, {"id": 4, "title": "Задача 4. Перевернуть число", "level": "pro", "stars": "⭐", "short": "Выведи четырёхзначное число в обратном порядке.", "problem": "Дано четырёхзначное число. Выведите его наоборот.", "examples": "1234 → 4321", "starter": "n = int(input())\n\n# Напиши программу\n", "hint": "Получай цифры справа налево и собери новое число из этих разрядов.", "theory": "% 10 позволяет получить последнюю цифру. // 10 позволяет убрать последнюю цифру.", "tests": [{"input": ["1234"], "expected": "4321"}, {"input": ["5601"], "expected": "1065"}]}, {"id": 5, "title": "Задача 5. Первая + средняя + последняя", "level": "pro", "stars": "⭐", "short": "Сложи первую, среднюю и последнюю цифры пятизначного числа.", "problem": "Дано пятизначное число. Выведите сумму первой, средней и последней цифр.", "examples": "58321 → 5 + 3 + 1 = 9", "starter": "n = int(input())\n\n# Напиши программу\n", "hint": "Первая цифра получается через // 10000, средняя — через (n // 100) % 10, последняя — через % 10.", "theory": "Для числа 58321: сотни — (n // 100) % 10, единицы — n % 10.", "tests": [{"input": ["58321"], "expected": "9"}, {"input": ["12345"], "expected": "9"}]}, {"id": 6, "title": "Задача 6. Поменять местами крайние цифры", "level": "boss", "stars": "⭐⭐", "short": "Поменяй первую и последнюю цифры четырёхзначного числа.", "problem": "Дано четырёхзначное число. Поменяйте местами первую и последнюю цифры.", "examples": "1234 → 4231", "starter": "n = int(input())\n\n# Напиши программу\n", "hint": "Отдельно достань первую и последнюю цифры и собери новое четырёхзначное число.", "theory": "Сотни и десятки можно оставить на своих местах. Меняются только тысячи и единицы.", "tests": [{"input": ["1234"], "expected": "4231"}, {"input": ["5832"], "expected": "2835"}]}, {"id": 7, "title": "Задача 7. Что напечатает программа?", "level": "past", "stars": "", "short": "Не запускай программу: определи значения a, b, c и d и весь вывод.", "problem": "n = 58321\na = n // 10\nb = a % 10\nc = n // 1000\nd = c % 10\n\nprint(a)\nprint(b)\nprint(c)\nprint(d)", "examples": "Не запускай программу. Самостоятельно определи, что будет напечатано.", "starter": "# Запиши свой ответ в комментариях.\n\n", "hint": "Разбери операции по одной строке. // 10 убирает последнюю цифру.", "theory": "Главное правило: // отбрасывает дробную часть и, для положительных целых, убирает разряд справа при делении на 10.", "tests": [{"input": [], "expected": "5832\n2\n58\n8"}]}, {"id": 8, "title": "Задача 8. Что напечатает программа?", "level": "past", "stars": "", "short": "Определи результаты печати для второго фрагмента кода.", "problem": "n = 47263\na = n % 100\nb = n // 100\nc = b % 10\n\nprint(a)\nprint(b)\nprint(c)", "examples": "Не запускай программу. Самостоятельно определи все три строки вывода.", "starter": "# Запиши свой ответ в комментариях.\n\n", "hint": "% 100 оставляет последние две цифры. Затем // 100 убирает две последние.", "theory": "% возвращает остаток. Для 47263 % 100 получаем 63.", "tests": [{"input": [], "expected": "63\n472\n7"}]}, {"id": 9, "title": "Задача 9. Определение типа", "level": "past", "stars": "", "short": "Определи тип каждой переменной без запуска программы.", "problem": "Определи тип (int, float или str) каждой переменной: a = 15, b = 15.0, c = \"15\", d = \"Python\", e = 3.14.", "examples": "a — int; b — float; c и d — str; e — float.", "starter": "# Здесь программа не нужна. Запиши ответ комментариями.\n", "hint": "Смотри на наличие кавычек и точки. Целое число без кавычек — int.", "theory": "Три главных типа из теории: int — целые числа, float — дробные числа, str — текст в кавычках.", "tests": [{"input": [], "expected": "a = int\nb = float\nc = str\nd = str\ne = float"}]}, {"id": 10, "title": "Задача 10. Секреты сложения", "level": "past", "stars": "", "short": "Объясни и покажи результаты двух вариантов сложения.", "problem": "Вариант А: a = \"10\", b = \"20\", print(a + b).\nВариант Б: a = \"10\", b = 20, print(a + b).\nОпредели результат каждого фрагмента.", "examples": "Не запускай программу. Самостоятельно определи результат каждого варианта и объясни причину.", "starter": "# Запиши свой ответ в комментариях.\n\n", "hint": "Строки складываются как текст, но строку и число напрямую складывать нельзя.", "theory": "Оператор + для str выполняет склеивание. Для вычислений строку нужно преобразовать в int или float.", "tests": [{"input": [], "expected": "1020"}]}, {"id": 11, "title": "Задача 11. Исправь ошибку", "level": "past", "stars": "", "short": "Исправь TypeError в программе про возраст.", "problem": "Программист написал:\nage = \"12\"\nprint(\"Через год тебе будет\", age + 1)\nИсправь программу так, чтобы она выводила правильный возраст.", "examples": "Через год тебе будет 13", "starter": "age = \"12\"  # age — возраст\n\n# Исправь код ниже\n", "hint": "age хранит текст. Перед сложением преобразуй его в целое число с помощью int().", "theory": "input() возвращает str. int(...) превращает текстовое число в целое число.", "tests": [{"input": [], "expected": "Через год тебе будет 13"}]}, {"id": 12, "title": "Задача 12. Сумма двух чисел от пользователя", "level": "pro", "stars": "⭐", "short": "Считай два целых числа и выведи их сумму.", "problem": "Пусть пользователь вводит два целых числа, каждое с новой строки. Сложи их и выведи результат.", "examples": "7 и 5 → 12", "starter": "a = int(input())\nb = int(input())\n\n# Напиши программу\n", "hint": "Оба значения нужны как int, иначе + склеит строки.", "theory": "input() возвращает текст. Для математического сложения используй int(input()).", "tests": [{"input": ["7", "5"], "expected": "12"}, {"input": ["-2", "8"], "expected": "6"}]}, {"id": 13, "title": "Задача 13. Личное знакомство", "level": "pro", "stars": "⭐", "short": "Поприветствуй пользователя и посчитай возраст через год.", "problem": "Попроси пользователя ввести имя и текущий возраст. Выведи приветствие и посчитай, сколько ему исполнится через год.", "examples": "Иван, 12 → Привет, Иван! Через год тебе будет 13 лет.", "starter": "name = input()  # name — имя\nage = int(input())  # age — возраст\n\n# Напиши программу\n", "hint": "Имя оставь строкой, возраст преобразуй в int. В выводе используй две части текста.", "theory": "str хранит имя, int — возраст. Для вывода можно передать несколько аргументов в print().", "tests": [{"input": ["Иван", "12"], "expected": "Привет, Иван! Через год тебе будет 13 лет."}]}, {"id": 14, "title": "Задача 14. Калькулятор покупки", "level": "pro", "stars": "⭐", "short": "Создай чек: товар, цена, количество и итог.", "problem": "Пользователь вводит название товара, цену одного товара и количество. Выведи название, введённые данные и итоговую стоимость (цена × количество).", "examples": "Книга, 12, 4 → итог 48", "starter": "name = input()  # name — имя\nprice = int(input())  # price — цена\ncount = int(input())  # count — количество\n\n# Напиши чек\n", "hint": "Название — str, цена и количество — int. Итог — price * count.", "theory": "Типы данных выбираются по смыслу: текст — str, целые значения — int.", "tests": [{"input": ["Книга", "12", "4"], "expected": "Товар: Книга\nЦена: 12\nКоличество: 4\nИтого: 48"}]}, {"id": 15, "title": "Задача 15. Магический таймер", "level": "pro", "stars": "⭐", "short": "Переведи секунды в часы, минуты и секунды.", "problem": "Пользователь вводит общее количество секунд. Переведи их в часы, минуты и оставшиеся секунды.", "examples": "3672 → Часы: 1, Минуты: 1, Секунды: 12", "starter": "total = int(input())  # total — всего / общее количество\n\n# Напиши программу\n", "hint": "Сначала часы через // 3600. Остаток получи через % 3600. Затем минуты // 60 и секунды % 60.", "theory": "В одном часе 3600 секунд. // получает целое количество часов, % оставляет остаток.", "tests": [{"input": ["3672"], "expected": "Часы: 1\nМинуты: 1\nСекунды: 12"}, {"input": ["3600"], "expected": "Часы: 1\nМинуты: 0\nСекунды: 0"}]}, {"id": 16, "title": "Задача 16. Разделение шестизначного номера", "level": "boss", "stars": "⭐⭐", "short": "Раздели шестизначный номер на две трёхзначные части и сложи их.", "problem": "Пользователь вводит шестизначный номер. Раздели его на две равные части по 3 цифры и найди сумму этих чисел.", "examples": "123456 → 123 + 456 = 579", "starter": "n = int(input())\n\n# Напиши программу\n", "hint": "Первая часть: n // 1000. Вторая часть: n % 1000.", "theory": "// 1000 убирает последние три цифры, а % 1000 оставляет последние три.", "tests": [{"input": ["123456"], "expected": "579"}, {"input": ["583219"], "expected": "1162"}]}, {"id": 17, "title": "Задача 17. Средняя цифра", "level": "boss", "stars": "⭐⭐", "short": "Выведи первую, среднюю и последнюю цифры пятизначного числа.", "problem": "Вводится пятизначное число. Выведите:\nПервая цифра: ...\nСредняя цифра: ...\nПоследняя цифра: ...", "examples": "58321 → 5, 3, 1", "starter": "n = int(input())\n\n# Напиши программу\n", "hint": "Первая — n // 10000. Средняя — (n // 100) % 10. Последняя — n % 10.", "theory": "Комбинация // и % позволяет достать любой нужный разряд.", "tests": [{"input": ["58321"], "expected": "Первая цифра: 5\nСредняя цифра: 3\nПоследняя цифра: 1"}]}, {"id": 18, "title": "Задача 18. Большой разворот", "level": "boss", "stars": "⭐⭐", "short": "Выведи пятизначное число полностью наоборот.", "problem": "Вводится пятизначное число. Собери и выведи число, записанное в абсолютно обратном порядке.", "examples": "58321 → 12385", "starter": "n = int(input())\n\n# Напиши программу\n", "hint": "Достань пять цифр и собери новое число в обратном порядке.", "theory": "Разряды собираются умножением на 10 и сложением либо через явное выделение каждой цифры.", "tests": [{"input": ["58321"], "expected": "12385"}, {"input": ["12345"], "expected": "54321"}]}, {"id": 19, "title": "Задача 19. Номер билета", "level": "boss", "stars": "⭐⭐", "short": "Раздели шестизначный номер на две части и выведи пять результатов.", "problem": "Шестизначный номер состоит из двух трёхзначных частей. Выведи:\nпервую часть; вторую часть; сумму; разность; произведение частей.", "examples": "123456 → сумма 579, разность -333, произведение 56088", "starter": "n = int(input())\n\n# Напиши программу\n", "hint": "Первая часть — n // 1000, вторая — n % 1000. Затем используй +, - и *.", "theory": "Для целых чисел // и % позволяют разделить номер на две части без строк.", "tests": [{"input": ["123456"], "expected": "Первая часть: 123\nВторая часть: 456\nСумма: 579\nРазность: -333\nПроизведение: 56088"}]}, {"id": 20, "title": "Задача 20. Покупка с дробной ценой", "level": "hard", "stars": "⭐⭐⭐", "short": "Рассчитай заказ с дробной ценой и доставкой.", "problem": "Пользователь вводит название товара, цену одного товара, количество и стоимость доставки. Рассчитай стоимость товаров, добавь доставку и выведи аккуратный отчёт.", "examples": "Книга, 12.5, 4, 3.5 → товары 50.0, доставка 3.5, итого 53.5", "starter": "name = input()  # name — имя\nprice = float(input())  # price — цена\ncount = int(input())  # count — количество\ndelivery = float(input())  # delivery — доставка\n\n# Напиши отчёт\n", "hint": "Для цены и доставки используй float. Стоимость товаров = price * count.", "theory": "float нужен для дробных чисел. Например, 12.5 — это float. Результат умножения можно выводить обычным print().", "tests": [{"input": ["Книга", "12.5", "4", "3.5"], "expected": "Товар: Книга\nТовары: 50.0\nДоставка: 3.5\nИтого: 53.5"}]}];
 const lesson3Tasks=[{"id": 1, "title": "Задача 1. Больше/Меньше", "level": "past", "stars": "", "short": "Сравни два числа и выведи True или False.", "problem": "Запроси два числа и выведи True, если первое число больше второго, иначе False.", "examples": "8 и 3 → True", "starter": "a = float(input())\nb = float(input())\n\n# Напиши программу\n", "hint": "Здесь можно сразу вывести результат сравнения a > b.", "theory": "Сравнение a > b само по себе даёт значение типа boolean: True или False.", "tests": [{"input": ["8", "3"], "expected": "True"}, {"input": ["2", "7"], "expected": "False"}]}, {"id": 2, "title": "Задача 2. Вывод 1 или 0", "level": "past", "stars": "", "short": "Выведи 1, если первое число больше второго, иначе 0.", "problem": "Запроси два числа. Если первое больше второго, выведи 1, иначе 0.", "examples": "8 и 3 → 1", "starter": "a = float(input())\nb = float(input())\n\n# Напиши if/else\n", "hint": "Условие a > b. В if печатай 1, в else — 0.", "theory": "if/else выбирает одну из двух веток в зависимости от значения boolean-условия.", "tests": [{"input": ["8", "3"], "expected": "1"}, {"input": ["2", "7"], "expected": "0"}]}, {"id": 3, "title": "Задача 3. Сравнение чисел", "level": "past", "stars": "", "short": "Определи, какое из двух чисел больше или равны ли они.", "problem": "Запроси два числа. Выведи: «Первое больше», «Второе больше» или «Числа равны».", "examples": "5 и 8 → Второе больше", "starter": "a = float(input())\nb = float(input())\n\n# Напиши программу\n", "hint": "Нужны три случая: a > b, b > a и иначе — равенство.", "theory": "elif позволяет проверить следующий вариант, если предыдущий if оказался ложным.", "tests": [{"input": ["5", "8"], "expected": "Второе больше"}, {"input": ["8", "5"], "expected": "Первое больше"}, {"input": ["5", "5"], "expected": "Числа равны"}]}, {"id": 4, "title": "Задача 4. Наименьшее из двух", "level": "past", "stars": "", "short": "Выведи меньшее из двух чисел.", "problem": "Определи наименьшее из двух чисел. Например, 8 и 11 → 8.", "examples": "8 и 11 → 8", "starter": "a = float(input())\nb = float(input())\n\n# Напиши программу\n", "hint": "Если a < b, печатай a, иначе b.", "theory": "Сравнение < возвращает boolean, который можно использовать прямо в if.", "tests": [{"input": ["8", "11"], "expected": "8"}, {"input": ["11", "8"], "expected": "8"}]}, {"id": 5, "title": "Задача 5. Проверка пароля", "level": "past", "stars": "", "short": "Сравни пароль и его подтверждение.", "problem": "Пользователь вводит пароль дважды. Если они совпадают, выведи «Пароль принят», иначе — «Пароль не принят».", "examples": "qwerty / qwerty → Пароль принят", "starter": "pass1 = input()\npass2 = input()\n\n# Напиши программу\n", "hint": "Сравни строки оператором ==.", "theory": "Для строк оператор == проверяет совпадение текста. Регистр имеет значение: qwerty и Qwerty — разные строки.", "tests": [{"input": ["qwerty", "qwerty"], "expected": "Пароль принят"}, {"input": ["qwerty", "Qwerty"], "expected": "Пароль не принят"}]}, {"id": 6, "title": "Задача 6. Соотношение цифр", "level": "pro", "stars": "⭐", "short": "Проверь математическое условие для четырёхзначного числа.", "problem": "Проверь, что сумма первой и последней цифр равна разности второй и третьей. Выведи «ДА» или «НЕТ». Решай строго математическим извлечением цифр, без строк.", "examples": "1614 → ДА; 1234 → НЕТ", "starter": "num = int(input())\n\n# Достань четыре цифры математически\n", "hint": "Первая цифра — // 1000, последняя — % 10. Для второй и третьей используй // и %.", "theory": "% 10 достаёт последнюю цифру, // отбрасывает цифры справа. Условие сравнения — обычный ==.", "tests": [{"input": ["1614"], "expected": "ДА"}, {"input": ["1234"], "expected": "НЕТ"}]}, {"id": 7, "title": "Задача 7. Наименьшее из четырёх чисел", "level": "pro", "stars": "⭐", "short": "Найди минимум среди четырёх чисел.", "problem": "Запроси четыре числа и определи наименьшее.", "examples": "1, 2, 3, 4 → 1", "starter": "a = float(input())\nb = float(input())\nc = float(input())\nd = float(input())\n\n# Напиши программу\n", "hint": "Можно хранить текущий минимум в a и последовательно сравнивать его с b, c и d.", "theory": "Несколько if подряд позволяют постепенно обновлять переменную с текущим минимумом.", "tests": [{"input": ["1", "2", "3", "4"], "expected": "1"}, {"input": ["9", "2", "7", "5"], "expected": "2"}]}, {"id": 8, "title": "Задача 8. Сумма только положительных", "level": "pro", "stars": "⭐", "short": "Сложи только положительные из трёх чисел.", "problem": "Считай три числа и подсчитай сумму только положительных.", "examples": "4, -22, 1 → 5", "starter": "a = float(input())\nb = float(input())\nc = float(input())\ntotal_sum = 0\n\n# Напиши программу\n", "hint": "Для каждого числа отдельно проверь условие > 0 и при успехе добавь его к total_sum.", "theory": "Оператор += сокращает запись total_sum = total_sum + a. Несколько независимых if подходят лучше, чем elif.", "tests": [{"input": ["4", "-22", "1"], "expected": "5"}, {"input": ["-1", "-2", "3"], "expected": "3"}]}, {"id": 9, "title": "Задача 9. Огненная гора", "level": "pro", "stars": "⭐", "short": "Проверь возраст и рост для допуска на аттракцион.", "problem": "Ребёнок может пройти на «Огненную гору», если ему больше 13 лет И его рост больше 180 см. Выведи «может» или «не может».", "examples": "14 лет и 181 см → может", "starter": "age = int(input())  # age — возраст\nheight = int(input())\n\n# Напиши условие\n", "hint": "Оба требования обязательны одновременно. Используй and.", "theory": "and означает: истинными должны быть оба условия одновременно.", "tests": [{"input": ["14", "181"], "expected": "может"}, {"input": ["14", "180"], "expected": "не может"}, {"input": ["13", "181"], "expected": "не может"}]}, {"id": 10, "title": "Задача 10. Есть ли положительное", "level": "pro", "stars": "⭐", "short": "Проверь, есть ли среди трёх чисел хотя бы одно положительное.", "problem": "Запроси три числа. Если хотя бы одно положительное, выведи «Есть положительное число!». Если все отрицательные — «Все числа отрицательные».", "examples": "4, -2, -5 → Есть положительное число!", "starter": "a = float(input())\nb = float(input())\nc = float(input())\n\n# Напиши условие\n", "hint": "Здесь достаточно, чтобы истинным было хотя бы одно из трёх сравнений. Используй or.", "theory": "or означает «хотя бы одно». Если a > 0 or b > 0 or c > 0 — условие истинно.", "tests": [{"input": ["4", "-2", "-5"], "expected": "Есть положительное число!"}, {"input": ["-1", "-2", "-5"], "expected": "Все числа отрицательные"}]}, {"id": 11, "title": "Задача 11. Запрещённый символ", "level": "pro", "stars": "⭐", "short": "Проверь имя и фамилию на символ %.", "problem": "Спроси имя и фамилию. Ни в имени, ни в фамилии не должно содержаться символа %. Если символ найден — регистрация отклонена, иначе регистрация успешна.", "examples": "Иван / Петров → Регистрация успешна", "starter": "name = input()  # name — имя\nsurname = input()  # surname — фамилия\n\n# Напиши проверку\n", "hint": "Проверь наличие % в обеих строках. Если он есть хотя бы в одной — регистрация отклонена.", "theory": "Оператор in проверяет, содержится ли символ или строка внутри другой строки. or объединяет две проверки.", "tests": [{"input": ["Иван", "Петров"], "expected": "Регистрация успешна"}, {"input": ["И%ан", "Петров"], "expected": "Регистрация отклонена: найден запрещенный символ %"}, {"input": ["Иван", "П%етров"], "expected": "Регистрация отклонена: найден запрещенный символ %"}]}, {"id": 12, "title": "Задача 12. Возрастные группы", "level": "pro", "stars": "⭐", "short": "Определи возрастную группу по возрасту.", "problem": "До 13 включительно — детство. 14–24 — молодость. 25–59 — зрелость. 60 и старше — старость.", "examples": "13 → детство; 24 → молодость; 60 → старость", "starter": "age = int(input())  # age — возраст\n\n# Напиши программу\n", "hint": "Расположи проверки по возрастанию границ: <=13, затем 14–24, затем 25–59, иначе старость.", "theory": "elif позволяет последовательно разделить диапазон на несколько взаимоисключающих случаев.", "tests": [{"input": ["13"], "expected": "детство"}, {"input": ["24"], "expected": "молодость"}, {"input": ["25"], "expected": "зрелость"}, {"input": ["60"], "expected": "старость"}]}, {"id": 13, "title": "Задача 13. Счастливый билет", "level": "boss", "stars": "⭐⭐", "short": "Проверь, равны ли суммы первых и последних трёх цифр шестизначного билета.", "problem": "Вводится шестизначное число. Если сумма первых трёх цифр равна сумме последних трёх — выведи «СЧАСТЛИВЫЙ!», иначе «В следующий раз повезет..». Нельзя использовать строки и списки.", "examples": "123321 → СЧАСТЛИВЫЙ!", "starter": "ticket = int(input())  # ticket — билет\n\n# Извлеки шесть цифр через // и %\n", "hint": "Достань шесть цифр математически. Затем сравни сумму d1+d2+d3 с d4+d5+d6.", "theory": "Для цифр: // отсекает хвост, % 10 берёт последнюю цифру. Это позволяет решить задачу без строк.", "tests": [{"input": ["123321"], "expected": "СЧАСТЛИВЫЙ!"}, {"input": ["123456"], "expected": "В следующий раз повезет.."}]}, {"id": 14, "title": "Задача 14. Робот Ведроид", "level": "boss", "stars": "⭐⭐", "short": "Проверь, сможет ли робот донести заданный объём воды на этаж.", "problem": "Режимы: 5 литров — до 53 этажа; 2 литра — до 99; 1 литр — до 100. Другие объёмы невозможны. Выведи «сможет!» или «не сможет».", "examples": "53 / 5 → сможет!; 54 / 5 → не сможет", "starter": "floor = int(input())  # floor — этаж\nwater = int(input())  # water — вода\n\n# Напиши условие\n", "hint": "Три допустимые комбинации. Соедини их через or, а внутри каждой пары используй and.", "theory": "Сложные условия строятся из and и or: and связывает обязательные требования одной ситуации, or — разные допустимые ситуации.", "tests": [{"input": ["53", "5"], "expected": "сможет!"}, {"input": ["54", "5"], "expected": "не сможет"}, {"input": ["99", "2"], "expected": "сможет!"}, {"input": ["100", "1"], "expected": "сможет!"}, {"input": ["100", "2"], "expected": "не сможет"}]}, {"id": 15, "title": "Задача 15. Неравенство треугольника", "level": "boss", "stars": "⭐⭐", "short": "Определи, существует ли невырожденный треугольник.", "problem": "На вход подаются три положительных целых числа. Выведи YES, если выполняются одновременно: a+b>c, a+c>b, b+c>a. Иначе NO.", "examples": "3 4 5 → YES; 1 2 3 → NO", "starter": "a = int(input())\nb = int(input())\nc = int(input())\n\n# Напиши три неравенства\n", "hint": "Все три неравенства обязательны, поэтому используй and.", "theory": "and требует истинности каждого условия. Если хотя бы одно неравенство нарушено, весь результат False.", "tests": [{"input": ["3", "4", "5"], "expected": "YES"}, {"input": ["1", "2", "3"], "expected": "NO"}, {"input": ["5", "5", "5"], "expected": "YES"}]}, {"id": 16, "title": "Задача 16. Високосный год", "level": "boss", "stars": "⭐⭐", "short": "Определи, является ли год високосным.", "problem": "Год високосный, если делится на 4, но не делится на 100, или если делится на 400. Выведи YES/NO.", "examples": "2024 → YES; 1900 → NO; 2000 → YES", "starter": "year = int(input())  # year — год\n\n# Напиши условие\n", "hint": "Соедини (делится на 4 и не делится на 100) с проверкой деления на 400 через or.", "theory": "and объединяет два обязательных условия, or — два возможных способа получить True. Оператор % проверяет остаток.", "tests": [{"input": ["2024"], "expected": "YES"}, {"input": ["1900"], "expected": "NO"}, {"input": ["2000"], "expected": "YES"}]}, {"id": 17, "title": "Задача 17. Неравенство треугольника", "level": "hard", "stars": "⭐⭐⭐", "short": "Проверь, оканчивается ли год на два нуля.", "problem": "Определите, оканчивается ли год с данным номером на два нуля. Если оканчивается — YES, иначе NO.", "examples": "2000 → YES; 1999 → NO", "starter": "year = int(input())  # year — год\n\n# Напиши программу\n", "hint": "Число оканчивается на два нуля, если оно делится на 100 без остатка.", "theory": "% 100 == 0 означает, что остаток при делении на 100 равен нулю.", "tests": [{"input": ["2000"], "expected": "YES"}, {"input": ["1999"], "expected": "NO"}, {"input": ["100"], "expected": "YES"}]}, {"id": 18, "title": "Задача 18. Женская футбольная команда", "level": "hard", "stars": "⭐⭐⭐", "short": "Проверь возраст и пол кандидата.", "problem": "Команда набирает девочек от 10 до 15 лет включительно. Пол обозначается m или f. Подходящий кандидат: возраст 10–15 и пол f. Выведи YES/NO.", "examples": "12 / f → YES; 16 / f → NO", "starter": "age = int(input())  # age — возраст\ngender = input()  # gender — пол\n\n# Напиши условие\n", "hint": "Возраст должен одновременно попадать в диапазон, а gender должен быть равен \"f\". Используй and.", "theory": "Составные условия позволяют одновременно проверять диапазон и строковое значение.", "tests": [{"input": ["12", "f"], "expected": "YES"}, {"input": ["16", "f"], "expected": "NO"}, {"input": ["12", "m"], "expected": "NO"}]}, {"id": 19, "title": "Задача 19. Принадлежность числа", "level": "hard", "stars": "⭐⭐⭐", "short": "Проверь принадлежность числа одному из двух промежутков.", "problem": "Определи, принадлежит ли x промежуткам: (-30; -2] или (7; 25]. Выведи YES/NO.", "examples": "-30 → NO; -2 → YES; 8 → YES; 25 → YES", "starter": "x = int(input())\n\n# Напиши условие\n", "hint": "У первого промежутка -30 не входит, -2 входит. У второго 7 не входит, 25 входит.", "theory": "Цепочки сравнений Python позволяют писать, например, -30 < x <= -2. Два промежутка соединяются через or.", "tests": [{"input": ["-30"], "expected": "NO"}, {"input": ["-2"], "expected": "YES"}, {"input": ["7"], "expected": "NO"}, {"input": ["8"], "expected": "YES"}, {"input": ["25"], "expected": "YES"}]}, {"id": 20, "title": "Задача 20. Ладья", "level": "hard", "stars": "⭐⭐⭐", "short": "Определи, может ли ладья попасть с одной клетки на другую одним ходом.", "problem": "Даны две различные клетки шахматной доски. На вход четыре числа 1–8: x1, y1, x2, y2. Выведи YES, если ладья может попасть из первой клетки во вторую одним ходом, иначе NO.", "examples": "4 4 5 4 → YES; 4 4 5 5 → NO; 4 4 4 5 → YES", "starter": "x1 = int(input())\ny1 = int(input())\nx2 = int(input())\ny2 = int(input())\n\n# Напиши условие\n", "hint": "Ладья ходит по горизонтали или вертикали. Значит, либо x1 == x2, либо y1 == y2.", "theory": "Оператор or нужен, потому что достаточно совпадения одной координаты. Диагональ меняет обе координаты и поэтому не подходит.", "tests": [{"input": ["4", "4", "5", "4"], "expected": "YES"}, {"input": ["4", "4", "5", "5"], "expected": "NO"}, {"input": ["4", "4", "4", "5"], "expected": "YES"}]}];
@@ -537,6 +879,24 @@ const lesson4Theory={
 16:'Сначала вычисли число 0–6 по формуле, затем переведи его в название дня через if/elif.',
 17:'random.randint() создаёт случайный номер. После выпадения нужно согласованно определить цвет, чётность и диапазон.'
 };
+
+const lesson5Tasks=[
+{id:1,title:"Задача 1. Гонка спидстеров",level:"past",stars:"",short:"Определи, кто быстрее: Зум или Флэш.",problem:`Зум бросил вызов Флэшу и предложил ему честный поединок в виде гонки вокруг магнетара. В случае проигрыша эта нейтронная звезда зарядится и уничтожит мир. Поэтому Флэш решил не рисковать без причины и узнать у своего друга Циско Рамона, есть ли смысл принимать вызов. Циско получил данные, что скорость Зума равна n, а скорость Флэша равна k.\n\nНапишите программу, которая должна вывести ответ Циско на вопрос Флэша.\n\nФормат входных данных\nНа вход программе подаются два целых числа n и k — скорости Зума и Флэша.\n\nФормат выходных данных\nЕсли Зум быстрее Флэша, нужно вывести «NO» (без кавычек), а если Флэш быстрее Зума, нужно вывести «YES» (без кавычек). В случае же если скорости равны, нужно вывести «Don't know» (без кавычек).`,examples:"2204\\n1505 → NO\\n\\n2344\\n4324 → YES\\n\\n2500\\n2500 → Don't know",starter:`n = int(input())  # n — скорость Зума\nk = int(input())  # k — скорость Флэша\n\n# Напиши программу\n`,hint:"Сравни две скорости. Здесь возможны ровно три случая: n меньше k, n больше k или они равны.",theory:"Нужно проверить три варианта. Для этого удобно использовать if, elif и else.",tests:[{input:["2204","1505"],expected:"NO"},{input:["2344","4324"],expected:"YES"},{input:["2500","2500"],expected:"Don't know"}]},
+{id:2,title:"Задача 2. Церемония взвешивания",level:"past",stars:"",short:"Определи весовую категорию боксёра.",problem:`Известен вес боксёра-любителя (целое число). Известно, что вес таков, что боксёр может быть отнесён к одной из трёх весовых категорий:\n\n1. Легкий вес — до 60 кг (невключительно);\n2. Первый полусредний вес — до 64 кг (невключительно);\n3. Полусредний вес — до 69 кг (невключительно).\n\nНапишите программу, определяющую, в какой категории будет выступать данный боксёр.\n\nФормат входных данных\nНа вход программе подаётся одно целое число.\n\nФормат выходных данных\nПрограмма должна вывести текст — название весовой категории.`,examples:"55 → Легкий вес\\n68 → Полусредний вес\\n60 → Первый полусредний вес",starter:`m = int(input())  # m — вес боксёра\n\n# Напиши программу\n`,hint:"Границы категорий идут сверху вниз: сначала проверь m < 60, затем m < 64, затем m < 69.",theory:"Каскад elif удобен, когда одно число попадает ровно в один из нескольких диапазонов.",tests:[{input:["55"],expected:"Легкий вес"},{input:["68"],expected:"Полусредний вес"},{input:["60"],expected:"Первый полусредний вес"}]},
+{id:3,title:"Задача 3. Вид треугольника",level:"past",stars:"",short:"Классифицируй треугольник по длинам сторон.",problem:`Напишите программу которая классифицирует треугольник на основе длины его сторон. Программа должна принимать три числа, каждое из которых представляет собой длину одной из его сторон. В результате программа должна определить, является ли треугольник равносторонним, равнобедренным или разносторонним.\n\nФормат входных данных\nНа вход программе подаются три числа (каждое на отдельной строке) — длины сторон существующего треугольника.\n\nФормат выходных данных\nПрограмма должна вывести на экран текст — тип треугольника («Равносторонний», «Равнобедренный» или «Разносторонний») (без кавычек).`,examples:"145\\n145\\n139 → Равнобедренный\\n\\n59\\n59\\n59 → Равносторонний\\n\\n890\\n199\\n700 → Разносторонний",starter:`a = int(input())  # a — первая сторона\nb = int(input())  # b — вторая сторона\nc = int(input())  # c — третья сторона\n\n# Напиши программу\n`,hint:"Сначала проверь самый строгий случай: все три стороны равны. Затем достаточно проверить, совпадает ли хотя бы одна пара.",theory:"Для нескольких вариантов результата удобно использовать if / elif / else и сравнения.",tests:[{input:["145","145","139"],expected:"Равнобедренный"},{input:["59","59","59"],expected:"Равносторонний"},{input:["890","199","700"],expected:"Разносторонний"}]},
+{id:4,title:"Задача 4. Цветовой микшер",level:"past",stars:"",short:"Определи цвет, который получится при смешивании двух основных цветов.",problem:`Красный, синий и желтый называются основными цветами, потому что их нельзя получить путем смешения других цветов. При смешивании двух основных цветов получается вторичный цвет.\n\n• если смешать красный и синий, то получится фиолетовый;\n• если смешать красный и желтый, то получится оранжевый;\n• если смешать синий и желтый, то получится зеленый.\n\nНапишите программу, которая считывает названия двух основных цветов для смешивания. Если пользователь вводит что-нибудь кроме названий «красный», «синий» или «желтый», то программа должна вывести сообщение об ошибке. В противном случае программа должна вывести название вторичного цвета, который получится в результате.\n\nФормат входных данных\nНа вход программе подаются две строки, каждая на отдельной строке.\n\nФормат выходных данных\nПрограмма должна вывести полученный цвет смешения либо сообщение «ошибка цвета» (без кавычек), если введён был не цвет.\n\nПримечание 1. Если смешать красный и красный, то получится красный и т.д.\n\nПримечание 2. Поиграйтесь с настоящим цветовым микшером.`,examples:"красный\\nсиний → фиолетовый\\n\\nкрасный\\nблабла → ошибка цвета",starter:`a = input()  # a — первый цвет\nb = input()  # b — второй цвет\n\n# Напиши программу\n`,hint:"Для двух разных основных цветов получаются три комбинации. Отдельно обработай случай, когда цвета одинаковые, и неверный ввод.",theory:"Здесь особенно полезны and и or: несколько вариантов можно объединить в одно условие.",tests:[{input:["красный","синий"],expected:"фиолетовый"},{input:["красный","блабла"],expected:"ошибка цвета"},{input:["желтый","желтый"],expected:"желтый"}]},
+{id:5,title:"Задача 5. Самописный калькулятор",level:"pro",stars:"⭐",short:"Создай калькулятор с четырьмя операциями и защитой от деления на ноль.",problem:`Напишите программу которая считывает с клавиатуры два целых числа и строку. Если эта строка является обозначением одной из четырёх математических операций (+, -, *, /), то выведите результат применения этой операции к введённым ранее числам, в противном случае выведите «Неверная операция» (без кавычек). Если пользователь захочет поделить на ноль выведите текст «На ноль делить нельзя» (без кавычек).\n\nФормат входных данных\nНа вход программе подаются два целых числа и строка, все на отдельной строке.\n\nФормат выходных данных\nПрограмма должна вывести результат применения операции к введённым числам или соответствующий текст, если операция неверная либо если происходит деление на ноль.`,examples:"6104\\n0\\n/ → На ноль делить нельзя!\\n\\n25\\n5\\n* → 125\\n\\n89\\n80\\n/ → 9",starter:`a = int(input())  # a — первое число\nb = int(input())  # b — второе число\ns = input()  # s — операция\n\n# Напиши программу\n`,hint:"Сначала проверь, какая операция записана в s. Для деления отдельно проверь b == 0.",theory:"Каскад if / elif позволяет выбрать операцию. Внутри ветки деления можно сделать ещё одну проверку.",tests:[{input:["6104","0","/"],expected:"На ноль делить нельзя!"},{input:["25","5","*"],expected:"125"},{input:["89","80","/"],expected:"9"},{input:["567","433","+"],expected:"1000"}]},
+{id:6,title:"Задача 6. Серединное число",level:"pro",stars:"⭐",short:"Найди среднее по величине из трёх различных чисел.",problem:`Даны три различных целых числа. Напишите программу, которая находит серединное значение из этих чисел.\n\nФормат входных данных\nНа вход программе подаются три различных целых числа, каждое на отдельной строке.\n\nФормат выходных данных\nПрограмма должна вывести серединное значение из набора трёх чисел.\n\nПримечание. Серединное значение набора чисел — это число, которое находится в середине этого набора, если его упорядочить по возрастанию.`,examples:"1\\n2\\n3 → 2\\n\\n10\\n30\\n20 → 20",starter:`a = int(input())  # a — первое число\nb = int(input())  # b — второе число\nc = int(input())  # c — третье число\n\n# Напиши программу\n`,hint:"Для каждого числа подумай: находится ли оно между двумя другими? Используй сравнения и and / or.",theory:"Серединное число — это число, которое больше одного из трёх и меньше другого.",tests:[{input:["1","2","3"],expected:"2"},{input:["10","30","20"],expected:"20"},{input:["30","10","20"],expected:"20"}]},
+{id:7,title:"Задача 7. Палиндром",level:"pro",stars:"⭐",short:"Определи, одинаково ли слово читается слева направо и справа налево.",problem:`Подвиг 2. На вход программе подается строка со словом. Необходимо его прочитать и определить, является ли это слово палиндромом (одинаково читается вперед и назад, например, АННА). Регистр букв не учитывать, т.е. Анна, анна, эННА — это все должно определяться, как палиндромы. Если введенное слово палиндром, на экран вывести «ДА», иначе «НЕТ».`,examples:"Шалаш → ДА\\nБалансиров → НЕТ\\nказак → ДА\\nтест → НЕТ",starter:`word = input().lower()  # word — слово\n\n# Напиши программу\n`,hint:"Приведи слово к одному регистру, затем сравни его с записью в обратном порядке.",theory:"У строки есть срез с шагом -1: word[::-1] даёт строку наоборот.",tests:[{input:["Шалаш"],expected:"ДА"},{input:["Балансиров"],expected:"НЕТ"},{input:["казак"],expected:"ДА"},{input:["тест"],expected:"НЕТ"}]},
+{id:8,title:"Задача 8. Цвета колеса рулетки",level:"pro",stars:"⭐⭐",short:"Определи цвет кармана рулетки по его номеру.",problem:`На колесе рулетки карманы пронумерованы от 0 до 36. Ниже приведены цвета карманов:\n\n• для 0 — зеленый;\n• для карманов с 1 по 10 карманы с нечётным номером имеют красный цвет, карманы с чётным номером — черный;\n• для карманов с 11 по 18 карманы с нечётным номером имеют черный цвет, карманы с чётным номером — красный;\n• для карманов с 19 по 28 карманы с нечётным номером имеют красный цвет, карманы с чётным номером — черный;\n• для карманов с 29 по 36 карманы с нечётным номером имеют черный цвет, карманы с чётным номером — красный.\n\nНапишите программу, которая считывает номер кармана и показывает, является ли этот карман зелёным, красным или черным. Программа должна вывести сообщение об ошибке, если пользователь вводит число, которое лежит вне диапазона от 0 до 36.\n\nФормат входных данных\nНа вход программе подаётся одно целое число.\n\nФормат выходных данных\nПрограмма должна вывести цвет кармана либо сообщение «ошибка ввода» (без кавычек), если введённое число лежит вне диапазона от 0 до 36.`,examples:"0 → зеленый\\n1 → красный\\n37 → ошибка ввода",starter:`n = int(input())  # n — номер кармана\n\n# Напиши программу\n`,hint:"Сначала обработай выход за диапазон и 0. Затем раздели остальные числа по четырём диапазонам и используй % 2 для чётности.",theory:"% 2 помогает определить чётность: остаток 0 — число чётное, остаток 1 — нечётное.",tests:[{input:["0"],expected:"зеленый"},{input:["1"],expected:"красный"},{input:["37"],expected:"ошибка ввода"}]},
+{id:9,title:"Задача 9. Пересечение отрезков",level:"boss",stars:"⭐⭐⭐",short:"Найди пересечение двух отрезков на числовой прямой.",problem:`На числовой прямой даны два отрезка: [a1; b1] и [a2; b2]. Напишите программу, которая находит их пересечение.\n\nПересечением двух отрезков может быть:\n• отрезок;\n• пустое множество;\n• общая точка.\n\nФормат входных данных\nНа вход программе подаются четыре целых числа a1, b1, a2, b2, каждое на отдельной строке. Гарантируется, что a1 < b1 и a2 < b2.\n\nФормат выходных данных\nПрограмма должна вывести на экран границы отрезка, являющегося пересечением, либо общую точку, либо текст «пустое множество» (без кавычек).`,examples:"1\\n3\\n2\\n4 → 2 3\\n\\n1\\n3\\n441 → пустое множество\\n\\n5\\n6\\n6\\n80 → 6",starter:`a1 = int(input())  # a1 — левая граница первого отрезка\nb1 = int(input())  # b1 — правая граница первого отрезка\na2 = int(input())  # a2 — левая граница второго отрезка\nb2 = int(input())  # b2 — правая граница второго отрезка\n\n# Напиши программу\n`,hint:"Сначала подумай, какой отрезок начинается левее. После этого сравни левую границу правого отрезка с правой границей левого.",theory:"Для пересечения удобно рассмотреть три случая: отрезки не пересекаются, касаются одной точкой или имеют общий отрезок.",tests:[{input:["1","3","2","4"],expected:"2 3"},{input:["1","3","3","441"],expected:"3"},{input:["5","6","6","80"],expected:"6"},{input:["1","3","441","500"],expected:"пустое множество"}]},
+{id:10,title:"Задача 10. Счет за телефон",level:"boss",stars:"⭐⭐⭐",short:"Рассчитай телефонный счёт с дополнительными минутами, SMS и налогами.",problem:`Тарифный план мобильной связи включает в себя 50 минут разговоров и 50 смс-сообщений за $15,00 в месяц. Каждая дополнительная минута стоит $0,25, а каждое дополнительное сообщение — $0,15. Все счета за телефон включают налог на поддержку кол-центров 911 в размере $0,44, и общая сумма, включающая сумму отчислений кол-центрам, облагается налогом в размере 5 %.\n\nНапишите программу, которая будет запрашивать у пользователя количество израсходованных за месяц минут разговора и смс-сообщений и отображать базовую сумму тарификации, сумму за дополнительные минуты и сообщения, сумму отчислений кол-центрам 911, налог, а также итоговую сумму к оплате. При этом дополнительные звонки и сообщения необходимо выводить на экран только в случае их расходования. Убедитесь в том, что все суммы отображаются в формате с двумя знаками после запятой.`,examples:"Проверь отдельно случай без перерасхода и случаи, когда превышены минуты и SMS.",starter:`minutes = int(input())  # minutes — минуты\nsms = int(input())  # sms — SMS-сообщения\n\n# Напиши программу\n`,hint:"Раздели расчёт на части: базовая сумма, перерасход минут, перерасход SMS, сбор 911, налог и итог. Форматируй деньги до двух знаков.",theory:"Здесь несколько независимых условий. Дополнительные строки вывода появляются только при перерасходе.",checker:"phone",tests:[]},
+{id:11,title:"Задача 11. Следующий день",level:"boss",stars:"⭐⭐⭐",short:"По заданной дате выведи дату следующего дня.",problem:`Разработайте программу, принимающую на вход дату и выводящую на экран дату, следующую за ней. Например, если пользователь введет дату, соответствующую 18 ноября 2019 года, на экран должен быть выведен следующий день, то есть 19 ноября 2019 года. Если входная дата будет представлять 30 ноября, то на выходе мы должны получить 1 декабря. И наконец, если ввести последний день года — 31 декабря 2019-го, пользователь должен увидеть на экране дату 1 января 2020-го. Дату пользователь должен вводить в три этапа: год, месяц и день. Убедитесь, что ваша программа корректно обрабатывает високосные годы.`,examples:"2019\\n11\\n18 → 19 11 2019\\n\\n2019\\n11\\n30 → 1 12 2019\\n\\n2019\\n12\\n31 → 1 1 2020",starter:`year = int(input())  # year — год\nmonth = int(input())  # month — месяц\nday = int(input())  # day — день\n\n# Напиши программу\n`,hint:"Сначала определи количество дней в текущем месяце. Февраль зависит от високосности года. Затем прибавь один день и обработай переход месяца и года.",theory:"Это задача на несколько связанных if/elif: сначала февраль, затем длина месяца, затем переход даты.",tests:[{input:["2019","11","18"],expected:"19 11 2019"},{input:["2019","11","30"],expected:"1 12 2019"},{input:["2019","12","31"],expected:"1 1 2020"},{input:["2020","2","28"],expected:"29 2 2020"}]},
+{id:12,title:"Задача 12. На какой день недели выпадает 1 января",level:"boss",stars:"⭐⭐⭐",short:"По формуле определи название дня недели для 1 января.",problem:`Следующая формула может быть использована для определения дня недели, соответствующего 1 января заданного года:\n\nday of the week = (year + floor((year — 1)/4) — floor((year — 1)/100) + floor((year — 1)/400))%7.\n\nВ результате мы получим целое число, представляющее день недели от воскресенья (0) до субботы (6). Используйте эту формулу для написания программы, запрашивающей у пользователя год и выводящей на экран день недели, на который в заданном году приходится 1 января. При этом на экран вы должны вывести не числовой эквивалент дня недели, а его полное название.`,examples:"2024 → Понедельник\\n2023 → Воскресенье",starter:`year = int(input())  # year — год\n\n# Напиши программу\n`,hint:"Сначала вычисли число от 0 до 6 по формуле. Затем переведи его в название дня через if / elif / else.",theory:"Целочисленное деление // заменяет floor для положительных целых чисел.",tests:[{input:["2024"],expected:"Понедельник"},{input:["2023"],expected:"Воскресенье"},{input:["2000"],expected:"Суббота"},{input:["1900"],expected:"Понедельник"}]},
+{id:13,title:"Задача 13. Проект «Угадай число»",level:"boss",stars:"🎮",short:"Создай игру, в которой компьютер загадывает число от 1 до 100.",problem:`Компьютер должен загадать случайное число от 1 до 100.\nИгрок пытается угадать это число.\n\nПрограмма должна:\n1. С помощью модуля random загадать число от 1 до 100.\n2. Попросить пользователя ввести свою попытку.\n3. Если пользователь угадал число — вывести:\n«Угадал!»\n4. Если введённое число меньше загаданного — вывести:\n«Моё число больше!»\n5. Если введённое число больше загаданного — вывести:\n«Моё число меньше!»\n\nУлучшения\nДобавить ограничение по времени. У пользователя есть 10 секунд, чтобы сделать попытку. Если 10 секунд уже прошло, программа должна вывести:\n«Время вышло!»\n\nДля отсчёта времени используй модуль time.`,examples:"Сначала сделай основную версию с random. Ограничение по времени — дополнительное улучшение.",starter:`import random\n\nsecret = random.randint(1, 100)  # secret — загаданное число\nguess = int(input())  # guess — попытка игрока\n\n# Напиши программу\n`,hint:"Сравни guess и secret в трёх случаях: равно, меньше, больше. Для дополнительной версии сохрани время начала попытки.",theory:"random.randint(a, b) возвращает случайное целое число от a до b включительно. time.time() позволяет сравнить моменты времени.",checker:"guess",tests:[]},
+{id:14,title:"Задача 14. Играем в рулетку",level:"hard",stars:"⭐⭐⭐",short:"Сымитируй вращение рулетки и выведи все выигравшие ставки.",problem:`На игровой рулетке в казино 38 выемок для шарика: 18 красных, столько же черных и две зеленые, пронумерованные 0 и 00 соответственно. Красные числа на рулетке: 1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34 и 36. Остальные номера в диапазоне положительных чисел до 36 — черные.\n\nИгрок может сделать самые разные ставки. Мы в данном упражнении будем рассматривать лишь следующие виды ставок:\n• одно число (от одного до 36, а также 0 или 00);\n• красное или черное; четное или нечетное (заметьте, что номера 0 и 00 не являются ни четными, ни нечетными);\n• от 1 до 18 против от 19 до 36.\n\nНапишите программу, имитирующую игру на рулетке при помощи генератора случайных чисел в Python. После запуска рулетки выведите на экран выпавший номер и все сыгравшие ставки. Например, при выпадении номера 13 на экране должна появиться следующая последовательность строк:\nВыпавший номер: 13.\nВыигравшая ставка: 13\nВыигравшая ставка: черное\nВыигравшая ставка: нечетное\nВыигравшая ставка: от 1 до 18\n\nЕсли на рулетке выпал номер 0, вывод должен быть следующим:\nВыпавший номер: 0.\nВыигравшая ставка: 0\nДля номера 00 сообщения будут иметь следующий вид:\nВыпавший номер: 00.\nВыигравшая ставка: 00`,examples:"Для 0 и 00 — только две строки. Для обычного числа — номер, цвет, чётность и диапазон.",starter:`import random\n\n# 0–36 и отдельный случай 00\nnumber = random.randint(0, 37)  # number — выпавший номер\n\n# Напиши программу\n`,hint:"Сначала обработай 0 и 00. Для обычных чисел отдельно определи ставку на число, цвет, чётность и диапазон.",theory:"random.randint(0, 37) удобно использовать, если условно считать 37 номером 00. Для остальных чисел применяй % 2 и проверку принадлежности к красным номерам.",checker:"roulette",tests:[]}
+];
+
 const lessons=[
 {id:2,title:'Занятие 2',subtitle:'Цифры, числа + типы данных',tasks:lesson2Tasks,theory:[
 ['Три главных типа данных','int — целые числа; float — дробные числа; str — строки, то есть текст в кавычках.'],
@@ -557,14 +917,24 @@ const lessons=[
 ['and / or','and соединяет обязательные условия, or — альтернативные варианты.'],
 ['Строки','lower() приводит текст к нижнему регистру, in проверяет наличие символа или слова.'],
 ['random','import random и randint() позволяют получать случайные числа.']
+]},
+{id:5,title:'Занятие 5',subtitle:'Вложенные и каскадные условия',tasks:lesson5Tasks,theory:[
+['Как работает условный оператор','if проверяет условие. Если оно истинно, выполняется блок с отступом. else выполняется, если условие ложно.'],
+['Каскад elif','Когда вариантов больше двух, используй if → elif → elif → else. Проверка идёт сверху вниз: после первого истинного условия остальные ветки пропускаются.'],
+['Вложенные условия','Внутри if или else можно разместить ещё один if. Каждый новый уровень требует дополнительного отступа в 4 пробела.'],
+['and и or','and требует выполнения всех соединённых условий. or означает, что достаточно хотя бы одного условия.'],
+['Сравнения и остаток','Используй >, <, ==, >=, <=, !=. Оператор % помогает определить остаток и чётность числа.'],
+['Строки','input() возвращает строку. lower() приводит её к нижнему регистру, а word[::-1] разворачивает строку.'],
+['Случайные числа и время','random.randint(a, b) возвращает случайное целое число от a до b включительно. time.time() позволяет сравнивать моменты времени.'],
+['Как решать задачу','Прочитай условие два раза → определи входные и выходные данные → разбей задачу на случаи → запиши условия словами → переведи их в Python → проверь минимум на двух примерах.']
 ]}
 ];
 let allTasks=[]; lessons.forEach(l=>l.tasks.forEach(t=>{t.lessonId=l.id;t.key=`${l.id}-${t.id}`;if(l.id===4)t.theory=lesson4Theory[t.id]||'Используй теорию занятия и быстрый маршрут решения.';allTasks.push(t)}));
 const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null')||{};
-const state={currentKey:saved.currentKey||'2-1',openLessons:saved.openLessons||{2:true,3:false,4:false},codes:saved.codes||{},attempts:saved.attempts||{},failedCodes:saved.failedCodes||{},hints:saved.hints||{},solved:saved.solved||{},ratings:saved.ratings||{},inputs:saved.inputs||{}};
-const taskTitle=document.getElementById('taskTitle'),taskShort=document.getElementById('taskShort'),taskProblem=document.getElementById('taskProblem'),taskExamples=document.getElementById('taskExamples'),taskTheory=document.getElementById('taskTheory'),lessonBadge=document.getElementById('lessonBadge'),lessonNav=document.getElementById('lessonNav'),solvedCount=document.getElementById('solvedCount'),hardestTask=document.getElementById('hardestTask'),hardestList=document.getElementById('hardestList'),progress=document.getElementById('progress'),status=document.getElementById('status'),hintBox=document.getElementById('hintBox'),runButton=document.getElementById('runButton'),hintButton=document.getElementById('hintButton'),clearButton=document.getElementById('clearButton'),theoryButton=document.getElementById('theoryButton'),theoryModal=document.getElementById('theoryModal'),closeTheory=document.getElementById('closeTheory'),modalTitle=document.getElementById('modalTitle'),modalBody=document.getElementById('modalBody'),ratingCard=document.getElementById('ratingCard'),ratingStars=document.getElementById('ratingStars'),ratingLabel=document.getElementById('ratingLabel');
+const state={currentKey:saved.currentKey||'2-1',openLessons:saved.openLessons||{2:true,3:false,4:false,5:false},codes:saved.codes||{},attempts:saved.attempts||{},failedCodes:saved.failedCodes||{},hints:saved.hints||{},solved:saved.solved||{},ratings:saved.ratings||{},inputs:saved.inputs||{},manualRunPassed:saved.manualRunPassed||{}};
+const taskTitle=document.getElementById('taskTitle'),taskShort=document.getElementById('taskShort'),taskProblem=document.getElementById('taskProblem'),taskImageWrap=document.getElementById('taskImageWrap'),taskImage=document.getElementById('taskImage'),taskExamples=document.getElementById('taskExamples'),taskTheory=document.getElementById('taskTheory'),lessonBadge=document.getElementById('lessonBadge'),lessonNav=document.getElementById('lessonNav'),solvedCount=document.getElementById('solvedCount'),hardestTask=document.getElementById('hardestTask'),hardestList=document.getElementById('hardestList'),progress=document.getElementById('progress'),status=document.getElementById('status'),hintBox=document.getElementById('hintBox'),runButton=document.getElementById('runButton'),hintButton=document.getElementById('hintButton'),clearButton=document.getElementById('clearButton'),theoryButton=document.getElementById('theoryButton'),theoryModal=document.getElementById('theoryModal'),closeTheory=document.getElementById('closeTheory'),modalTitle=document.getElementById('modalTitle'),modalBody=document.getElementById('modalBody'),ratingCard=document.getElementById('ratingCard'),ratingStars=document.getElementById('ratingStars'),ratingLabel=document.getElementById('ratingLabel'),attemptFill=document.getElementById('attemptFill');
 const editor=CodeMirror.fromTextArea(document.getElementById('code'),{mode:'python',lineNumbers:true,indentUnit:4,tabSize:4,viewportMargin:Infinity});
-const interactiveRunButton=document.getElementById('interactiveRunButton');const consoleBox=document.getElementById('console');const consoleOutput=document.getElementById('consoleOutput');
+const interactiveRunButton=document.getElementById('interactiveRunButton');const consoleBox=document.getElementById('console');const consoleOutput=document.getElementById('consoleOutput');const stdinInput=document.getElementById('stdinInput');
 function saveState(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
 function currentTask(){return allTasks.find(t=>t.key===state.currentKey)||allTasks[0]}
 function getLesson(id){return lessons.find(l=>l.id===id)}
@@ -576,7 +946,8 @@ function renderNav(){
     wrap.className='lesson '+(state.openLessons[l.id]?'open':'');
     const head=document.createElement('button');
     head.className='lesson-head';
-    head.innerHTML=`<span>▸</span><span>${l.title}</span><span class="lesson-arrow">›</span>`;
+    const navTitles={2:'Цифры, числа + тип данных',3:'Условные операторы',4:'Условные операторы',5:'Вложенные и каскадные условия'};
+     head.innerHTML=`<span>▸</span><span class="lesson-head-title"><strong>${l.title}.</strong> <span>${navTitles[l.id]||l.subtitle}</span></span><span class="lesson-head-arrow">›</span>`;
     head.onclick=()=>{state.openLessons[l.id]=!state.openLessons[l.id];saveState();renderNav()};
     wrap.appendChild(head);
     const body=document.createElement('div');
@@ -590,6 +961,15 @@ function renderNav(){
     theoryBtn.textContent='📖 Теория занятия';
     theoryBtn.onclick=()=>openLessonTheory(l.id);
     body.appendChild(theoryBtn);
+    if(l.id===5){
+      const quizBtn=document.createElement('button');
+      quizBtn.type='button';
+      quizBtn.className='lesson-theory-link quiz-nav-link';
+      quizBtn.setAttribute('data-action','open-quiz');
+      quizBtn.textContent='🧠 Повторение изученного';
+      quizBtn.onclick=function(e){openQuiz(e);};
+      body.appendChild(quizBtn);
+    }
     const groups={past:[],pro:[],boss:[],hard:[]};
     l.tasks.forEach(t=>groups[t.level].push(t));
     Object.entries(groups).forEach(([level,arr])=>{
@@ -611,6 +991,401 @@ function renderNav(){
   });
   updateStats();
 }
+
+
+
+const studentDashboardButton=document.getElementById('studentDashboardButton');
+const studentDashboardView=document.getElementById('studentDashboardView');
+const studentDashboardBack=document.getElementById('studentDashboardBack');
+const studentDashboardRefresh=document.getElementById('studentDashboardRefresh');
+const studentDashboardStatus=document.getElementById('studentDashboardStatus');
+const studentProfileName=document.getElementById('studentProfileName');
+const studentNameInput=document.getElementById('studentNameInput');
+const studentNameSave=document.getElementById('studentNameSave');
+const studentOverallCount=document.getElementById('studentOverallCount');
+const studentOverallFill=document.getElementById('studentOverallFill');
+const studentOverallPercent=document.getElementById('studentOverallPercent');
+const studentLessonCards=document.getElementById('studentLessonCards');
+
+let studentDashboardRows=[];
+
+function showStudentDashboardStatus(message){
+  studentDashboardStatus.textContent=message||'';
+  studentDashboardStatus.classList.toggle('show',!!message);
+}
+
+function normalizeStudentRow(row){
+  return {
+    name:String(row['Имя']||'Без имени').trim()||'Без имени',
+    lesson:String(row['Занятие']||'').trim(),
+    taskId:String(row['№ задачи']||'').trim(),
+    title:String(row['Название задачи']||'').trim(),
+    result:String(row['Результат']||'').trim(),
+    failed:Number(row['Неудачных проверок']||0),
+    rating:Number(row['Сложность']||0)
+  };
+}
+
+function getSavedStudentName(){
+  return String(localStorage.getItem(STUDENT_NAME_KEY)||'').trim();
+}
+
+function setStudentName(name){
+  const clean=String(name||'').trim();
+  if(clean)localStorage.setItem(STUDENT_NAME_KEY,clean);
+  else localStorage.removeItem(STUDENT_NAME_KEY);
+  return clean;
+}
+
+function restoreStudentProgress(rows,name){
+  const mine=rows.filter(r=>r.name.toLowerCase()===name.toLowerCase() && String(r.result).toLowerCase()==='решена');
+  const latest=new Map();
+  mine.forEach(r=>latest.set(r.lesson+'::'+r.taskId,r));
+
+  latest.forEach(r=>{
+    const match=allTasks.find(t=>('Занятие '+t.lessonId)===r.lesson && String(t.id)===String(r.taskId));
+    if(!match)return;
+    state.solved[match.key]=true;
+    state.attempts[match.key]=Number(r.failed)||0;
+    if(Number(r.rating)>0)state.ratings[match.key]=Number(r.rating);
+  });
+
+  saveState();
+  renderNav();
+  updateStats();
+}
+
+function buildStudentDashboard(rows,name){
+  const clean=String(name||'').trim();
+  if(!clean){
+    studentProfileName.textContent='Ученик';
+    studentLessonCards.innerHTML='<div class="student-dashboard-empty">Введите имя, чтобы загрузить прогресс.</div>';
+    studentOverallCount.textContent='0 / 0';
+    studentOverallFill.style.width='0%';
+    studentOverallPercent.textContent='0%';
+    return;
+  }
+
+  const mine=rows.filter(r=>r.name.toLowerCase()===clean.toLowerCase() && String(r.result).toLowerCase()==='решена');
+  const latest=new Map();
+  mine.forEach(r=>latest.set(r.lesson+'::'+r.taskId,r));
+  const unique=[...latest.values()];
+  const solvedKeys=new Set(unique.map(r=>r.lesson+'::'+r.taskId));
+  const totalTasks=lessons.reduce((sum,l)=>sum+l.tasks.length,0);
+  const solvedCountServer=unique.length;
+  const overallPercent=totalTasks?Math.round(solvedCountServer/totalTasks*100):0;
+
+  studentProfileName.textContent=clean;
+  studentOverallCount.textContent=`${solvedCountServer} / ${totalTasks}`;
+  studentOverallFill.style.width=`${overallPercent}%`;
+  studentOverallPercent.textContent=`${overallPercent}%`;
+
+  studentLessonCards.innerHTML=lessons.map(lesson=>{
+    const solved=unique.filter(r=>r.lesson===('Занятие '+lesson.id)).length;
+    const total=lesson.tasks.length;
+    const percent=total?Math.round(solved/total*100):0;
+    return `<div class="student-lesson-card">
+      <div class="student-lesson-number">ЗАНЯТИЕ ${lesson.id}</div>
+      <div class="student-lesson-title">${escapeHtml(lesson.subtitle||lesson.title)}</div>
+      <div class="student-lesson-subtitle">${total} задач в маршрутном листе</div>
+      <div class="student-lesson-track"><div class="student-lesson-fill" style="width:${percent}%"></div></div>
+      <div class="student-lesson-bottom"><span class="student-lesson-count">${solved} / ${total} решено</span><span class="student-lesson-percent">${percent}%</span></div>
+    </div>`;
+  }).join('');
+
+  if(!mine.length){
+    studentDashboardStatus.textContent='Для этого имени пока нет сохранённых решений. Реши первую задачу — и она появится здесь.';
+    studentDashboardStatus.classList.add('show');
+  }
+}
+
+async function loadStudentDashboard(){
+  const name=getSavedStudentName();
+  studentNameInput.value=name;
+  showStudentDashboardStatus('');
+  if(!name){
+    buildStudentDashboard([], '');
+    showStudentDashboardStatus('Введи своё имя. Затем сайт найдёт твой прогресс в общей системе.');
+    return;
+  }
+
+  try{
+    const response=await fetch(QUIZ_RESULTS_URL,{method:'GET',cache:'no-store'});
+    if(!response.ok)throw new Error('Сервер вернул ошибку '+response.status);
+    const data=await response.json();
+    if(!data.success)throw new Error(data.error||'Не удалось получить данные.');
+    studentDashboardRows=(Array.isArray(data.tasks)?data.tasks:[]).map(normalizeStudentRow);
+    restoreStudentProgress(studentDashboardRows,name);
+    buildStudentDashboard(studentDashboardRows,name);
+  }catch(error){
+    buildStudentDashboard([],name);
+    showStudentDashboardStatus('Не удалось загрузить прогресс. Проверь подключение к интернету и опубликованную версию Apps Script.');
+  }
+}
+
+function openStudentDashboard(){
+  closeQuiz();
+  closeTeacherDashboard();
+  studentDashboardButton.classList.add('active');
+  teacherDashboardButton.classList.remove('active');
+  document.body.classList.add('student-dashboard-mode');
+  studentDashboardView.setAttribute('aria-hidden','false');
+  loadStudentDashboard();
+}
+
+function closeStudentDashboard(){
+  document.body.classList.remove('student-dashboard-mode');
+  studentDashboardView.setAttribute('aria-hidden','true');
+  studentDashboardButton.classList.remove('active');
+}
+
+studentDashboardButton.onclick=openStudentDashboard;
+studentDashboardBack.onclick=()=>{
+  closeStudentDashboard();
+};
+studentDashboardRefresh.onclick=loadStudentDashboard;
+studentNameSave.onclick=()=>{
+  const name=setStudentName(studentNameInput.value);
+  if(!name){
+    showStudentDashboardStatus('Введите имя, чтобы найти прогресс.');
+    studentNameInput.focus();
+    return;
+  }
+  loadStudentDashboard();
+};
+studentNameInput.addEventListener('keydown',e=>{
+  if(e.key==='Enter')studentNameSave.click();
+});
+
+const teacherDashboardButton=document.getElementById('teacherDashboardButton');
+const teacherDashboardView=document.getElementById('teacherDashboardView');
+const teacherLessonCards=document.getElementById('teacherLessonCards');
+const teacherDashboardContent=document.getElementById('teacherDashboardContent');
+const teacherDashboardStatus=document.getElementById('teacherDashboardStatus');
+const teacherDashboardBack=document.getElementById('teacherDashboardBack');
+const teacherDashboardRefresh=document.getElementById('teacherDashboardRefresh');
+const teacherDetailTitle=document.getElementById('teacherDetailTitle');
+const teacherDetailSubtitle=document.getElementById('teacherDetailSubtitle');
+
+let teacherDashboardRows=[];
+let teacherDashboardLessonId=null;
+
+function showTeacherDashboardStatus(message){
+  teacherDashboardStatus.textContent=message||'';
+  teacherDashboardStatus.classList.toggle('show',!!message);
+}
+
+function openTeacherDashboard(){
+  closeQuiz();
+  closeStudentDashboard();
+  teacherDashboardButton.classList.add('active');
+  studentDashboardButton.classList.remove('active');
+  document.body.classList.remove('student-dashboard-mode');
+  studentDashboardView.setAttribute('aria-hidden','true');
+  document.body.classList.add('teacher-dashboard-mode');
+  document.body.classList.remove('teacher-detail');
+  teacherDashboardView.setAttribute('aria-hidden','false');
+  teacherLessonCards.innerHTML='<div class="teacher-loading">Загружаем данные из Google Таблицы…</div>';
+  showTeacherDashboardStatus('');
+  loadTeacherDashboard();
+}
+
+function closeTeacherDashboard(){
+  document.body.classList.remove('teacher-dashboard-mode','teacher-detail');
+  teacherDashboardButton.classList.remove('active');
+  document.body.classList.remove('student-dashboard-mode');
+  studentDashboardView.setAttribute('aria-hidden','true');
+  teacherDashboardView.setAttribute('aria-hidden','true');
+  teacherDashboardLessonId=null;
+  showTeacherDashboardStatus('');
+}
+
+function teacherDashboardTaskList(lessonId){
+  const lesson=getLesson(Number(lessonId));
+  return lesson && Array.isArray(lesson.tasks) ? lesson.tasks : [];
+}
+
+function teacherLessonInfo(lessonId){
+  const lesson=getLesson(Number(lessonId));
+  if(!lesson)return {title:'Занятие '+lessonId,subtitle:''};
+  return {title:lesson.title||('Занятие '+lessonId),subtitle:lesson.subtitle||''};
+}
+
+function normalizeTeacherRow(row){
+  return {
+    name:String(row['Имя']||'Без имени').trim()||'Без имени',
+    date:row['Дата']||'',
+    lesson:String(row['Занятие']||'').trim(),
+    taskId:String(row['№ задачи']||'').trim(),
+    title:String(row['Название задачи']||'').trim(),
+    result:String(row['Результат']||'').trim(),
+    failed:Number(row['Неудачных проверок']||0),
+    rating:Number(row['Сложность']||0)
+  };
+}
+
+function buildTeacherOverview(rows){
+  const lessonIds=[2,3,4,5];
+  const cards=lessonIds.map(id=>{
+    const info=teacherLessonInfo(id);
+    const tasks=teacherDashboardTaskList(id);
+    const lessonName='Занятие '+id;
+    const relevant=rows.filter(r=>r.lesson===lessonName);
+    const latest=new Map();
+    relevant.forEach(row=>latest.set(row.name+'::'+row.taskId,row));
+    const unique=[...latest.values()];
+    const students=[...new Set(unique.map(r=>r.name))];
+    const solved=unique.filter(r=>String(r.result).toLowerCase()==='решена').length;
+    const possible=students.length*tasks.length;
+    const percent=possible?Math.round(solved/possible*100):0;
+    return `<button type="button" class="teacher-lesson-card" data-lesson-id="${id}">
+      <div>
+        <div class="teacher-lesson-number">ЗАНЯТИЕ ${id}</div>
+        <div class="teacher-lesson-title">${escapeHtml(info.subtitle||info.title.replace(/^Занятие\s*\d+\.?\s*/i,''))}</div>
+        <div class="teacher-lesson-subtitle">${tasks.length} задач · ${students.length} ${students.length===1?'ученик':'учеников'}</div>
+      </div>
+      <div class="teacher-lesson-bottom">
+        <span class="teacher-lesson-progress">${solved} решённых · ${percent}%</span>
+        <span class="teacher-lesson-arrow">→</span>
+      </div>
+    </button>`;
+  }).join('');
+  teacherLessonCards.innerHTML=cards;
+  teacherLessonCards.querySelectorAll('.teacher-lesson-card').forEach(btn=>{
+    btn.onclick=()=>openTeacherLesson(Number(btn.dataset.lessonId));
+  });
+}
+
+function openTeacherLesson(lessonId){
+  teacherDashboardLessonId=lessonId;
+  const info=teacherLessonInfo(lessonId);
+  teacherDetailTitle.textContent=info.title;
+  teacherDetailSubtitle.textContent=info.subtitle+' · прогресс учеников по задачам';
+  document.body.classList.add('teacher-detail');
+  showTeacherDashboardStatus('');
+  buildTeacherDashboard(teacherDashboardRows,lessonId);
+}
+
+function buildTeacherDashboard(rows,lessonId=5){
+  const lessonTasks=teacherDashboardTaskList(lessonId);
+  const lessonName='Занятие '+lessonId;
+  const relevant=rows.filter(r=>String(r.lesson||'').trim()===lessonName || !r.lesson);
+
+  const latest=new Map();
+  relevant.forEach(row=>{
+    const key=row.name+'::'+row.taskId;
+    latest.set(key,row);
+  });
+  const unique=[...latest.values()];
+  const solvedRows=unique.filter(r=>String(r.result).toLowerCase()==='решена');
+  const students=[...new Set(unique.map(r=>r.name))].sort((a,b)=>a.localeCompare(b,'ru'));
+
+  const taskStats=lessonTasks.map(task=>{
+    const solvedBy=new Set(solvedRows.filter(r=>r.taskId===String(task.id)).map(r=>r.name));
+    const failed=solvedRows.filter(r=>r.taskId===String(task.id)).map(r=>r.failed).filter(Number.isFinite);
+    const ratings=solvedRows.filter(r=>r.taskId===String(task.id)).map(r=>r.rating).filter(x=>x>0);
+    return {
+      task,
+      count:solvedBy.size,
+      total:students.length,
+      percent:students.length?Math.round(solvedBy.size/students.length*100):0,
+      avgFailed:failed.length?failed.reduce((a,b)=>a+b,0)/failed.length:0,
+      avgRating:ratings.length?ratings.reduce((a,b)=>a+b,0)/ratings.length:0
+    };
+  });
+
+  const studentStats=students.map(name=>{
+    const solved=new Set(solvedRows.filter(r=>r.name===name).map(r=>r.taskId));
+    return {name,count:solved.size,total:lessonTasks.length,percent:lessonTasks.length?Math.round(solved.size/lessonTasks.length*100):0};
+  }).sort((a,b)=>b.count-a.count||a.name.localeCompare(b.name,'ru'));
+
+  const hardest=taskStats.filter(x=>x.count>0).sort((a,b)=>b.avgFailed-a.avgFailed).slice(0,3);
+  const totalSolved=studentStats.reduce((sum,s)=>sum+s.count,0);
+  const averageProgress=students.length&&lessonTasks.length?Math.round(totalSolved/(students.length*lessonTasks.length)*100):0;
+
+  const taskRows=taskStats.map(x=>{
+    const cls=x.percent>=70?'good':x.percent>=40?'mid':'low';
+    return `<div class="teacher-task-row">
+      <div class="teacher-task-number">№ ${x.task.id}</div>
+      <div class="teacher-task-name">${escapeHtml(x.task.title.replace(/^Задача\s*\d+\.\s*/,'')||x.task.title)}</div>
+      <div class="teacher-task-count">${x.count} / ${x.total}</div>
+      <div class="teacher-task-track"><div class="teacher-task-fill ${cls}" style="width:${x.percent}%"></div></div>
+      <div class="teacher-task-percent">${x.percent}%</div>
+    </div>`;
+  }).join('');
+
+  const studentRows=studentStats.length?studentStats.map(s=>`<tr>
+    <td><span class="teacher-student-name">${escapeHtml(s.name)}</span></td>
+    <td><span class="teacher-student-progress">${s.count} / ${s.total}</span></td>
+    <td><div class="teacher-progress-track"><div class="teacher-progress-fill" style="width:${s.percent}%"></div></div></td>
+    <td>${s.percent}%</td>
+  </tr>`).join(''):'<tr><td colspan="4">Пока нет решённых задач.</td></tr>';
+
+  const hardestHtml=hardest.length?hardest.map(x=>`<div class="teacher-hardest-item">
+    <div class="teacher-hardest-title">№ ${x.task.id}. ${escapeHtml(x.task.title.replace(/^Задача\s*\d+\.\s*/,'')||x.task.title)}</div>
+    <div class="teacher-hardest-meta">Решили: ${x.count} из ${x.total}. Среднее число неудачных проверок: ${x.avgFailed.toFixed(1).replace('.',',')}.</div>
+  </div>`).join(''):'<div class="teacher-dashboard-empty">Пока недостаточно данных, чтобы определить самые трудные задачи.</div>';
+
+  teacherDashboardContent.innerHTML=`
+    <div class="teacher-stat-grid">
+      <div class="teacher-stat-card"><div class="teacher-stat-label">Учеников</div><div class="teacher-stat-value">${students.length}</div><div class="teacher-stat-note">решали задачи занятия ${lessonId}</div></div>
+      <div class="teacher-stat-card"><div class="teacher-stat-label">Задач</div><div class="teacher-stat-value">${lessonTasks.length}</div><div class="teacher-stat-note">в маршрутном листе</div></div>
+      <div class="teacher-stat-card"><div class="teacher-stat-label">Решений</div><div class="teacher-stat-value">${totalSolved}</div><div class="teacher-stat-note">уникальных ученик × задача</div></div>
+      <div class="teacher-stat-card"><div class="teacher-stat-label">Средний прогресс</div><div class="teacher-stat-value">${averageProgress}%</div><div class="teacher-stat-note">по группе</div></div>
+    </div>
+
+    <section class="teacher-dashboard-card">
+      <h3>Задачи</h3>
+      <div class="teacher-dashboard-card-subtitle">Сколько учеников уже решили каждую задачу.</div>
+      <div class="teacher-task-grid">${taskRows}</div>
+    </section>
+
+    <section class="teacher-dashboard-card">
+      <h3>Прогресс учеников</h3>
+      <div class="teacher-dashboard-card-subtitle">Количество решённых задач из ${lessonTasks.length}.</div>
+      <table class="teacher-student-table">
+        <thead><tr><th>Ученик</th><th>Решено</th><th>Прогресс</th><th>%</th></tr></thead>
+        <tbody>${studentRows}</tbody>
+      </table>
+    </section>
+
+    <section class="teacher-dashboard-card">
+      <h3>На что обратить внимание</h3>
+      <div class="teacher-dashboard-card-subtitle">Задачи с наибольшим средним числом неудачных проверок среди решённых.</div>
+      <div class="teacher-hardest">${hardestHtml}</div>
+      <div class="teacher-dashboard-note">Статистика строится по листу «Задачи».</div>
+    </section>`;
+}
+
+async function loadTeacherDashboard(){
+  showTeacherDashboardStatus('');
+  try{
+    const response=await fetch(QUIZ_RESULTS_URL,{method:'GET',cache:'no-store'});
+    if(!response.ok)throw new Error('Сервер вернул ошибку '+response.status);
+    const data=await response.json();
+    if(!data.success)throw new Error(data.error||'Не удалось получить данные.');
+    teacherDashboardRows=(Array.isArray(data.tasks)?data.tasks:[]).map(normalizeTeacherRow);
+    buildTeacherOverview(teacherDashboardRows);
+    if(!teacherDashboardRows.length)showTeacherDashboardStatus('Пока в листе «Задачи» нет результатов. Как только ученик решит задачу, здесь появится статистика.');
+  }catch(error){
+    teacherLessonCards.innerHTML='<div class="teacher-dashboard-empty">Не удалось загрузить данные. Проверь подключение к интернету и опубликованную версию Apps Script.</div>';
+    showTeacherDashboardStatus('Ошибка загрузки: '+String(error.message||error));
+  }
+}
+
+teacherDashboardButton.onclick=openTeacherDashboard;
+teacherDashboardBack.onclick=()=>{
+  document.body.classList.remove('teacher-detail');
+  teacherDashboardLessonId=null;
+  showTeacherDashboardStatus('');
+};
+teacherDashboardRefresh.onclick=async()=>{
+  await loadTeacherDashboard();
+  if(teacherDashboardLessonId!==null){
+    document.body.classList.add('teacher-detail');
+    buildTeacherDashboard(teacherDashboardRows,teacherDashboardLessonId);
+  }
+};
 
 function updateStats(){
   const solved=allTasks.filter(t=>state.solved[t.key]).length;
@@ -651,8 +1426,32 @@ function setRating(value){
   if(!state.solved[t.key]){showStatus('warning','Сначала реши задачу, затем оцени её.');return}
   state.ratings[t.key]=value; saveState(); renderRating(); updateStats(); showStatus('info',`Оценка сохранена: ${value} из 5 ⭐`);
 }
-function selectTask(key){state.currentKey=key;const t=allTasks.find(x=>x.key===key);if(t)state.openLessons[t.lessonId]=true;saveState();renderNav();loadTask()}
-function loadTask(){const t=currentTask();const l=getLesson(t.lessonId);lessonBadge.textContent=`ЗАНЯТИЕ ${l.id} · ${l.subtitle.toUpperCase()}`;taskTitle.textContent=t.title;taskShort.textContent=t.short;taskProblem.textContent=t.problem;taskExamples.innerHTML=`<strong>Пример:</strong> ${t.examples||'Попробуй несколько своих вариантов.'}`;taskTheory.textContent=t.theory||'Смотри теорию занятия и попробуй сформулировать условие своими словами.';const stored=state.codes[t.key];editor.setValue(stored!==undefined?stored:t.starter||'');const a=Number(state.attempts[t.key]||0);progress.textContent=`Неудачных проверок: ${a} / ${MAX_FAILED_ATTEMPTS}`;hintBox.classList.toggle('show',!!state.hints[t.key]);if(state.hints[t.key])hintBox.textContent='💡 '+t.hint;updateHintButton(a);runButton.textContent=state.solved[t.key]?'✓ Задача решена':'✓ Проверить программу';interactiveRunButton.disabled=false;interactiveRunButton.textContent='▶ Запустить программу';showStatus('','');editor.focus();renderRating()}
+function selectTask(key){closeQuiz();closeTeacherDashboard();closeStudentDashboard();state.currentKey=key;const t=allTasks.find(x=>x.key===key);if(t)state.openLessons[t.lessonId]=true;saveState();renderNav();loadTask()}
+function escapeHtml(value){return String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('\"','&quot;').replaceAll("'",'&#039;')}
+function renderTestData(t){if(Array.isArray(t.tests)&&t.tests.length){const publicTests=t.tests.slice(0,Math.min(3,t.tests.length));let html='<table class=\"test-table\"><thead><tr><th class=\"test-number\">№ Теста</th><th>Входные данные</th><th>Выходные данные</th><th></th></tr></thead><tbody>';publicTests.forEach((test,i)=>{const input=(test.input||[]).join('\n');html+=`<tr><td class=\"test-number\">${i+1}</td><td><span class=\"test-code\">${escapeHtml(input)}</span><button class=\"test-use\" data-test-index=\"${i}\">Использовать этот тест</button></td><td><span class=\"test-code\">${escapeHtml(test.expected||'')}</span></td><td></td></tr>`});html+='</tbody></table>';taskExamples.innerHTML=html;taskExamples.querySelectorAll('.test-use').forEach(btn=>btn.onclick=()=>{const test=publicTests[Number(btn.dataset.testIndex)];stdinInput.value=(test.input||[]).join('\n');state.inputs[t.key]=stdinInput.value;saveState();stdinInput.focus();showStatus('info',`Тест ${Number(btn.dataset.testIndex)+1} загружен в поле ввода. Нажми «Запустить код».`);});return}taskExamples.innerHTML=`<div class=\"test-data-empty\"><strong>Примеры:</strong> ${escapeHtml(t.examples||'Для этой задачи используй свои тестовые данные.')}<br><br>В этой задаче открытые тесты не перечислены. Проверь программу на нескольких собственных вариантах, а затем отправь её на скрытую проверку.</div>`}
+function updateSubmitButton(){const t=currentTask();const passed=!!state.manualRunPassed[t.key];const solved=!!state.solved[t.key];runButton.disabled=!!(!solved&&!passed);runButton.textContent=solved?'✓ Задача решена':'✓ Отправить на проверку'}
+function loadTaskImage(t){
+  const wrap=document.getElementById('taskImageWrap');
+  const img=document.getElementById('taskImage');
+  if(!wrap||!img)return;
+  let base='';
+  if(t.title.includes('Вид треугольника'))base='Треугольники';
+  else if(t.title.includes('Пересечение отрезков'))base='Отрезки';
+  else if(t.title.includes('рулетк'))base='Рулетка';
+  if(!base){wrap.hidden=true;img.removeAttribute('src');return;}
+  const extensions=['png','jpg','jpeg','webp'];
+  let index=0;
+  const tryNext=()=>{
+    if(index>=extensions.length){wrap.hidden=true;img.removeAttribute('src');return;}
+    const src=base+'.'+extensions[index++];
+    const probe=new Image();
+    probe.onload=()=>{img.src=src;img.alt=base;wrap.hidden=false;};
+    probe.onerror=tryNext;
+    probe.src=src;
+  };
+  tryNext();
+}
+function loadTask(){const t=currentTask();const l=getLesson(t.lessonId);lessonBadge.textContent=`ЗАНЯТИЕ ${l.id} · ${l.subtitle.toUpperCase()}`;taskTitle.textContent=t.title;taskShort.textContent=t.short;taskProblem.textContent=t.problem;loadTaskImage(t);renderTestData(t);taskTheory.textContent=t.theory||'Смотри теорию занятия и попробуй сформулировать условие своими словами.';const stored=state.codes[t.key];editor.setValue(stored!==undefined?stored:t.starter||'');stdinInput.value=state.inputs[t.key]||'';const a=Number(state.attempts[t.key]||0);updateProgress(a);hintBox.classList.toggle('show',!!state.hints[t.key]);if(state.hints[t.key])hintBox.textContent='💡 '+t.hint;updateHintButton(a);updateSubmitButton();interactiveRunButton.disabled=false;interactiveRunButton.textContent='▶ Запустить код';showConsoleOutput('Здесь появится результат работы программы.');consoleBox.classList.remove('show');showStatus('','');editor.focus();renderRating()}
 function updateHintButton(a){if(state.hints[currentTask().key]){hintButton.disabled=true;hintButton.textContent='💡 Подсказка открыта';return}hintButton.disabled=a<MAX_FAILED_ATTEMPTS;hintButton.textContent='💡 Подсказка'}
 function showStatus(type,msg){if(!msg){status.className='status';status.textContent='';return}status.className='status show '+type;status.textContent=msg}
 function normalizeOutput(text){return String(text).replace(/\r\n/g,'\n').trim()}
@@ -662,23 +1461,223 @@ function runOneTest(code,inputValues){return new Promise(resolve=>{let output=''
 function expectedPhoneOutput(minutes,sms){const base=15,em=minutes>50?(minutes-50)*.25:0,es=sms>50?(sms-50)*.15:0,fee=.44,sub=base+em+es+fee,tax=sub*.05,total=sub+tax;const lines=[`Базовая сумма: $${base.toFixed(2)}`];if(minutes>50)lines.push(`Дополнительные минуты: $${em.toFixed(2)}`);if(sms>50)lines.push(`Дополнительные SMS: $${es.toFixed(2)}`);lines.push(`Сбор emergency services: $${fee.toFixed(2)}`,`Налог: $${tax.toFixed(2)}`,`Итого: $${total.toFixed(2)}`);return lines.join('\n')}
 async function checkPhone(code){for(const input of [['50','50'],['60','55'],['40','70']]){const r=await runOneTest(code,input);if(!r.ok)return {type:'execution_error'};const expected=expectedPhoneOutput(Number(input[0]),Number(input[1]));if(normalizeOutput(r.output)!==normalizeOutput(expected))return {type:'wrong_answer'}}return {type:'success'}}
 function checkRouletteOutput(output){const lines=normalizeOutput(output).split('\n').map(x=>x.trim()).filter(Boolean);if(!lines.length)return false;const m=lines[0].match(/^Выпавший номер:\s*(0|00|[1-9]|[1-2][0-9]|3[0-6])$/);if(!m)return false;const v=m[1];if(v==='0'||v==='00')return lines.length===2&&lines[1]===`Выигравшая ставка: ${v}`;const n=Number(v);if(lines.length!==5)return false;const red=new Set([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]);const color=red.has(n)?'красное':'черное';const parity=n%2===0?'четное':'нечетное';const range=n<=18?'от 1 до 18':'от 19 до 36';return lines[1]===`Выигравшая ставка: ${n}`&&lines[2]===`Выигравшая ставка: ${color}`&&lines[3]===`Выигравшая ставка: ${parity}`&&lines[4]===`Выигравшая ставка: ${range}`}
-async function checkTask(t,code){if(t.checker==='phone')return checkPhone(code);if(t.checker==='roulette'){const r=await runOneTest(code,[]);return !r.ok?{type:'execution_error'}:{type:checkRouletteOutput(r.output)?'success':'wrong_answer'}}for(const test of (t.tests||[])){const r=await runOneTest(code,test.input);if(!r.ok)return {type:'execution_error',error:r.error};if(normalizeOutput(r.output)!==normalizeOutput(test.expected))return {type:'wrong_answer'}}return {type:'success'}}
-function countInputCalls(code){const withoutComments=String(code).split('\n').map(line=>line.replace(/#.*$/,'')).join('\n');const matches=withoutComments.match(/\binput\s*\(/g);return matches?matches.length:0}
-function getInputLabels(code){const labels=[];for(const line of String(code).split('\n')){const clean=line.replace(/#.*$/,'').trim();const m=clean.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(?:(?:int|float|str)\s*\(\s*)?input\s*\(\s*\)\s*\)?/);labels.push(m?m[1]:'');}return labels.filter(Boolean)}
-function getVariableTranslation(name){const map={name:'имя',surname:'фамилия',age:'возраст',height:'рост',weight:'вес',gender:'пол',floor:'этаж',water:'вода',ticket:'билет',year:'год',month:'месяц',day:'день',price:'цена',count:'количество',total:'общее количество',delivery:'доставка',first:'первое значение',second:'второе значение',third:'третье значение',letter:'буква',sides:'количество сторон',money:'деньги / номинал',cell:'клетка',magnitude:'магнитуда',wave:'длина волны',minutes:'минуты',sms:'SMS-сообщения',number:'число',a:'первое число',b:'второе число',c:'третье число',x:'координата X',y:'координата Y',x1:'первая координата X',y1:'первая координата Y',x2:'вторая координата X',y2:'вторая координата Y',month_number:'номер месяца',day_number:'номер дня'};return map[name]||''}
+async function checkTask(t,code){if(t.checker==='phone')return checkPhone(code);if(t.checker==='guess')return checkGuessProject(code);if(t.checker==='roulette'){const r=await runOneTest(code,[]);return !r.ok?{type:'execution_error'}:{type:checkRouletteOutput(r.output)?'success':'wrong_answer'}}for(const test of (t.tests||[])){const r=await runOneTest(code,test.input);if(!r.ok)return {type:'execution_error',error:r.error};if(normalizeOutput(r.output)!==normalizeOutput(test.expected))return {type:'wrong_answer'}}return {type:'success'}}
+function getStdinValues(){const raw=String(stdinInput.value||'').replace(/\r\n/g,'\n');if(raw==='')return [];const values=raw.split('\n');if(values.length&&values[values.length-1]==='')values.pop();return values}
 function showConsoleOutput(text,ok=true){consoleBox.classList.add('show');consoleOutput.className='console-output'+(ok?'':' error');consoleOutput.textContent=text||'(программа ничего не вывела)'}
-let interactiveState={code:'',values:[],index:0,labels:[],total:0};
-function openInputModal(step,total,label){const translated=getVariableTranslation(label);inputStep.textContent=`Ввод ${step} из ${total}`;inputPrompt.innerHTML=label?(translated?`Программа сейчас получает значение для переменной <strong>${label}</strong> — ${translated}.`:`Программа сейчас получает значение для переменной <strong>${label}</strong>.`):'Программа сейчас запрашивает следующее значение с клавиатуры.';inputModalField.value='';inputModal.classList.add('show');setTimeout(()=>inputModalField.focus(),50)}
-function closeInputModal(){inputModal.classList.remove('show')}
-async function finishInteractiveRun(){const code=interactiveState.code;const values=interactiveState.values.slice();interactiveRunButton.disabled=true;interactiveRunButton.textContent='⏳ Запускаем...';showStatus('info','▶ Программа запускается с введёнными данными...');closeInputModal();const result=await runOneTest(code,values);interactiveRunButton.disabled=false;interactiveRunButton.textContent='▶ Запустить программу';if(!result.ok){showConsoleOutput('Ошибка выполнения:\n\n'+result.error,false);showStatus('error','⚠️ Программа остановилась с ошибкой. Это не считается попыткой решения. Исправь код и запусти ещё раз.');return}showConsoleOutput(result.output,true);showStatus('success','✅ Программа выполнилась. Посмотри результат в терминале. Если всё работает правильно — нажми «Проверить программу».')}
-function acceptInteractiveInput(){const value=inputModalField.value;interactiveState.values.push(value);const next=interactiveState.index+1;if(next<interactiveState.total){interactiveState.index=next;openInputModal(next+1,interactiveState.total,interactiveState.labels[next]||'');}else{finishInteractiveRun();}}
-async function runInteractive(){const code=normalizeCode(editor.getValue());if(!code){showStatus('warning','Сначала напиши программу.');return}const count=countInputCalls(code);interactiveState={code,values:[],index:0,total:count,labels:getInputLabels(code)};if(count===0){await finishInteractiveRun();return}interactiveRunButton.disabled=true;interactiveRunButton.textContent='⌨ Ввод...';showStatus('info','Программа будет получать данные по одному — как в терминале PyCharm или Visual Studio.');openInputModal(1,count,interactiveState.labels[0]||'');}
-async function runPython(){const t=currentTask();if(state.solved[t.key]){showStatus('success','🎉 Эта задача уже решена.');return}const code=normalizeCode(editor.getValue());if(!code){showStatus('warning','Сначала напиши программу.');return}const failed=state.failedCodes[t.key]||[];if(failed.includes(code)){showStatus('warning','Ты уже проверял этот вариант программы.\n\nИзмени код и попробуй снова.');return}runButton.disabled=true;hintButton.disabled=true;runButton.textContent='⏳ Проверяем...';const result=await checkTask(t,code);if(result.type==='execution_error'){showStatus('error','⚠️ Программа не смогла выполниться.\n\nИсправь ошибку и проверь программу ещё раз.\n\nТакая проверка пока не считается попыткой решения.');runButton.disabled=false;runButton.textContent='▶ Проверить программу';updateHintButton(Number(state.attempts[t.key]||0));return}if(result.type==='success'){state.solved[t.key]=true;state.codes[t.key]=code;saveState();renderNav();updateProgress(Number(state.attempts[t.key]||0));renderRating();updateStats();showStatus('success','🎉 Отлично! Все скрытые проверки пройдены.\n\nЗадача решена! Теперь оцени сложность задачи звёздочками.');runButton.disabled=false;runButton.textContent='✓ Задача решена';return}if(!state.failedCodes[t.key])state.failedCodes[t.key]=[];state.failedCodes[t.key].push(code);state.attempts[t.key]=Number(state.attempts[t.key]||0)+1;state.codes[t.key]=code;const a=state.attempts[t.key];saveState();updateProgress(a);showStatus(a>=5?'warning':'error',a>=5?'❌ Решение пока неправильное.\n\nЭто была 5-я неудачная проверка.\n\n💡 Теперь тебе доступна подсказка.':`❌ Решение пока неправильное.\n\nНеудачных попыток: ${a} / 5\n\nИзмени программу и проверь её снова.`);runButton.disabled=false;runButton.textContent='▶ Проверить программу';updateHintButton(a)}
-function updateProgress(a){progress.textContent=`Неудачных проверок: ${a} / ${MAX_FAILED_ATTEMPTS}`}
+async function runInteractive(){const code=normalizeCode(editor.getValue());if(!code){showStatus('warning','Сначала напиши программу.');return}const values=getStdinValues();state.inputs[currentTask().key]=stdinInput.value;saveState();interactiveRunButton.disabled=true;interactiveRunButton.textContent='⏳ Запускаем...';showStatus('info','▶ Программа запускается на твоих входных данных...');const result=await runOneTest(code,values);interactiveRunButton.disabled=false;interactiveRunButton.textContent='▶ Запустить код';if(!result.ok){showConsoleOutput('Ошибка выполнения:\n\n'+result.error,false);showStatus('error','⚠️ Программа завершилась с ошибкой. Это не считается попыткой решения. Исправь код или входные данные и запусти снова.');return}showConsoleOutput(result.output,true);const t=currentTask();let publicMatch=null;if(Array.isArray(t.tests)){publicMatch=t.tests.find(test=>normalizeOutput((test.input||[]).join('\n'))===normalizeOutput(stdinInput.value));}if(publicMatch){if(normalizeOutput(result.output)===normalizeOutput(publicMatch.expected)){state.manualRunPassed[t.key]=true;saveState();updateSubmitButton();showStatus('success','✅ На выбранном тесте программа дала правильный результат. Теперь можно нажать «Отправить на проверку» — там программа пройдёт скрытые тесты.')}else{showStatus('warning','⚠️ На выбранном тесте результат не совпал с ожидаемым. Исправь программу и запусти её снова.')}return}state.manualRunPassed[t.key]=true;saveState();updateSubmitButton();showStatus('success','✅ Программа выполнилась без ошибки. Проверь результат на экране, попробуй ещё несколько входных данных и, когда будешь уверен(а), нажми «Отправить на проверку».')}
+async function sendTaskResult(t){
+  let name=localStorage.getItem(STUDENT_NAME_KEY)||'';
+  if(!name){
+    name=window.prompt('Как тебя зовут?\n\nИмя нужно преподавателю, чтобы видеть твой прогресс.','');
+    name=String(name||'').trim();
+    if(name)localStorage.setItem(STUDENT_NAME_KEY,name);
+  }
+  if(!name)return {success:false,skipped:true};
+  const payload={
+    type:'task',
+    name:name,
+    date:new Date().toISOString(),
+    lesson:'Занятие '+t.lessonId,
+    taskId:t.id,
+    taskTitle:t.title,
+    result:'Решена',
+    failedAttempts:Number(state.attempts[t.key]||0),
+    rating:Number(state.ratings[t.key]||0)||''
+  };
+  try{
+    const response=await fetch(QUIZ_RESULTS_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+    const data=await response.json();
+    return data;
+  }catch(error){
+    return {success:false,error:String(error)};
+  }
+}
+
+async function runPython(){const t=currentTask();if(!state.solved[t.key]&&!state.manualRunPassed[t.key]){showStatus('warning','Сначала запусти программу на своих данных и получи корректный результат. После этого станет доступна отправка на проверку.');return}if(state.solved[t.key]){showStatus('success','🎉 Эта задача уже решена.');return}const code=normalizeCode(editor.getValue());if(!code){showStatus('warning','Сначала напиши программу.');return}const failed=state.failedCodes[t.key]||[];if(failed.includes(code)){showStatus('warning','Ты уже проверял этот вариант программы.\n\nИзмени код и попробуй снова.');return}runButton.disabled=true;hintButton.disabled=true;runButton.textContent='⏳ Проверяем...';const result=await checkTask(t,code);if(result.type==='execution_error'){showStatus('error','⚠️ Программа не смогла выполниться.\n\nИсправь ошибку и проверь программу ещё раз.\n\nТакая проверка пока не считается попыткой решения.');runButton.disabled=false;updateSubmitButton();updateHintButton(Number(state.attempts[t.key]||0));return}if(result.type==='success'){state.solved[t.key]=true;state.codes[t.key]=code;saveState();renderNav();updateProgress(Number(state.attempts[t.key]||0));renderRating();updateStats();const sent=await sendTaskResult(t);if(sent.success){showStatus('success','🎉 Отлично! Все скрытые проверки пройдены.\n\nЗадача решена! Результат сохранён для преподавателя.\n\nТеперь оцени сложность задачи звёздочками.');}else if(sent.skipped){showStatus('success','🎉 Отлично! Все скрытые проверки пройдены.\n\nЗадача решена! Имя не указано, поэтому результат пока не отправлен преподавателю.\n\nТеперь оцени сложность задачи звёздочками.');}else{showStatus('warning','🎉 Задача решена, но результат пока не удалось отправить преподавателю.\n\nПроверь подключение к интернету.');}runButton.disabled=false;updateSubmitButton();return}if(!state.failedCodes[t.key])state.failedCodes[t.key]=[];state.failedCodes[t.key].push(code);state.attempts[t.key]=Number(state.attempts[t.key]||0)+1;state.codes[t.key]=code;const a=state.attempts[t.key];saveState();updateProgress(a);showStatus(a>=5?'warning':'error',a>=5?'❌ Решение пока неправильное.\n\nЭто была 5-я неудачная проверка.\n\n💡 Теперь тебе доступна подсказка.':`❌ Решение пока неправильное.\n\nНеудачных попыток: ${a} / 5\n\nИзмени программу и проверь её снова.`);runButton.disabled=false;updateSubmitButton();updateHintButton(a)}
+function updateProgress(a){const value=Math.min(Number(a)||0,MAX_FAILED_ATTEMPTS);progress.textContent=`Неудачных проверок: ${value} / ${MAX_FAILED_ATTEMPTS}`;if(attemptFill)attemptFill.style.width=`${(value/MAX_FAILED_ATTEMPTS)*100}%`}
 function openHint(){const t=currentTask(),a=Number(state.attempts[t.key]||0);if(a<5){showStatus('warning','Подсказка пока закрыта.\n\nСначала попробуй решить задачу самостоятельно.');return}state.hints[t.key]=true;saveState();hintBox.textContent='💡 '+t.hint;hintBox.classList.add('show');hintButton.disabled=true;hintButton.textContent='💡 Подсказка открыта';showStatus('info','💡 Подсказка открыта. Попробуй ещё раз.')}
 function clearCode(){editor.setValue('');editor.focus();showStatus('info','Поле очищено. Напиши программу заново.')}
-editor.on('change',()=>{const t=currentTask();state.codes[t.key]=editor.getValue();saveState()});
+editor.on('change',()=>{const t=currentTask();state.codes[t.key]=editor.getValue();if(!state.solved[t.key])state.manualRunPassed[t.key]=false;saveState();updateSubmitButton()});
+
+const quizQuestions=[
+{q:"Что покажет приведённый ниже код?",code:"print(Перт, -, столица, штата, Западная, Австралия)",options:["Перт - столица штата Западная Австралия","Перт-столицаштатаЗападнаяАвстралия","Перт, -, столица, штата, Западная, Австралия","произойдёт ошибка"],correct:3,why:"Для отображения текста с помощью print() текст необходимо помещать внутрь кавычек."},
+{q:"Что покажет приведённый ниже код?",code:"print('Hello, it's me!')",options:["Hello, it's me!","'Hello, it's me!'","Hello, it","произойдёт ошибка"],correct:3,why:"Строка обрамлена одинарными кавычками, но внутри встречается такая же одинарная кавычка. Это приводит к SyntaxError."},
+{q:"Что покажет приведённый ниже код?",code:"a = '10'\nb = '20'\nc = '30'\nprint(a b c)",options:["a b c","abc","102030","10 20 30","произойдёт ошибка"],correct:4,why:"Несколько аргументов в print() нужно отделять запятыми. В записи print(a b c) между выражениями нет запятых."},
+{q:"Что покажет приведённый ниже код?",code:"a = 4\nprint(a, 'a')",options:["4 4","4 a","a a","a 4"],correct:1,why:"В print() переданы два аргумента: значение переменной a и строка 'a'. Между ними по умолчанию ставится пробел."},
+{q:"Вычислите результаты целочисленного деления.",code:"23 // 7 = ?\n20 // 5 = ?\n2 // 5 = ?\n123 // 10 = ?\n-123 // 10 = ?",options:["3; 4; 0; 12; -13","3; 4; 0; 12; -12","3; 4; 1; 12; -13","4; 4; 0; 12; -13"],correct:0,why:"Оператор // выполняет целочисленное деление. Для отрицательного результата Python округляет вниз: -123 // 10 равно -13."},
+{q:"Что покажет приведённый ниже код?",code:"s = 0\nk = 30\nd = k - 5\nk = 2 * d\ns = k - 100\nprint(s)",options:["-50","-45","50","-100"],correct:0,why:"d становится 25, затем k становится 50, затем s = 50 - 100 = -50. Новое значение переменной заменяет старое."},
+{q:"Что покажет приведённый ниже код?",code:"num1 = 34\nnum2 = 81\nif num1 // 9 == 0 or num2 % 9 == 0:\n    print('число', num1, 'выиграло')\nelse:\n    print('число', num2, 'выиграло')",options:["число num2 выиграло","число num1 выиграло","число 81 выиграло","число 34 выиграло"],correct:3,why:"Условие истинно, потому что 81 % 9 == 0. Поэтому выполняется первая ветка if, которая выводит значение num1, то есть 34."},
+{q:"Что покажет приведённый ниже код, если на вход программе будет подано число 7?",code:"a = int(input())\nif a >= 2 and a <= 17:\n    b = 3\n    p = a * a + b * b\nelse:\n    b = 5\np = (a + b) * (a + b)\nprint(p)",options:["100","58","49","64"],correct:0,why:"При a = 7 условие выполняется, поэтому b = 3. Затем p = (7 + 3) × (7 + 3) = 100."},
+{q:"Команда input() используется для…",code:"input()",options:["считывания данных с клавиатуры","вывода данных на экран","изменения типа данных","создания случайного числа"],correct:0,why:"input() получает данные, введённые пользователем с клавиатуры."},
+{q:"Что покажет приведённый ниже код?",code:"x = 3\ny = 4\nz = x + y\nz = z + 1\nx = y\ny = 5\nx = z + y + 7\nprint(x)",options:["20","19","16","15"],correct:0,why:"z сначала становится 7, затем 8. После этого x = z + y + 7 = 8 + 5 + 7 = 20."}
+];
+const quizState={index:0,score:0,answered:false,name:'',answers:[]};
+function openQuiz(e){closeTeacherDashboard();
+  if(e){e.preventDefault();e.stopPropagation();}
+  const quizView=document.getElementById('quizView');
+  const taskView=document.getElementById('taskView');
+  const topView=document.querySelector('.top');
+  if(!quizView||!taskView||!topView){console.error('Не найден блок викторины или основное содержимое страницы');return;}
+  document.body.classList.add('quiz-mode');
+  topView.style.display='none';
+  taskView.style.display='none';
+  quizView.style.display='block';
+  quizView.setAttribute('aria-hidden','false');
+  quizState.index=0;quizState.score=0;quizState.answered=false;quizState.name='';quizState.answers=[];
+  const nameInput=document.getElementById('quizStudentName');
+  if(nameInput)nameInput.value='';
+  const result=document.getElementById('quizResult');
+  if(result)result.hidden=true;
+  const teacherResults=document.getElementById('quizTeacherResults');
+  if(teacherResults)teacherResults.hidden=true;
+  const next=document.getElementById('quizNextButton');
+  if(next)next.hidden=false;
+  renderQuizQuestion();
+  requestAnimationFrame(()=>window.scrollTo(0,0));
+}
+function closeQuiz(e){
+  if(e){e.preventDefault();e.stopPropagation();}
+  const quizView=document.getElementById('quizView');
+  const taskView=document.getElementById('taskView');
+  const topView=document.querySelector('.top');
+  document.body.classList.remove('quiz-mode');
+  if(quizView){quizView.style.display='none';quizView.setAttribute('aria-hidden','true');}
+  if(topView)topView.style.display='';
+  if(taskView)taskView.style.display='';
+}
+function renderQuizQuestion(){
+  const q=quizQuestions[quizState.index];
+  quizState.answered=false;
+  document.getElementById('quizProgressText').textContent=`Вопрос ${quizState.index+1} из ${quizQuestions.length}`;
+  document.getElementById('quizScoreText').textContent=`${quizState.score} правильных`;
+  document.getElementById('quizProgressFill').style.width=`${((quizState.index+1)/quizQuestions.length)*100}%`;
+  document.getElementById('quizNextButton').disabled=true;
+  document.getElementById('quizFinishButton').hidden=true;
+  const area=document.getElementById('quizQuestionArea');
+  const letters=['A','B','C','D','E'];
+  area.innerHTML=`<div class="quiz-question-card">
+    <div class="quiz-question-number">ВОПРОС ${String(quizState.index+1).padStart(2,'0')}</div>
+    <div class="quiz-question-title">${escapeHtml(q.q)}</div>
+    <div class="quiz-code">${escapeHtml(q.code)}</div>
+    <div class="quiz-options">${q.options.map((opt,i)=>`<button class="quiz-option" data-option="${i}"><span class="quiz-option-letter">${letters[i]})</span><span>${escapeHtml(opt)}</span></button>`).join('')}</div>
+    <div id="quizFeedback" class="quiz-feedback" hidden></div>
+  </div>`;
+  area.querySelectorAll('.quiz-option').forEach(btn=>btn.onclick=()=>answerQuiz(Number(btn.dataset.option)));
+}
+function answerQuiz(choice){
+  if(quizState.answered)return;
+  quizState.answered=true;
+  const q=quizQuestions[quizState.index];
+  quizState.answers[quizState.index]=choice;
+  if(choice===q.correct)quizState.score++;
+  document.querySelectorAll('.quiz-option').forEach((btn,i)=>{
+    btn.disabled=true;
+    if(i===q.correct)btn.classList.add('correct');
+    if(i===choice&&choice!==q.correct)btn.classList.add('wrong');
+  });
+  const fb=document.getElementById('quizFeedback');
+  const correctLabel=['A','B','C','D','E'][q.correct];
+  const correctText=q.options[q.correct];
+  fb.hidden=false;
+  fb.className='quiz-feedback '+(choice===q.correct?'correct':'wrong');
+  fb.innerHTML=(choice===q.correct?'✓ Правильно!':'✗ Пока неверно.')+`<div class="quiz-correct-answer">Правильный ответ: ${correctLabel}) ${escapeHtml(correctText)}</div><div>${escapeHtml(q.why)}</div>`;
+  document.getElementById('quizScoreText').textContent=`${quizState.score} правильных`;
+  const next=document.getElementById('quizNextButton');
+  if(quizState.index<quizQuestions.length-1){next.disabled=false;next.textContent='Следующий вопрос →';}
+  else{next.disabled=false;next.textContent='Показать итог';}
+}
+function nextQuiz(){
+  if(!quizState.answered)return;
+  if(quizState.index<quizQuestions.length-1){quizState.index++;renderQuizQuestion();}
+  else finishQuiz();
+}
+async function finishQuiz(){
+  const name=(document.getElementById('quizStudentName').value||'Без имени').trim()||'Без имени';
+  quizState.name=name;
+  if(!name){document.getElementById('quizStudentName').focus();return}
+  const result={name,score:quizState.score,total:quizQuestions.length,date:new Date().toLocaleString('ru-RU'),answers:[...quizState.answers]};
+  const key='python_quiz_results_v1';
+  const results=JSON.parse(localStorage.getItem(key)||'[]');
+  results.push(result);
+  localStorage.setItem(key,JSON.stringify(results.slice(-100)));
+
+  // Отправляем результат в Google Таблицу преподавателя.
+  // no-cors нужен для отправки из GitHub Pages в Google Apps Script.
+  const quizPayload={
+    name:name,
+    date:result.date,
+    result:`${quizState.score} / ${quizQuestions.length}`,
+    answers:quizState.answers.map((answer,index)=>{
+      const question=quizQuestions[index];
+      const letters=['A','B','C','D','E'];
+      if(answer===undefined||answer===null)return '—';
+      const selected=letters[answer]||'—';
+      const correct=letters[question.correct]||'—';
+      return answer===question.correct ? `✓ ${selected}` : `✗ ${selected} → ${correct}`;
+    })
+  };
+  let sendStatus='Результат сохранён на этом устройстве.';
+  try{
+    await fetch(QUIZ_RESULTS_URL,{
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(quizPayload)
+    });
+    sendStatus='Результат отправлен преподавателю.';
+  }catch(error){
+    console.error('Не удалось отправить результат в Google Таблицу:',error);
+    sendStatus='Результат сохранён на этом устройстве. Не удалось отправить его в таблицу.';
+  }
+
+  const resultBox=document.getElementById('quizResult');
+  resultBox.hidden=false;
+  resultBox.innerHTML=`<div class="quiz-result-score">${quizState.score} / ${quizQuestions.length}</div><div class="quiz-result-text"><strong>${escapeHtml(name)}</strong>, викторина закончена.<br>${quizState.score>=9?'Отличный результат!':quizState.score>=7?'Хороший результат!':'Ничего страшного — ошибки можно разобрать и попробовать ещё раз.'}<br><span style="display:inline-block;margin-top:8px;color:#596273;font-size:12px">${escapeHtml(sendStatus)}</span></div>`;
+  document.getElementById('quizQuestionArea').innerHTML='';
+  document.getElementById('quizNextButton').hidden=true;
+  document.getElementById('quizFinishButton').hidden=true;
+  renderTeacherResults();
+}
+function renderTeacherResults(){
+  const box=document.getElementById('quizTeacherResults');
+  const results=JSON.parse(localStorage.getItem('python_quiz_results_v1')||'[]').slice().reverse();
+  if(!results.length){box.innerHTML='<div class="quiz-teacher-subtitle">Пока никто не проходил викторину.</div>';return}
+  box.innerHTML=results.map(r=>{const details=(r.answers||[]).map((a,i)=>{const q=quizQuestions[i];const letter=['A','B','C','D','E'][a];const ok=a===q.correct;return `<div style="padding:5px 0"><strong>${i+1}.</strong> ${ok?'✓':'✗'} выбран ${letter||'—'}; правильный ${['A','B','C','D','E'][q.correct]}</div>`}).join('');return `<details class="quiz-result-row"><summary><span class="quiz-result-name">${escapeHtml(r.name)}</span><span class="quiz-result-score-cell">${r.score} / ${r.total}</span><span class="quiz-result-date">${escapeHtml(r.date)}</span></summary><div style="grid-column:1/-1;padding-top:8px;color:#606a79;font-size:12px;line-height:1.5">${details}</div></details>`}).join('');
+}
+function toggleTeacherResults(){
+  const box=document.getElementById('quizTeacherResults');
+  if(box.hidden){renderTeacherResults();box.hidden=false}else box.hidden=true;
+}
+document.getElementById('quizNextButton').onclick=nextQuiz;
+document.getElementById('quizTeacherButton').onclick=toggleTeacherResults;
+document.getElementById('quizBackButton').onclick=function(e){closeQuiz(e);};
+window.openQuiz=openQuiz;
+window.closeQuiz=closeQuiz;
+
+
+function checkGuessProject(code){
+  const c=code.replace(/\s+/g,' ');
+  const required=[
+    /import\s+random/.test(code),
+    /random\.randint\s*\(\s*1\s*,\s*100\s*\)/.test(c),
+    /input\s*\(/.test(code),
+    /Угадал!/.test(code),
+    /Моё число больше!/.test(code),
+    /Моё число меньше!/.test(code)
+  ];
+  return required.every(Boolean)?{type:'success'}:{type:'wrong_answer'};
+}
+
 function openLessonTheory(id){const l=getLesson(id);modalTitle.textContent=`${l.title} — теория`;modalBody.innerHTML='';l.theory.forEach(([h,p])=>{const b=document.createElement('div');b.className='theory-block';b.innerHTML=`<h4>${h}</h4><div>${p.replaceAll('`','')}</div>`;modalBody.appendChild(b)});theoryModal.classList.add('show')}
-theoryButton.onclick=()=>openLessonTheory(currentTask().lessonId);closeTheory.onclick=()=>theoryModal.classList.remove('show');theoryModal.onclick=e=>{if(e.target===theoryModal)theoryModal.classList.remove('show')};interactiveRunButton.onclick=runInteractive;runButton.onclick=runPython;hintButton.onclick=openHint;clearButton.onclick=clearCode;inputModalNext.onclick=acceptInteractiveInput;inputModalCancel.onclick=()=>{closeInputModal();interactiveRunButton.disabled=false;interactiveRunButton.textContent='▶ Запустить программу';showStatus('info','Ввод отменён. Попробуй ещё раз, когда будешь готов(а).')};inputModalField.addEventListener('keydown',e=>{if(e.key==='Enter')acceptInteractiveInput()});inputModal.onclick=e=>{if(e.target===inputModal){closeInputModal();interactiveRunButton.disabled=false;interactiveRunButton.textContent='▶ Запустить программу'}};
+theoryButton.onclick=()=>openLessonTheory(currentTask().lessonId);closeTheory.onclick=()=>theoryModal.classList.remove('show');theoryModal.onclick=e=>{if(e.target===theoryModal)theoryModal.classList.remove('show')};interactiveRunButton.onclick=runInteractive;runButton.onclick=runPython;hintButton.onclick=openHint;clearButton.onclick=clearCode;stdinInput.addEventListener('input',()=>{const t=currentTask();state.inputs[t.key]=stdinInput.value;saveState()});
 renderNav();loadTask();
+// Надёжное открытие викторины: обработчик работает даже после перерисовки меню.
+document.addEventListener('click',function(e){
+  const quizBtn=e.target.closest('[data-action="open-quiz"]');
+  if(quizBtn){
+    e.preventDefault();
+    e.stopPropagation();
+    openQuiz(e);
+  }
+});
 </script></body></html>
