@@ -969,8 +969,46 @@ if(!saved.__collapsedLessonsInitialized){
 const state={currentKey:saved.currentKey||'1-1',openLessons:saved.openLessons||{1:false,2:false,3:false,4:false,5:false},codes:saved.codes||{},attempts:saved.attempts||{},failedCodes:saved.failedCodes||{},hints:saved.hints||{},solved:saved.solved||{},ratings:saved.ratings||{},inputs:saved.inputs||{},manualRunPassed:saved.manualRunPassed||{}};
 const taskTitle=document.getElementById('taskTitle'),taskShort=document.getElementById('taskShort'),taskProblem=document.getElementById('taskProblem'),taskImageWrap=document.getElementById('taskImageWrap'),taskImage=document.getElementById('taskImage'),taskExamples=document.getElementById('taskExamples'),taskTheory=document.getElementById('taskTheory'),lessonBadge=document.getElementById('lessonBadge'),lessonNav=document.getElementById('lessonNav'),solvedCount=document.getElementById('solvedCount'),hardestTask=document.getElementById('hardestTask'),hardestList=document.getElementById('hardestList'),progress=document.getElementById('progress'),status=document.getElementById('status'),hintBox=document.getElementById('hintBox'),runButton=document.getElementById('runButton'),hintButton=document.getElementById('hintButton'),clearButton=document.getElementById('clearButton'),theoryButton=document.getElementById('theoryButton'),theoryModal=document.getElementById('theoryModal'),closeTheory=document.getElementById('closeTheory'),modalTitle=document.getElementById('modalTitle'),modalBody=document.getElementById('modalBody'),ratingCard=document.getElementById('ratingCard'),ratingStars=document.getElementById('ratingStars'),ratingLabel=document.getElementById('ratingLabel'),attemptFill=document.getElementById('attemptFill');
 const editor=CodeMirror.fromTextArea(document.getElementById('code'),{mode:'python',lineNumbers:true,indentUnit:4,tabSize:4,viewportMargin:Infinity});
-// Автоматически закрываем кавычки: при вводе ' или \" редактор ставит пару и оставляет курсор внутри.
-editor.on('keydown',(cm,e)=>{if((e.key==='\"'||e.key==="'")&&!e.ctrlKey&&!e.metaKey&&!e.altKey){const cur=cm.getCursor(),line=cm.getLine(cur.line),next=line.charAt(cur.ch);if(next===e.key){cm.setCursor({line:cur.line,ch:cur.ch+1});e.preventDefault();return;}if(cm.somethingSelected())return;cm.replaceSelection(e.key+e.key);cm.setCursor({line:cur.line,ch:cur.ch+1});e.preventDefault();}});
+// Автозакрытие пар как в PyCharm: скобки и кавычки автоматически создают пару.
+editor.on('keydown',(cm,e)=>{
+  if(e.ctrlKey||e.metaKey||e.altKey||e.isComposing)return;
+  const pairs={'(' : ')','[' : ']','{' : '}'};
+  const open=e.key;
+  const close=pairs[open];
+  const cur=cm.getCursor();
+  const line=cm.getLine(cur.line);
+  const next=line.charAt(cur.ch);
+  const quotes=['"',"'"];
+  // Если закрывающий символ уже стоит под курсором, просто перемещаемся через него.
+  if([...Object.values(pairs),...quotes].includes(open)&&next===open&&!cm.somethingSelected()){
+    cm.setCursor({line:cur.line,ch:cur.ch+1});
+    e.preventDefault();
+    return;
+  }
+  if(quotes.includes(open)){
+    if(cm.somethingSelected()){
+      const selected=cm.getSelection();
+      cm.replaceSelection(open+selected+open);
+      cm.setCursor({line:cur.line,ch:cur.ch+selected.length+2});
+    }else{
+      cm.replaceSelection(open+open);
+      cm.setCursor({line:cur.line,ch:cur.ch+1});
+    }
+    e.preventDefault();
+    return;
+  }
+  if(close){
+    if(cm.somethingSelected()){
+      const selected=cm.getSelection();
+      cm.replaceSelection(open+selected+close);
+      cm.setCursor({line:cur.line,ch:cur.ch+selected.length+2});
+    }else{
+      cm.replaceSelection(open+close);
+      cm.setCursor({line:cur.line,ch:cur.ch+1});
+    }
+    e.preventDefault();
+  }
+});
 const interactiveRunButton=document.getElementById('interactiveRunButton');const consoleBox=document.getElementById('console');const consoleOutput=document.getElementById('consoleOutput');const stdinInput=document.getElementById('stdinInput');
 function saveState(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
 function currentTask(){return allTasks.find(t=>t.key===state.currentKey)||allTasks[0]}
@@ -1507,7 +1545,7 @@ function loadTaskImage(t){
   };
   tryNext();
 }
-function loadTask(){const t=currentTask();const l=getLesson(t.lessonId);lessonBadge.textContent=`ЗАНЯТИЕ ${l.id} · ${l.subtitle.toUpperCase()}`;taskTitle.textContent=t.title;taskShort.textContent=t.short;taskProblem.textContent=t.problem;loadTaskImage(t);renderTestData(t);taskTheory.textContent=t.theory||'Смотри теорию занятия и попробуй сформулировать условие своими словами.';const stored=state.codes[t.key];editor.setValue(stored!==undefined?stored:t.starter||'');stdinInput.value=state.inputs[t.key]||'';const a=Number(state.attempts[t.key]||0);updateProgress(a);hintBox.classList.toggle('show',!!state.hints[t.key]);if(state.hints[t.key])hintBox.textContent='💡 '+t.hint;updateHintButton(a);updateSubmitButton();interactiveRunButton.disabled=false;interactiveRunButton.textContent='▶ Запустить код';showConsoleOutput('Здесь появится результат работы программы.');consoleBox.classList.remove('show');showStatus('','');editor.focus();renderRating()}
+function loadTask(){const t=currentTask();const l=getLesson(t.lessonId);lessonBadge.textContent=`ЗАНЯТИЕ ${l.id} · ${l.subtitle.toUpperCase()}`;taskTitle.textContent=t.title;taskShort.textContent=t.short;taskProblem.textContent=t.problem;loadTaskImage(t);renderTestData(t);taskTheory.textContent=t.theory||'Смотри теорию занятия и попробуй сформулировать условие своими словами.';const stored=state.codes[t.key];const lessonOne=Number(t.lessonId)===1;const storedIsStarter=stored!==undefined&&normalizeCode(stored)===normalizeCode(t.starter||'');const codeToLoad=lessonOne?(stored===undefined||storedIsStarter?'':stored):(stored!==undefined?stored:t.starter||'');editor.setValue(codeToLoad);stdinInput.value=state.inputs[t.key]||'';const a=Number(state.attempts[t.key]||0);updateProgress(a);hintBox.classList.toggle('show',!!state.hints[t.key]);if(state.hints[t.key])hintBox.textContent='💡 '+t.hint;updateHintButton(a);updateSubmitButton();interactiveRunButton.disabled=false;interactiveRunButton.textContent='▶ Запустить код';showConsoleOutput('Здесь появится результат работы программы.');consoleBox.classList.remove('show');showStatus('','');editor.focus();renderRating()}
 function updateHintButton(a){if(state.hints[currentTask().key]){hintButton.disabled=true;hintButton.textContent='💡 Подсказка открыта';return}hintButton.disabled=a<MAX_FAILED_ATTEMPTS;hintButton.textContent='💡 Подсказка'}
 function showStatus(type,msg){if(!msg){status.className='status';status.textContent='';return}status.className='status show '+type;status.textContent=msg}
 function normalizeOutput(text){return String(text).replace(/\r\n/g,'\n').trim()}
