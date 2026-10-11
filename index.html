@@ -59,6 +59,14 @@ body.quiz-mode .quiz-view{display:block}
 .quiz-result-date{color:#7a8392;text-align:right}
 .quiz-back{width:100%;margin-bottom:14px;background:#303747;color:#d9deea;border:0;border-radius:9px;padding:9px 10px;cursor:pointer;font-size:12px;text-align:left}
 @media(max-width:760px){.quiz-name-card,.quiz-teacher-head{align-items:stretch;flex-direction:column}.quiz-name-input{width:100%}.quiz-hero h2{font-size:25px}.quiz-question-title{font-size:18px}.quiz-result-row{grid-template-columns:1fr 90px}.quiz-result-date{grid-column:1/-1;text-align:left}}
+
+
+/* Авторизация учеников и преподавателя */
+.auth-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#edf2fb,#e8eee3);overflow:auto}
+.auth-overlay[hidden]{display:none!important}.auth-card{width:min(100%,440px);background:#fff;border:1px solid #e0e6f0;border-radius:22px;padding:28px;box-shadow:0 22px 70px rgba(25,35,60,.18)}
+.auth-brand{font-size:24px;font-weight:900;color:#202633;margin:0 0 5px}.auth-subtitle{font-size:13px;color:#657087;line-height:1.5;margin:0 0 22px}.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px}.auth-tab{padding:11px;border:1px solid #dfe5f0;background:#f4f6fb;color:#36415a;border-radius:10px;font-weight:800;cursor:pointer}.auth-tab.active{background:#5268df;color:#fff;border-color:#5268df}.auth-label{display:block;font-size:13px;font-weight:800;color:#344054;margin:12px 0 6px}.auth-input{box-sizing:border-box;width:100%;padding:12px 13px;border:1px solid #ccd5e5;border-radius:10px;font-size:16px;outline:none}.auth-input:focus{border-color:#586fe5;box-shadow:0 0 0 3px rgba(88,111,229,.12)}.auth-submit{width:100%;border:0;border-radius:10px;background:#5268df;color:#fff;font-weight:900;padding:13px;margin-top:18px;cursor:pointer}.auth-submit:disabled{opacity:.6;cursor:wait}.auth-message{display:none;margin-top:13px;padding:11px 12px;border-radius:9px;font-size:13px;line-height:1.45;white-space:pre-wrap}.auth-message.show{display:block}.auth-message.error{background:#fff0f0;color:#a12626}.auth-message.success{background:#eaf8ef;color:#187344}.auth-foot{font-size:11px;color:#778196;line-height:1.5;margin-top:15px}.session-bar{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:8px 14px;background:#fff;border-bottom:1px solid #e4e9f2;font-size:12px;color:#596579}.session-bar button{border:0;border-radius:8px;background:#edf1f8;color:#35415a;padding:7px 10px;font-weight:800;cursor:pointer}.account-manager{background:#fff;border:1px solid #e2e7f0;border-radius:14px;padding:16px;margin:0 0 16px}.account-manager h3{margin:0 0 8px}.account-create-row{display:grid;grid-template-columns:1fr auto;gap:8px}.account-list{display:grid;gap:8px;margin-top:14px}.account-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px;border:1px solid #e6eaf2;border-radius:10px}.account-row small{display:block;color:#778196;margin-top:3px}.account-row button{border:0;border-radius:8px;padding:8px 10px;background:#edf1f8;color:#34415a;font-weight:800;cursor:pointer}.account-created-code{padding:12px;background:#f1f6ff;border-radius:10px;margin-top:10px;font-weight:800;overflow-wrap:anywhere}
+@media(max-width:520px){.auth-card{padding:22px 18px}.account-create-row{grid-template-columns:1fr}.account-row{align-items:flex-start;flex-direction:column}.session-bar{justify-content:space-between}}
+
 </style>
 <style id="quiz-design-fix">
 /* ===== ВИКТОРИНА — ЕДИНЫЙ СТИЛЬ С САЙТОМ ===== */
@@ -244,7 +252,7 @@ body.student-dashboard-mode .student-dashboard-view{display:block!important}
   body.mobile-menu-open .mobile-menu-toggle{z-index:130}
 }
 </style>
-</head><body><div class="app"><aside class="sidebar" id="lessonSidebar"><h1>Маршрутные листы</h1><div class="teacher-name">Педагог Самибаева Парвона Мансуровна</div><p class="sidebar-subtitle">Python · теория · задачи · практика</p><div class="result-card"><div class="result-title">Мой результат</div><div class="result-number" id="solvedCount">0 / 69</div><div class="result-small" id="hardestTask">Самая сложная задача: —</div><details class="hardest-details"><summary>Посмотреть список сложных задач</summary><div id="hardestList">Пока нет оценённых решённых задач.</div></details></div><button type="button" class="student-dashboard-button" id="studentDashboardButton">👨‍🎓 Кабинет ученика</button><button type="button" class="teacher-dashboard-button" id="teacherDashboardButton">👩‍🏫 Кабинет преподавателя</button><div id="lessonNav"></div></aside><main class="main"><button type="button" id="mobileMenuToggle" class="mobile-menu-toggle" aria-expanded="false" aria-controls="lessonSidebar">☰ Меню занятий</button><div class="top"><span class="badge" id="lessonBadge">ЗАНЯТИЕ 2</span><h2 id="taskTitle"></h2><p class="description" id="taskShort"></p></div><div id="taskView"><section class="card"><h3>Условие</h3><div class="problem" id="taskProblem"></div><div class="task-image-wrap" id="taskImageWrap" hidden><img id="taskImage" class="task-image" alt=""></div></section><section class="card"><h3>Небольшая теория</h3><div class="theory" id="taskTheory"></div><div class="actions"><button class="action theory-button" id="theoryButton">📖 Открыть всю теорию занятия</button></div></section><section class="card"><h3>Тестовые данные</h3><div class="test-data" id="taskExamples"></div></section><section class="card"><h3>Напишите программу</h3><div class="editor-wrap"><textarea id="code"></textarea></div><div class="io-block"><div class="io-title">Тестовый ввод и вывод</div><div class="io-subtitle">Введи данные для своей программы так же, как они поступали бы с клавиатуры. Если программа вызывает <b>input()</b> несколько раз — каждое значение пиши с новой строки.</div><textarea class="stdin-input" id="stdinInput" spellcheck="false" placeholder="Например:
+</head><body><div class="session-bar" id="sessionBar" hidden><span id="sessionLabel"></span><button type="button" id="logoutButton">Выйти</button></div><div class="app" id="mainApp"><aside class="sidebar" id="lessonSidebar"><h1>Маршрутные листы</h1><div class="teacher-name">Педагог Самибаева Парвона Мансуровна</div><p class="sidebar-subtitle">Python · теория · задачи · практика</p><div class="result-card"><div class="result-title">Мой результат</div><div class="result-number" id="solvedCount">0 / 69</div><div class="result-small" id="hardestTask">Самая сложная задача: —</div><details class="hardest-details"><summary>Посмотреть список сложных задач</summary><div id="hardestList">Пока нет оценённых решённых задач.</div></details></div><button type="button" class="student-dashboard-button" id="studentDashboardButton">👨‍🎓 Кабинет ученика</button><button type="button" class="teacher-dashboard-button" id="teacherDashboardButton">👩‍🏫 Кабинет преподавателя</button><div id="lessonNav"></div></aside><main class="main"><button type="button" id="mobileMenuToggle" class="mobile-menu-toggle" aria-expanded="false" aria-controls="lessonSidebar">☰ Меню занятий</button><div class="top"><span class="badge" id="lessonBadge">ЗАНЯТИЕ 2</span><h2 id="taskTitle"></h2><p class="description" id="taskShort"></p></div><div id="taskView"><section class="card"><h3>Условие</h3><div class="problem" id="taskProblem"></div><div class="task-image-wrap" id="taskImageWrap" hidden><img id="taskImage" class="task-image" alt=""></div></section><section class="card"><h3>Небольшая теория</h3><div class="theory" id="taskTheory"></div><div class="actions"><button class="action theory-button" id="theoryButton">📖 Открыть всю теорию занятия</button></div></section><section class="card"><h3>Тестовые данные</h3><div class="test-data" id="taskExamples"></div></section><section class="card"><h3>Напишите программу</h3><div class="editor-wrap"><textarea id="code"></textarea></div><div class="io-block"><div class="io-title">Тестовый ввод и вывод</div><div class="io-subtitle">Введи данные для своей программы так же, как они поступали бы с клавиатуры. Если программа вызывает <b>input()</b> несколько раз — каждое значение пиши с новой строки.</div><textarea class="stdin-input" id="stdinInput" spellcheck="false" placeholder="Например:
 15"></textarea><div class="io-note">Запуск программы здесь не считается попыткой решения. Можно запускать программу сколько угодно раз, исправлять код и пробовать снова.</div><div class="result-label">Результат запуска</div><div class="console" id="console"><div class="console-head">Терминал программы</div><div class="console-output empty" id="consoleOutput">Здесь появится результат работы программы.</div></div></div><div class="actions"><button class="action interactive-run" id="interactiveRunButton">▶ Запустить код</button><button class="action run" id="runButton">✓ Отправить на проверку</button><button class="action hint" id="hintButton" disabled>💡 Подсказка</button><button class="action clear" id="clearButton">Очистить</button></div><div class="status" id="status"></div><div class="task-bottom-panel"><div class="attempt-panel"><div class="attempt-head"><span class="attempt-title">Проверка решения</span><span class="attempt-value" id="progress">Неудачных проверок: 0 / 5</span></div><div class="attempt-bar"><div class="attempt-fill" id="attemptFill"></div></div></div><div class="rating-card" id="ratingCard"><div class="rating-head"><div class="rating-icon">★</div><div><div class="rating-title">Насколько сложной была задача?</div><div class="rating-subtitle">Оценить задачу можно после успешного решения. Выбери от 1 до 5.</div></div></div><div class="rating-stars" id="ratingStars"></div><div class="rating-label" id="ratingLabel">Сначала реши задачу, затем оцени её.</div></div></div><div class="hint-box" id="hintBox"></div><div class="small">Кнопка «Запустить код» проверяет программу на твоих данных. Кнопка «Отправить на проверку» запускает скрытые тесты. Входные данные скрытых проверок ученику не показываются.</div></section></div>
 <section id="teacherDashboardView" class="teacher-dashboard-view" aria-hidden="true">
   <div class="teacher-dashboard-shell">
@@ -254,6 +262,15 @@ body.student-dashboard-mode .student-dashboard-view{display:block!important}
         <h2 class="teacher-dashboard-overview-title">Кабинет преподавателя</h2>
         <p class="teacher-dashboard-overview-subtitle">Выбери занятие, чтобы посмотреть статистику группы и прогресс учеников.</p>
       </div>
+      <section class="account-manager" id="accountManager" hidden>
+        <h3>Управление аккаунтами учеников</h3>
+        <div class="student-dashboard-note">Создай аккаунт и передай ребёнку логин и одноразово показанный код доступа. Код можно сбросить, прогресс при этом сохранится.</div>
+        <label class="auth-label" for="newStudentName">Имя ученика</label>
+        <div class="account-create-row"><input class="auth-input" id="newStudentName" maxlength="60" placeholder="Например, Маша"><button type="button" class="auth-submit" id="createStudentButton" style="margin-top:0;width:auto">+ Создать аккаунт</button></div>
+        <div id="createdStudentCredentials" class="account-created-code" hidden></div>
+        <div id="accountManagerMessage" class="auth-message"></div>
+        <div class="account-list" id="accountList"></div>
+      </section>
       <div id="teacherLessonCards" class="teacher-lesson-grid">
         <div class="teacher-loading">Загружаем данные из Google Таблицы…</div>
       </div>
@@ -298,7 +315,7 @@ body.student-dashboard-mode .student-dashboard-view{display:block!important}
       <div class="student-profile-row">
         <div>
           <div class="student-profile-name" id="studentProfileName">Ученик</div>
-          <div class="student-profile-note">Имя используется для поиска твоего прогресса в системе.</div>
+          <div class="student-profile-note">Имя связано с твоим аккаунтом и не может быть изменено здесь.</div>
         </div>
         <div class="student-dashboard-actions">
           <input id="studentNameInput" class="student-name-input" type="text" maxlength="60" placeholder="Например, Маша">
@@ -371,12 +388,61 @@ body.student-dashboard-mode .student-dashboard-view{display:block!important}
     </div>
   </div>
 </section>
-</main></div><div class="modal" id="theoryModal"><div class="modal-card"><div class="modal-head"><h3 id="modalTitle">Теория</h3><button class="close" id="closeTheory">×</button></div><div id="modalBody"></div></div></div><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.js"></script><script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script><script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script><script>
+</main></div><div class="modal" id="theoryModal"><div class="modal-card"><div class="modal-head"><h3 id="modalTitle">Теория</h3><button class="close" id="closeTheory">×</button></div><div id="modalBody"></div></div></div><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.css"><div class="auth-overlay" id="authOverlay">
+  <div class="auth-card">
+    <h1 class="auth-brand">Python-класс</h1>
+    <p class="auth-subtitle">Войди в свой аккаунт, чтобы видеть личный прогресс и сохранённые решения.</p>
+    <div class="auth-tabs"><button type="button" class="auth-tab active" id="studentLoginTab">👨‍🎓 Ученик</button><button type="button" class="auth-tab" id="teacherLoginTab">👩‍🏫 Преподаватель</button></div>
+    <form id="authForm">
+      <div id="studentLoginFields"><label class="auth-label" for="authLogin">Логин ученика</label><input class="auth-input" id="authLogin" autocomplete="username" placeholder="Например, masha4821" maxlength="80"><label class="auth-label" for="authCode">Код доступа</label><input class="auth-input" id="authCode" type="password" inputmode="numeric" autocomplete="current-password" placeholder="6-значный код" maxlength="32"></div>
+      <div id="teacherLoginFields" hidden><label class="auth-label" for="teacherCode">Код преподавателя</label><input class="auth-input" id="teacherCode" type="password" autocomplete="current-password" placeholder="Введи свой код доступа"></div>
+      <button class="auth-submit" id="authSubmit" type="submit">Войти</button>
+    </form>
+    <div class="auth-message" id="authMessage"></div>
+    <div class="auth-foot">Если ты ученик и потерял код, попроси преподавателя выдать новый. Учитель может просматривать прогресс учеников из своего кабинета.</div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.js"></script><script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script><script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script><script>
 const STORAGE_KEY='python_route_sheet_v4';
 
 // Google Apps Script: результаты викторины отправляются в таблицу преподавателя.
 const QUIZ_RESULTS_URL='https://script.google.com/macros/s/AKfycbxkr_vOxmYGG-8X120MGo3m3sNZVUTr8KyCatdBxvnfK5q2XQl2Mb6oyktrVG9MZDEFTg/exec';
 const STUDENT_NAME_KEY='python_student_name_v1';
+
+const AUTH_STORAGE_KEY='python_auth_session_v1';
+let authSession=JSON.parse(localStorage.getItem(AUTH_STORAGE_KEY)||'null');
+let authMode='student';
+function authRequest(payload){return fetch(QUIZ_RESULTS_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)}).then(r=>r.json());}
+function showAuthMessage(message,type='error'){const el=document.getElementById('authMessage');el.textContent=message||'';el.className='auth-message'+(message?' show '+type:'');}
+function showAccountManagerMessage(message,type='error'){const el=document.getElementById('accountManagerMessage');el.textContent=message||'';el.className='auth-message'+(message?' show '+type:'');}
+function setAuthMode(mode){authMode=mode;document.getElementById('studentLoginTab').classList.toggle('active',mode==='student');document.getElementById('teacherLoginTab').classList.toggle('active',mode==='teacher');document.getElementById('studentLoginFields').hidden=mode!=='student';document.getElementById('teacherLoginFields').hidden=mode!=='teacher';document.getElementById('authSubmit').textContent=mode==='student'?'Войти как ученик':'Войти как преподаватель';showAuthMessage('');}
+function applyAuthSession(session){authSession=session;localStorage.setItem(AUTH_STORAGE_KEY,JSON.stringify(session));document.getElementById('authOverlay').hidden=true;document.getElementById('sessionBar').hidden=false;document.getElementById('sessionLabel').textContent=session.role==='teacher'?'Вы вошли как преподаватель':`Ученик: ${session.name} · ${session.login}`;document.getElementById('teacherDashboardButton').hidden=session.role!=='teacher';document.getElementById('studentDashboardButton').hidden=session.role!=='student';document.getElementById('accountManager').hidden=session.role!=='teacher';if(session.role==='teacher'&&!document.getElementById('changeTeacherCodeButton'))document.getElementById('accountManager').insertAdjacentHTML('beforeend','<button type="button" class="teacher-dashboard-action" id="changeTeacherCodeButton" style="margin-top:12px">🔐 Изменить код преподавателя</button>');const changeBtn=document.getElementById('changeTeacherCodeButton');if(changeBtn)changeBtn.onclick=changeTeacherAccessCode;if(session.role==='student'){setStudentName(session.name);document.getElementById('studentNameInput').value=session.name;}else{document.getElementById('studentNameInput').value='';} }
+function showAuthScreen(){document.getElementById('authOverlay').hidden=false;document.getElementById('sessionBar').hidden=true;document.getElementById('teacherDashboardButton').hidden=true;document.getElementById('studentDashboardButton').hidden=true;}
+function logoutAccount(){authSession=null;localStorage.removeItem(AUTH_STORAGE_KEY);closeTeacherDashboard();closeStudentDashboard();closeQuiz();showAuthScreen();document.getElementById('authCode').value='';document.getElementById('teacherCode').value='';showAuthMessage('');}
+document.getElementById('studentLoginTab').onclick=()=>setAuthMode('student');document.getElementById('teacherLoginTab').onclick=()=>setAuthMode('teacher');document.getElementById('logoutButton').onclick=logoutAccount;
+document.getElementById('authForm').addEventListener('submit',async e=>{e.preventDefault();const btn=document.getElementById('authSubmit');btn.disabled=true;btn.textContent='Проверяем…';showAuthMessage('');try{const payload=authMode==='teacher'?{action:'loginTeacher',code:document.getElementById('teacherCode').value}:{action:'loginStudent',login:document.getElementById('authLogin').value.trim(),code:document.getElementById('authCode').value.trim()};const result=await authRequest(payload);if(!result.success)throw new Error(result.error||'Не удалось войти. Проверь данные.');applyAuthSession(result.session);showAuthMessage('');if(authSession.role==='teacher'){document.getElementById('accountManager').hidden=false;loadAccountList();}else{renderNav();updateStats();} }catch(err){showAuthMessage(err.message||'Не удалось связаться с сервером. Проверь, что Apps Script обновлён и опубликован.');}finally{btn.disabled=false;btn.textContent=authMode==='student'?'Войти как ученик':'Войти как преподаватель';}});
+async function loadAccountList(){if(!authSession||authSession.role!=='teacher')return;const box=document.getElementById('accountList');box.innerHTML='<div class="teacher-loading">Загружаем аккаунты…</div>';try{const r=await authRequest({action:'listStudents',token:authSession.token});if(!r.success)throw new Error(r.error||'Не удалось загрузить аккаунты');box.innerHTML=(r.students||[]).map(st=>`<div class="account-row"><div><strong>${escapeHtml(st.name)}</strong><small>Логин: ${escapeHtml(st.login)} · ${st.active?'активен':'отключён'}</small></div><div style="display:flex;gap:6px;flex-wrap:wrap"><button type="button" data-view-id="${escapeHtml(st.id)}" data-view-name="${escapeHtml(st.name)}">Посмотреть профиль</button><button type="button" data-reset-id="${escapeHtml(st.id)}" data-reset-name="${escapeHtml(st.name)}">Выдать новый код</button></div></div>`).join('')||'<div class="student-dashboard-empty">Пока нет аккаунтов учеников.</div>';box.querySelectorAll('[data-reset-id]').forEach(b=>b.onclick=()=>resetStudentCode(b.dataset.resetId,b.dataset.resetName));box.querySelectorAll('[data-view-id]').forEach(b=>b.onclick=()=>viewStudentAccount(b.dataset.viewId,b.dataset.viewName));}catch(err){box.innerHTML='';showAccountManagerMessage(err.message);}}
+document.getElementById('createStudentButton').onclick=async()=>{const name=document.getElementById('newStudentName').value.trim();if(!name){showAccountManagerMessage('Введи имя ученика.');return;}const btn=document.getElementById('createStudentButton');btn.disabled=true;try{const r=await authRequest({action:'createStudent',token:authSession&&authSession.token,name});if(!r.success)throw new Error(r.error||'Не удалось создать аккаунт');const c=document.getElementById('createdStudentCredentials');c.hidden=false;c.textContent=`Сохрани и передай ученику: логин ${r.login} · код доступа ${r.code}. Код больше не будет показан полностью.`;document.getElementById('newStudentName').value='';showAccountManagerMessage('Аккаунт создан. Передай данные ученику безопасным способом.','success');await loadAccountList();}catch(err){showAccountManagerMessage(err.message);}finally{btn.disabled=false;}};
+
+let teacherViewingStudent=null;
+async function viewStudentAccount(studentId, studentName){
+  if(!authSession||authSession.role!=='teacher')return;
+  try{
+    showAccountManagerMessage('Загружаем профиль '+studentName+'…','success');
+    const r=await authRequest({action:'getStudentTasksForTeacher',token:authSession.token,studentId});
+    if(!r.success)throw new Error(r.error||'Не удалось загрузить профиль');
+    teacherViewingStudent={id:studentId,name:studentName};
+    closeTeacherDashboard();closeQuiz();document.body.classList.add('student-dashboard-mode');studentDashboardView.setAttribute('aria-hidden','false');
+    studentDashboardButton.classList.remove('active');teacherDashboardButton.classList.add('active');
+    studentDashboardRows=(r.tasks||[]).map(normalizeStudentRow);restoreStudentProgress(studentDashboardRows,studentName);buildStudentDashboard(studentDashboardRows,studentName);
+    studentProfileName.textContent=studentName+' (просмотр преподавателем)';
+    showStudentDashboardStatus('Режим просмотра преподавателя: ты смотришь сохранённый прогресс и решения этого ученика.');
+  }catch(err){showAccountManagerMessage(err.message);}
+}
+async function resetStudentCode(id,name){if(!confirm(`Выдать новый код доступа ученику «${name}»? Старый код перестанет работать.`))return;try{const r=await authRequest({action:'resetStudentCode',token:authSession.token,studentId:id});if(!r.success)throw new Error(r.error||'Не удалось сбросить код');const c=document.getElementById('createdStudentCredentials');c.hidden=false;c.textContent=`Новый код для ${name}: ${r.code}. Передай его ученику. Логин остаётся прежним.`;showAccountManagerMessage('Код обновлён. Прогресс ученика сохранён.','success');}catch(err){showAccountManagerMessage(err.message);}}
+async function changeTeacherAccessCode(){const next=prompt('Введи новый код преподавателя (не менее 8 символов):');if(!next)return;if(next.trim().length<8){showAccountManagerMessage('Код преподавателя должен содержать не менее 8 символов.');return;}try{const r=await authRequest({action:'changeTeacherCode',token:authSession.token,newCode:next.trim()});if(!r.success)throw new Error(r.error||'Не удалось изменить код');showAccountManagerMessage('Код преподавателя изменён. При следующем входе используй новый код.','success');}catch(err){showAccountManagerMessage(err.message);}}
+window.addEventListener('DOMContentLoaded',async()=>{if(authSession&&authSession.token){try{const r=await authRequest({action:'whoami',token:authSession.token});if(!r.success)throw new Error('Сеанс истёк');applyAuthSession(r.session);if(authSession.role==='teacher')loadAccountList();}catch(e){logoutAccount();showAuthMessage('Сеанс истёк. Войди снова.');}}else showAuthScreen();});
+
 const MAX_FAILED_ATTEMPTS=5;
 const lesson1Tasks=[
 {id:1,title:'Задача 1. Здравствуй, мир!',level:'past',short:'Выведи на экран заданное приветствие.',problem:'Напишите программу, которая выводит на экран текст:\nЗдравствуй, мир!\n\nНа вход ничего не подаётся.',examples:'Здравствуй, мир!',starter:'# Выведи приветствие\n',hint:'Используй print() и заключи текст в кавычки.',theory:'print() выводит текст на экран.',tests:[{input:[],expected:'Здравствуй, мир!'}]},
@@ -1157,30 +1223,21 @@ function buildStudentDashboard(rows,name){
 }
 
 async function loadStudentDashboard(){
-  const name=getSavedStudentName();
-  studentNameInput.value=name;
+  if(!authSession||authSession.role!=='student'){showStudentDashboardStatus('Сначала войди в аккаунт ученика.');return;}
+  const name=authSession.name;
+  studentNameInput.value=name;studentNameInput.disabled=true;studentNameSave.hidden=true;
   showStudentDashboardStatus('');
-  if(!name){
-    buildStudentDashboard([], '');
-    showStudentDashboardStatus('Введи своё имя. Затем сайт найдёт твой прогресс в общей системе.');
-    return;
-  }
-
   try{
-    const response=await fetch(QUIZ_RESULTS_URL,{method:'GET',cache:'no-store'});
-    if(!response.ok)throw new Error('Сервер вернул ошибку '+response.status);
-    const data=await response.json();
+    const data=await authRequest({action:'getStudentTasks',token:authSession.token});
     if(!data.success)throw new Error(data.error||'Не удалось получить данные.');
     studentDashboardRows=(Array.isArray(data.tasks)?data.tasks:[]).map(normalizeStudentRow);
     restoreStudentProgress(studentDashboardRows,name);
     buildStudentDashboard(studentDashboardRows,name);
-  }catch(error){
-    buildStudentDashboard([],name);
-    showStudentDashboardStatus('Не удалось загрузить прогресс. Проверь подключение к интернету и опубликованную версию Apps Script.');
-  }
+  }catch(error){buildStudentDashboard([],name);showStudentDashboardStatus('Не удалось загрузить личный прогресс. Возможно, сеанс истёк — выйди и войди снова.');}
 }
 
 function openStudentDashboard(){
+  if(!authSession||authSession.role!=='student'){showStatus('warning','Войди в аккаунт ученика, чтобы открыть личный прогресс.');return}
   closeQuiz();
   closeTeacherDashboard();
   studentDashboardButton.classList.add('active');
@@ -1198,10 +1255,12 @@ function closeStudentDashboard(){
 
 studentDashboardButton.onclick=openStudentDashboard;
 studentDashboardBack.onclick=()=>{
+  if(teacherViewingStudent){teacherViewingStudent=null;closeStudentDashboard();openTeacherDashboard();return;}
   closeStudentDashboard();
 };
-studentDashboardRefresh.onclick=loadStudentDashboard;
+studentDashboardRefresh.onclick=()=>{if(teacherViewingStudent){viewStudentAccount(teacherViewingStudent.id,teacherViewingStudent.name);}else loadStudentDashboard();};
 studentNameSave.onclick=()=>{
+  if(authSession&&authSession.role==='student'){showStudentDashboardStatus('Имя аккаунта меняет преподаватель.');return;}
   const name=setStudentName(studentNameInput.value);
   if(!name){
     showStudentDashboardStatus('Введите имя, чтобы найти прогресс.');
@@ -1233,6 +1292,7 @@ function showTeacherDashboardStatus(message){
 }
 
 function openTeacherDashboard(){
+  if(!authSession||authSession.role!=='teacher'){showStatus('warning','Войди по коду преподавателя, чтобы открыть кабинет.');return}
   closeQuiz();
   closeStudentDashboard();
   teacherDashboardButton.classList.add('active');
@@ -1418,9 +1478,7 @@ function buildTeacherDashboard(rows,lessonId=5){
 async function loadTeacherDashboard(){
   showTeacherDashboardStatus('');
   try{
-    const response=await fetch(QUIZ_RESULTS_URL,{method:'GET',cache:'no-store'});
-    if(!response.ok)throw new Error('Сервер вернул ошибку '+response.status);
-    const data=await response.json();
+    const data=await authRequest({action:'getTeacherTasks',token:authSession&&authSession.token});
     if(!data.success)throw new Error(data.error||'Не удалось получить данные.');
     teacherDashboardRows=(Array.isArray(data.tasks)?data.tasks:[]).map(normalizeTeacherRow);
     buildTeacherOverview(teacherDashboardRows);
@@ -1566,16 +1624,13 @@ function getStdinValues(){const raw=String(stdinInput.value||'').replace(/\r\n/g
 function showConsoleOutput(text,ok=true){consoleBox.classList.add('show');consoleOutput.className='console-output'+(ok?'':' error');consoleOutput.textContent=text||'(программа ничего не вывела)'}
 async function runInteractive(){const code=normalizeCode(editor.getValue());if(!code){showStatus('warning','Сначала напиши программу.');return}const values=getStdinValues();state.inputs[currentTask().key]=stdinInput.value;saveState();interactiveRunButton.disabled=true;interactiveRunButton.textContent='⏳ Запускаем...';showStatus('info','▶ Программа запускается на твоих входных данных...');const result=await runOneTest(code,values);interactiveRunButton.disabled=false;interactiveRunButton.textContent='▶ Запустить код';if(!result.ok){const friendly=explainPythonError(result.error);showConsoleOutput(friendly,false);showStatus('error','⚠️ Программа завершилась с ошибкой. Запуск и синтаксическая ошибка не считаются попыткой решения. Прочитай объяснение в терминале, исправь код и запусти снова.');return}const actual=result.output;showConsoleOutput(actual,true);if(freeTerminalLesson!==null){showStatus('success','Программа выполнилась без ошибки. В свободном терминале решение не оценивается.');return}const t=currentTask();let publicMatch=null;if(Array.isArray(t.tests)){publicMatch=t.tests.find(test=>normalizeOutput((test.input||[]).join('\n'))===normalizeOutput(stdinInput.value));}if(publicMatch){if(normalizeComparableOutput(actual)===normalizeComparableOutput(publicMatch.expected)){state.manualRunPassed[t.key]=true;saveState();updateSubmitButton();showStatus('success','✅ На выбранном тесте программа дала правильный результат. Теперь можно нажать «Отправить на проверку» — там программа пройдёт скрытые тесты.')}else{const diagnosis=explainWrongOutput(publicMatch.expected,actual);showConsoleOutput(`${actual||'(программа ничего не вывела)'}\n\n⚠️ Результат не совпал с ожидаемым.\n\n${diagnosis}`,false);showStatus('warning',`⚠️ Нашли отличие в результате. Посмотри объяснение в терминале и попробуй исправить программу.\n\n${diagnosis}`)}return}state.manualRunPassed[t.key]=true;saveState();updateSubmitButton();showStatus('success','✅ Программа выполнилась без ошибки. Проверь результат на экране, попробуй ещё несколько входных данных и, когда будешь уверен(а), нажми «Отправить на проверку».')}
 async function sendTaskResult(t){
-  let name=localStorage.getItem(STUDENT_NAME_KEY)||'';
-  if(!name){
-    name=window.prompt('Как тебя зовут?\n\nИмя нужно преподавателю, чтобы видеть твой прогресс.','');
-    name=String(name||'').trim();
-    if(name)localStorage.setItem(STUDENT_NAME_KEY,name);
-  }
-  if(!name)return {success:false,skipped:true};
+  if(!authSession||authSession.role!=='student')return {success:false,skipped:true,error:'Не выполнен вход в аккаунт ученика.'};
+  const name=authSession.name;
   const payload={
     type:'task',
-    name:name,
+    token:authSession.token,
+    accountId:authSession.accountId,
+    name:authSession.name,
     date:new Date().toISOString(),
     lesson:'Занятие '+t.lessonId,
     taskId:t.id,
@@ -1710,7 +1765,8 @@ function nextQuiz(){
   else finishQuiz();
 }
 async function finishQuiz(){
-  const name=(document.getElementById('quizStudentName').value||'Без имени').trim()||'Без имени';
+  const name=(authSession&&authSession.role==='student'?authSession.name:(document.getElementById('quizStudentName').value||'')).trim();
+  if(!authSession||authSession.role!=='student'){showAuthScreen();showAuthMessage('Войди в аккаунт ученика, чтобы сохранить результат викторины.');return}
   quizState.name=name;
   if(!name){document.getElementById('quizStudentName').focus();return}
   const result={name,score:quizState.score,total:activeQuizQuestions.length,date:new Date().toLocaleString('ru-RU'),answers:[...quizState.answers]};
@@ -1722,6 +1778,7 @@ async function finishQuiz(){
   // Отправляем результат в Google Таблицу преподавателя.
   // no-cors нужен для отправки из GitHub Pages в Google Apps Script.
   const quizPayload={
+    type:'quiz',token:authSession.token,accountId:authSession.accountId,
     name:name,
     date:result.date,
     result:`${quizState.score} / ${activeQuizQuestions.length}`,
@@ -1736,12 +1793,7 @@ async function finishQuiz(){
   };
   let sendStatus='Результат сохранён на этом устройстве.';
   try{
-    await fetch(QUIZ_RESULTS_URL,{
-      method:'POST',
-      mode:'no-cors',
-      headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body:JSON.stringify(quizPayload)
-    });
+    await authRequest(quizPayload);
     sendStatus='Результат отправлен преподавателю.';
   }catch(error){
     console.error('Не удалось отправить результат в Google Таблицу:',error);
@@ -1801,4 +1853,7 @@ document.addEventListener('click',function(e){
     openQuiz(e);
   }
 });
-</script></body></html>
+</script>
+
+
+</body></html>
