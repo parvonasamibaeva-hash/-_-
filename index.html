@@ -252,7 +252,69 @@ body.student-dashboard-mode .student-dashboard-view{display:block!important}
   body.mobile-menu-open .mobile-menu-toggle{z-index:130}
 }
 </style>
-</head><body><div class="session-bar" id="sessionBar" hidden><span id="sessionLabel"></span><button type="button" id="logoutButton">Выйти</button></div><div class="app" id="mainApp"><aside class="sidebar" id="lessonSidebar"><h1>Маршрутные листы</h1><div class="teacher-name">Педагог Самибаева Парвона Мансуровна</div><p class="sidebar-subtitle">Python · теория · задачи · практика</p><div class="result-card"><div class="result-title">Мой результат</div><div class="result-number" id="solvedCount">0 / 69</div><div class="result-small" id="hardestTask">Самая сложная задача: —</div><details class="hardest-details"><summary>Посмотреть список сложных задач</summary><div id="hardestList">Пока нет оценённых решённых задач.</div></details></div><button type="button" class="student-dashboard-button" id="studentDashboardButton">👨‍🎓 Кабинет ученика</button><button type="button" class="teacher-dashboard-button" id="teacherDashboardButton">👩‍🏫 Кабинет преподавателя</button><div id="lessonNav"></div></aside><main class="main"><button type="button" id="mobileMenuToggle" class="mobile-menu-toggle" aria-expanded="false" aria-controls="lessonSidebar">☰ Меню занятий</button><div class="top"><span class="badge" id="lessonBadge">ЗАНЯТИЕ 2</span><h2 id="taskTitle"></h2><p class="description" id="taskShort"></p></div><div id="taskView"><section class="card"><h3>Условие</h3><div class="problem" id="taskProblem"></div><div class="task-image-wrap" id="taskImageWrap" hidden><img id="taskImage" class="task-image" alt=""></div></section><section class="card"><h3>Небольшая теория</h3><div class="theory" id="taskTheory"></div><div class="actions"><button class="action theory-button" id="theoryButton">📖 Открыть всю теорию занятия</button></div></section><section class="card"><h3>Тестовые данные</h3><div class="test-data" id="taskExamples"></div></section><section class="card"><h3>Напишите программу</h3><div class="editor-wrap"><textarea id="code"></textarea></div><div class="io-block"><div class="io-title">Тестовый ввод и вывод</div><div class="io-subtitle">Введи данные для своей программы так же, как они поступали бы с клавиатуры. Если программа вызывает <b>input()</b> несколько раз — каждое значение пиши с новой строки.</div><textarea class="stdin-input" id="stdinInput" spellcheck="false" placeholder="Например:
+
+<style id="auth-visual-refresh">
+/* Современный экран авторизации и заметная панель выхода */
+body > #authOverlay{
+  position:fixed!important;inset:0!important;z-index:2147483000!important;
+  display:flex;align-items:center;justify-content:center;
+  width:100vw;height:100dvh;min-height:100vh;padding:24px;
+  overflow-y:auto;overscroll-behavior:contain;
+  background:radial-gradient(ellipse at 15% 15%,rgba(123,143,255,.24),transparent 38%),
+             radial-gradient(ellipse at 85% 80%,rgba(79,209,171,.20),transparent 35%),
+             linear-gradient(135deg,#10172a 0%,#1d2a49 52%,#273c5a 100%);
+  isolation:isolate;
+}
+body > #authOverlay[hidden]{display:none!important}
+#authOverlay::before,#authOverlay::after{content:"";position:fixed;z-index:-1;border-radius:50%;filter:blur(1px);pointer-events:none}
+#authOverlay::before{width:300px;height:300px;top:-100px;right:8%;background:rgba(108,130,255,.15)}
+#authOverlay::after{width:360px;height:360px;bottom:-170px;left:5%;background:rgba(65,210,177,.12)}
+#authOverlay .auth-card{
+  position:relative;width:min(100%,460px);margin:auto;padding:36px 36px 30px;
+  border:1px solid rgba(255,255,255,.7);border-radius:26px;
+  background:rgba(255,255,255,.97);box-shadow:0 28px 90px rgba(0,0,0,.34);
+  color:#202a40;animation:authCardIn .28s ease-out;
+}
+#authOverlay .auth-brand{display:flex;align-items:center;gap:12px;margin:0 0 8px;font-size:29px;letter-spacing:-.7px;line-height:1.15;color:#1b2540}
+#authOverlay .auth-brand::before{content:"Py";display:flex;align-items:center;justify-content:center;flex:0 0 48px;width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,#6579f5,#4658c8);color:#fff;font-size:21px;letter-spacing:-1px;box-shadow:0 7px 18px rgba(82,104,223,.3)}
+#authOverlay .auth-subtitle{margin:0 0 25px 60px;color:#748097;font-size:13px;line-height:1.55}
+#authOverlay .auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:5px;margin:0 0 22px;border-radius:14px;background:#f0f3fa}
+#authOverlay .auth-tab{border:0;border-radius:10px;padding:12px 8px;background:transparent;color:#69758e;font-size:13px;font-weight:800;transition:background .18s,color .18s,box-shadow .18s}
+#authOverlay .auth-tab.active{background:#fff;color:#4358cc;box-shadow:0 3px 12px rgba(32,47,83,.1)}
+#authOverlay .auth-label{margin:15px 0 7px;color:#34405a;font-size:12px;font-weight:800;letter-spacing:.2px}
+#authOverlay .auth-input{width:100%;min-height:48px;padding:13px 14px;border:1px solid #dce2ee;border-radius:12px;background:#fbfcff;color:#1e293b;font-size:15px;transition:border-color .18s,box-shadow .18s,background .18s}
+#authOverlay .auth-input::placeholder{color:#a2aabd}
+#authOverlay .auth-input:focus{border-color:#6377eb;background:#fff;outline:none;box-shadow:0 0 0 4px rgba(99,119,235,.13)}
+#authOverlay .auth-password-wrap{display:flex;align-items:stretch;gap:8px}
+#authOverlay .auth-password-wrap .auth-input{min-width:0;flex:1}
+#authOverlay .auth-password-toggle{flex:0 0 auto;min-width:82px;border:1px solid #dce2ee;border-radius:11px;padding:0 12px;background:#f2f5fb;color:#4656a5;font-size:12px;font-weight:800;cursor:pointer;transition:background .18s,border-color .18s}
+#authOverlay .auth-password-toggle:hover{background:#e8edff;border-color:#c1cbff}
+#authOverlay .auth-submit{min-height:49px;margin-top:22px;border:0;border-radius:12px;background:linear-gradient(135deg,#6278ef,#4659ce);box-shadow:0 8px 18px rgba(77,96,211,.25);color:#fff;font-size:14px;font-weight:900;letter-spacing:.1px;transition:transform .18s,box-shadow .18s,filter .18s}
+#authOverlay .auth-submit:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 11px 22px rgba(77,96,211,.32);filter:brightness(1.03)}
+#authOverlay .auth-submit:active:not(:disabled){transform:translateY(0)}
+#authOverlay .auth-submit:disabled{opacity:.65;box-shadow:none}
+#authOverlay .auth-message{margin-top:14px;border-radius:11px;padding:12px 14px;font-size:13px;line-height:1.5}
+#authOverlay .auth-foot{margin-top:20px;padding-top:15px;border-top:1px solid #edf0f6;color:#8a94a8;font-size:11px;line-height:1.6;text-align:center}
+#sessionBar:not([hidden]){position:fixed!important;top:14px;right:16px;z-index:5000;display:flex!important;align-items:center;justify-content:flex-end;gap:10px;max-width:calc(100vw - 28px);padding:9px 10px 9px 15px;border:1px solid #dfe5f0;border-radius:15px;background:rgba(255,255,255,.96);box-shadow:0 8px 28px rgba(28,36,54,.15);color:#4b5872;font-size:12px;backdrop-filter:blur(12px)}
+#sessionBar[hidden]{display:none!important}
+#sessionLabel{max-width:min(50vw,340px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}
+#sessionBar #logoutButton{border:0;border-radius:10px;padding:10px 13px;background:#fff0f0;color:#b53a48;font-size:12px;font-weight:900;white-space:nowrap;cursor:pointer;transition:background .18s,transform .18s}
+#sessionBar #logoutButton::before{content:"↪ ";font-size:14px}
+#sessionBar #logoutButton:hover{background:#ffe1e3;transform:translateY(-1px)}
+@keyframes authCardIn{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:520px){
+ body > #authOverlay{padding:14px;align-items:center}
+ #authOverlay .auth-card{padding:27px 21px 22px;border-radius:22px}
+ #authOverlay .auth-brand{font-size:25px}
+ #authOverlay .auth-brand::before{width:43px;height:43px;flex-basis:43px;border-radius:13px}
+ #authOverlay .auth-subtitle{margin-left:0;margin-bottom:22px}
+ #authOverlay .auth-tab{font-size:12px;padding:11px 5px}
+ #sessionBar:not([hidden]){top:auto;right:10px;bottom:10px;left:10px;max-width:none;justify-content:space-between;padding:8px 9px 8px 12px}
+ #sessionLabel{max-width:calc(100vw - 150px)}
+}
+@media(prefers-reduced-motion:reduce){#authOverlay .auth-card{animation:none}#authOverlay *{transition:none!important}}
+</style>
+</head><body><div class="session-bar" id="sessionBar" hidden><span id="sessionLabel"></span><button type="button" id="logoutButton">Выйти из аккаунта</button></div><div class="app" id="mainApp"><aside class="sidebar" id="lessonSidebar"><h1>Маршрутные листы</h1><div class="teacher-name">Педагог Самибаева Парвона Мансуровна</div><p class="sidebar-subtitle">Python · теория · задачи · практика</p><div class="result-card"><div class="result-title">Мой результат</div><div class="result-number" id="solvedCount">0 / 69</div><div class="result-small" id="hardestTask">Самая сложная задача: —</div><details class="hardest-details"><summary>Посмотреть список сложных задач</summary><div id="hardestList">Пока нет оценённых решённых задач.</div></details></div><button type="button" class="student-dashboard-button" id="studentDashboardButton">👨‍🎓 Кабинет ученика</button><button type="button" class="teacher-dashboard-button" id="teacherDashboardButton">👩‍🏫 Кабинет преподавателя</button><div id="lessonNav"></div></aside><main class="main"><button type="button" id="mobileMenuToggle" class="mobile-menu-toggle" aria-expanded="false" aria-controls="lessonSidebar">☰ Меню занятий</button><div class="top"><span class="badge" id="lessonBadge">ЗАНЯТИЕ 2</span><h2 id="taskTitle"></h2><p class="description" id="taskShort"></p></div><div id="taskView"><section class="card"><h3>Условие</h3><div class="problem" id="taskProblem"></div><div class="task-image-wrap" id="taskImageWrap" hidden><img id="taskImage" class="task-image" alt=""></div></section><section class="card"><h3>Небольшая теория</h3><div class="theory" id="taskTheory"></div><div class="actions"><button class="action theory-button" id="theoryButton">📖 Открыть всю теорию занятия</button></div></section><section class="card"><h3>Тестовые данные</h3><div class="test-data" id="taskExamples"></div></section><section class="card"><h3>Напишите программу</h3><div class="editor-wrap"><textarea id="code"></textarea></div><div class="io-block"><div class="io-title">Тестовый ввод и вывод</div><div class="io-subtitle">Введи данные для своей программы так же, как они поступали бы с клавиатуры. Если программа вызывает <b>input()</b> несколько раз — каждое значение пиши с новой строки.</div><textarea class="stdin-input" id="stdinInput" spellcheck="false" placeholder="Например:
 15"></textarea><div class="io-note">Запуск программы здесь не считается попыткой решения. Можно запускать программу сколько угодно раз, исправлять код и пробовать снова.</div><div class="result-label">Результат запуска</div><div class="console" id="console"><div class="console-head">Терминал программы</div><div class="console-output empty" id="consoleOutput">Здесь появится результат работы программы.</div></div></div><div class="actions"><button class="action interactive-run" id="interactiveRunButton">▶ Запустить код</button><button class="action run" id="runButton">✓ Отправить на проверку</button><button class="action hint" id="hintButton" disabled>💡 Подсказка</button><button class="action clear" id="clearButton">Очистить</button></div><div class="status" id="status"></div><div class="task-bottom-panel"><div class="attempt-panel"><div class="attempt-head"><span class="attempt-title">Проверка решения</span><span class="attempt-value" id="progress">Неудачных проверок: 0 / 5</span></div><div class="attempt-bar"><div class="attempt-fill" id="attemptFill"></div></div></div><div class="rating-card" id="ratingCard"><div class="rating-head"><div class="rating-icon">★</div><div><div class="rating-title">Насколько сложной была задача?</div><div class="rating-subtitle">Оценить задачу можно после успешного решения. Выбери от 1 до 5.</div></div></div><div class="rating-stars" id="ratingStars"></div><div class="rating-label" id="ratingLabel">Сначала реши задачу, затем оцени её.</div></div></div><div class="hint-box" id="hintBox"></div><div class="small">Кнопка «Запустить код» проверяет программу на твоих данных. Кнопка «Отправить на проверку» запускает скрытые тесты. Входные данные скрытых проверок ученику не показываются.</div></section></div>
 <section id="teacherDashboardView" class="teacher-dashboard-view" aria-hidden="true">
   <div class="teacher-dashboard-shell">
