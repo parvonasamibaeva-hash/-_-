@@ -272,6 +272,79 @@ html,body{min-height:100%;}
 body.auth-required{overflow:hidden!important}
 @media(max-width:520px){#authOverlay.auth-overlay{padding:14px!important}#authOverlay .auth-card{padding:22px 18px!important}}
 </style>
+
+<style id="account-manager-visual-fix">
+/* Принудительное оформление управления аккаунтами преподавателя */
+#teacherDashboardView #accountManager:not([hidden]){
+  display:block!important; background:#fff!important; color:#303746!important;
+  border:1px solid #e0e5ef!important; border-radius:16px!important;
+  padding:20px!important; margin:0 0 18px!important;
+  box-shadow:0 6px 22px rgba(28,36,54,.045)!important;
+  font-family:Arial,sans-serif!important; line-height:1.45!important;
+}
+#teacherDashboardView #accountManager h3{
+  margin:0 0 8px!important; font-size:18px!important; line-height:1.3!important;
+  font-weight:800!important; color:#252b39!important;
+}
+#teacherDashboardView #accountManager .student-dashboard-note{
+  margin:0 0 14px!important; color:#737d8d!important; font-size:12px!important; line-height:1.5!important;
+}
+#teacherDashboardView #accountManager .auth-label{
+  display:block!important; margin:12px 0 7px!important; color:#344054!important;
+  font-size:13px!important; font-weight:800!important;
+}
+#teacherDashboardView #accountManager .account-create-row{
+  display:grid!important; grid-template-columns:minmax(0,1fr) auto!important; gap:10px!important; align-items:center!important;
+}
+#teacherDashboardView #accountManager #newStudentName{
+  width:100%!important; min-width:0!important; padding:11px 13px!important;
+  border:1px solid #d7ddea!important; border-radius:10px!important; background:#fff!important;
+  color:#20242c!important; font:14px Arial,sans-serif!important; box-sizing:border-box!important;
+}
+#teacherDashboardView #accountManager #createStudentButton{
+  width:auto!important; margin:0!important; padding:11px 15px!important; border:0!important;
+  border-radius:10px!important; background:#4d65d9!important; color:#fff!important;
+  font-size:12px!important; font-weight:800!important; cursor:pointer!important; white-space:nowrap!important;
+}
+#teacherDashboardView #accountManager #createStudentButton:hover{background:#4056c7!important}
+#teacherDashboardView #accountManager .account-created-code{
+  padding:13px 14px!important; margin-top:12px!important; border:1px solid #dce5ff!important;
+  border-radius:10px!important; background:#f1f6ff!important; color:#30416e!important;
+  font-size:13px!important; line-height:1.55!important; overflow-wrap:anywhere!important;
+}
+#teacherDashboardView #accountManager .account-list{display:grid!important;gap:10px!important;margin-top:15px!important}
+#teacherDashboardView #accountManager .account-row{
+  display:flex!important; align-items:center!important; justify-content:space-between!important;
+  gap:14px!important; padding:13px 14px!important; border:1px solid #e2e7f0!important;
+  border-radius:12px!important; background:#fafbfe!important; color:#303746!important;
+}
+#teacherDashboardView #accountManager .account-row strong{display:block!important;color:#252b39!important;font-size:14px!important;font-weight:800!important}
+#teacherDashboardView #accountManager .account-row small{display:block!important;margin-top:4px!important;color:#737d8d!important;font-size:12px!important;line-height:1.4!important}
+#teacherDashboardView #accountManager .account-row > div:last-child{display:flex!important;gap:7px!important;flex-wrap:wrap!important}
+#teacherDashboardView #accountManager .account-row button{
+  border:1px solid #d8deeb!important; border-radius:8px!important; padding:9px 11px!important;
+  background:#fff!important; color:#35415a!important; font:700 12px Arial,sans-serif!important; cursor:pointer!important;
+}
+#teacherDashboardView #accountManager .account-row button:hover{background:#eef2ff!important;border-color:#bfcaf5!important}
+#teacherDashboardView #accountManager #accountManagerMessage.show{display:block!important;margin-top:12px!important;padding:12px 14px!important;border-radius:10px!important;font-size:13px!important}
+#teacherDashboardView #accountManager #accountManagerMessage.success{background:#eaf8ef!important;color:#187344!important}
+#teacherDashboardView #accountManager #accountManagerMessage.error{background:#fff0f0!important;color:#a12626!important}
+#teacherDashboardView #accountManager #changeTeacherCodeButton{
+  display:inline-flex!important;align-items:center!important;gap:7px!important;margin-top:14px!important;
+  padding:11px 14px!important;border:1px solid #d8deeb!important;border-radius:10px!important;
+  background:#fff!important;color:#35415a!important;font:800 12px Arial,sans-serif!important;cursor:pointer!important;
+}
+#teacherDashboardView #accountManager #changeTeacherCodeButton:hover{background:#f7f8fc!important}
+@media(max-width:600px){
+ #teacherDashboardView #accountManager:not([hidden]){padding:15px!important}
+ #teacherDashboardView #accountManager .account-create-row{grid-template-columns:1fr!important}
+ #teacherDashboardView #accountManager #createStudentButton{width:100%!important}
+ #teacherDashboardView #accountManager .account-row{align-items:stretch!important;flex-direction:column!important}
+ #teacherDashboardView #accountManager .account-row > div:last-child{width:100%!important}
+ #teacherDashboardView #accountManager .account-row button{flex:1 1 auto!important}
+}
+</style>
+
 </head>
 <style id="auth-session-final-fix">
 /* Keep the page quiet until the saved session has been checked. */
