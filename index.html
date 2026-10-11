@@ -449,7 +449,7 @@ document.getElementById('importLegacyProgressButton').onclick=async()=>{
   }catch(err){alert('Перенос остановлен: '+(err.message||err)+'. Уже перенесённые строки останутся в таблице; можно повторить перенос — дубликаты будут пропущены.');button.textContent='Повторить перенос';}
   finally{button.disabled=false;}
 };
-document.getElementById('authForm').addEventListener('submit',async e=>{e.preventDefault();const btn=document.getElementById('authSubmit');btn.disabled=true;btn.textContent='Проверяем…';showAuthMessage('');try{const payload=authMode==='teacher'?{action:'loginTeacher',code:document.getElementById('teacherCode').value}:{action:'loginStudent',login:document.getElementById('authLogin').value.trim(),code:document.getElementById('authCode').value.trim()};const result=await authRequest(payload);if(!result.success)throw new Error(result.error||'Не удалось войти. Проверь данные.');applyAuthSession(result.session);showAuthMessage('');if(authSession.role==='teacher'){document.getElementById('accountManager').hidden=false;loadAccountList();}else{renderNav();updateStats();} }catch(err){showAuthMessage(err.message||'Не удалось связаться с сервером. Проверь, что Apps Script обновлён и опубликован.');}finally{btn.disabled=false;btn.textContent=authMode==='student'?'Войти как ученик':'Войти как преподаватель';}});
+document.getElementById('authForm').addEventListener('submit',async e=>{e.preventDefault();const btn=document.getElementById('authSubmit');btn.disabled=true;btn.textContent='Проверяем…';showAuthMessage('');try{const payload=authMode==='teacher'?{action:'loginTeacher',code:document.getElementById('teacherCode').value}:{action:'loginStudent',login:document.getElementById('authLogin').value.trim(),code:document.getElementById('authCode').value.trim()};const result=await authRequest(payload);if(!result.success)throw new Error(result.error||'Не удалось войти. Проверь данные.');applyAuthSession(result.session);showAuthMessage('');if(authSession.role==='teacher'){document.getElementById('accountManager').hidden=false;loadAccountList();}else{await syncStudentAccountProgress(authSession);} }catch(err){showAuthMessage(err.message||'Не удалось связаться с сервером. Проверь, что Apps Script обновлён и опубликован.');}finally{btn.disabled=false;btn.textContent=authMode==='student'?'Войти как ученик':'Войти как преподаватель';}});
 async function loadAccountList(){if(!authSession||authSession.role!=='teacher')return;const box=document.getElementById('accountList');box.innerHTML='<div class="teacher-loading">Загружаем аккаунты…</div>';try{const r=await authRequest({action:'listStudents',token:authSession.token});if(!r.success)throw new Error(r.error||'Не удалось загрузить аккаунты');box.innerHTML=(r.students||[]).map(st=>`<div class="account-row"><div><strong>${escapeHtml(st.name)}</strong><small>Логин: ${escapeHtml(st.login)} · ${st.active?'активен':'отключён'}</small></div><div style="display:flex;gap:6px;flex-wrap:wrap"><button type="button" data-view-id="${escapeHtml(st.id)}" data-view-name="${escapeHtml(st.name)}">Посмотреть профиль</button><button type="button" data-reset-id="${escapeHtml(st.id)}" data-reset-name="${escapeHtml(st.name)}">Выдать новый код</button></div></div>`).join('')||'<div class="student-dashboard-empty">Пока нет аккаунтов учеников.</div>';box.querySelectorAll('[data-reset-id]').forEach(b=>b.onclick=()=>resetStudentCode(b.dataset.resetId,b.dataset.resetName));box.querySelectorAll('[data-view-id]').forEach(b=>b.onclick=()=>viewStudentAccount(b.dataset.viewId,b.dataset.viewName));}catch(err){box.innerHTML='';showAccountManagerMessage(err.message);}}
 document.getElementById('createStudentButton').onclick=async()=>{const name=document.getElementById('newStudentName').value.trim();if(!name){showAccountManagerMessage('Введи имя ученика.');return;}const btn=document.getElementById('createStudentButton');btn.disabled=true;try{const r=await authRequest({action:'createStudent',token:authSession&&authSession.token,name});if(!r.success)throw new Error(r.error||'Не удалось создать аккаунт');const c=document.getElementById('createdStudentCredentials');c.hidden=false;c.textContent=`Сохрани и передай ученику: логин ${r.login} · код доступа ${r.code}. Код больше не будет показан полностью.`;document.getElementById('newStudentName').value='';showAccountManagerMessage('Аккаунт создан. Передай данные ученику безопасным способом.','success');await loadAccountList();}catch(err){showAccountManagerMessage(err.message);}finally{btn.disabled=false;}};
 
@@ -463,14 +463,14 @@ async function viewStudentAccount(studentId, studentName){
     teacherViewingStudent={id:studentId,name:studentName};
     closeTeacherDashboard();closeQuiz();document.body.classList.add('student-dashboard-mode');studentDashboardView.setAttribute('aria-hidden','false');
     studentDashboardButton.classList.remove('active');teacherDashboardButton.classList.add('active');
-    studentDashboardRows=(r.tasks||[]).map(normalizeStudentRow);restoreStudentProgress(studentDashboardRows,studentName);buildStudentDashboard(studentDashboardRows,studentName);
+    studentDashboardRows=(r.tasks||[]).map(normalizeStudentRow);buildStudentDashboard(studentDashboardRows,studentName);
     studentProfileName.textContent=studentName+' (просмотр преподавателем)';
     showStudentDashboardStatus('Режим просмотра преподавателя: ты смотришь сохранённый прогресс и решения этого ученика.');
   }catch(err){showAccountManagerMessage(err.message);}
 }
 async function resetStudentCode(id,name){if(!confirm(`Выдать новый код доступа ученику «${name}»? Старый код перестанет работать.`))return;try{const r=await authRequest({action:'resetStudentCode',token:authSession.token,studentId:id});if(!r.success)throw new Error(r.error||'Не удалось сбросить код');const c=document.getElementById('createdStudentCredentials');c.hidden=false;c.textContent=`Новый код для ${name}: ${r.code}. Передай его ученику. Логин остаётся прежним.`;showAccountManagerMessage('Код обновлён. Прогресс ученика сохранён.','success');}catch(err){showAccountManagerMessage(err.message);}}
 async function changeTeacherAccessCode(){const next=prompt('Введи новый код преподавателя (не менее 8 символов):');if(!next)return;if(next.trim().length<8){showAccountManagerMessage('Код преподавателя должен содержать не менее 8 символов.');return;}try{const r=await authRequest({action:'changeTeacherCode',token:authSession.token,newCode:next.trim()});if(!r.success)throw new Error(r.error||'Не удалось изменить код');showAccountManagerMessage('Код преподавателя изменён. При следующем входе используй новый код.','success');}catch(err){showAccountManagerMessage(err.message);}}
-window.addEventListener('DOMContentLoaded',async()=>{if(authSession&&authSession.token){try{const r=await authRequest({action:'whoami',token:authSession.token});if(!r.success)throw new Error('Сеанс истёк');applyAuthSession(r.session);if(authSession.role==='teacher')loadAccountList();}catch(e){logoutAccount();showAuthMessage('Сеанс истёк. Войди снова.');}}else showAuthScreen();});
+window.addEventListener('DOMContentLoaded',async()=>{if(authSession&&authSession.token){try{const r=await authRequest({action:'whoami',token:authSession.token});if(!r.success)throw new Error('Сеанс истёк');applyAuthSession(r.session);if(authSession.role==='teacher')loadAccountList();else{try{await syncStudentAccountProgress(authSession);}catch(syncError){showStatus('warning','Не удалось обновить прогресс с сервера: '+(syncError.message||syncError));}}}catch(e){logoutAccount();showAuthMessage('Сеанс истёк. Войди снова.');}}else showAuthScreen();});
 
 const MAX_FAILED_ATTEMPTS=5;
 const lesson1Tasks=[
@@ -1189,6 +1189,48 @@ function restoreStudentProgress(rows,name){
   saveState();
   renderNav();
   updateStats();
+}
+
+// Аккаунт ученика — источник истины для решённых задач и сохранённых решений.
+// Старый STORAGE_KEY общий для браузера, поэтому при входе обязательно заменяем
+// прогресс предыдущего пользователя данными текущего аккаунта с сервера.
+async function syncStudentAccountProgress(session){
+  if(!session || session.role!=='student') return;
+  const response=await authRequest({action:'getStudentTasks',token:session.token});
+  if(!response.success) throw new Error(response.error||'Не удалось загрузить прогресс аккаунта.');
+  const rows=(Array.isArray(response.tasks)?response.tasks:[]).map(row=>({
+    name:String(row.name||row['Имя']||'').trim(),
+    lesson:String(row.lesson||row['Занятие']||'').trim(),
+    taskId:String(row.taskId||row['№ задачи']||'').trim(),
+    result:String(row.result||row['Результат']||'').trim(),
+    failed:Number(row.failedAttempts??row.failed??row['Неудачных проверок']??0),
+    rating:Number(row.rating??row['Сложность']??0),
+    solution:String(row.solution||row['Решение']||row['Код решения']||'')
+  }));
+  // Убираем локальные следы другого аккаунта; настройки раскрытия занятий сохраняем.
+  state.solved={};
+  state.codes={};
+  state.attempts={};
+  state.failedCodes={};
+  state.hints={};
+  state.ratings={};
+  state.inputs={};
+  state.manualRunPassed={};
+  const latest=new Map();
+  rows.filter(row=>String(row.result).toLowerCase()==='решена')
+    .forEach(row=>latest.set(row.lesson+'::'+row.taskId,row));
+  latest.forEach(row=>{
+    const task=allTasks.find(t=>('Занятие '+t.lessonId)===row.lesson && String(t.id)===row.taskId);
+    if(!task)return;
+    state.solved[task.key]=true;
+    state.attempts[task.key]=row.failed||0;
+    if(row.rating>0)state.ratings[task.key]=row.rating;
+    if(row.solution)state.codes[task.key]=row.solution;
+  });
+  saveState();
+  renderNav();
+  updateStats();
+  if(typeof loadTask==='function') loadTask();
 }
 
 function buildStudentDashboard(rows,name){
