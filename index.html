@@ -1161,11 +1161,11 @@ const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null')||{};
 // При первом открытии сайта все занятия свернуты. Если ученик уже пользовался сайтом раньше,
 // один раз исправляем старое состояние, в котором Занятие 2 могло сохраняться открытым.
 if(!saved.__collapsedLessonsInitialized){
-  saved.openLessons={1:false,2:false,3:false,4:false,5:false};
+  saved.openLessons={1:false,2:false,3:false,4:false,5:false,6:false,7:false};
   saved.__collapsedLessonsInitialized=true;
   localStorage.setItem(STORAGE_KEY,JSON.stringify(saved));
 }
-const state={currentKey:saved.currentKey||'1-1',openLessons:saved.openLessons||{1:false,2:false,3:false,4:false,5:false},codes:saved.codes||{},attempts:saved.attempts||{},failedCodes:saved.failedCodes||{},hints:saved.hints||{},solved:saved.solved||{},ratings:saved.ratings||{},inputs:saved.inputs||{},manualRunPassed:saved.manualRunPassed||{}};
+const state={currentKey:saved.currentKey||'1-1',openLessons:saved.openLessons||{1:false,2:false,3:false,4:false,5:false,6:false,7:false},codes:saved.codes||{},attempts:saved.attempts||{},failedCodes:saved.failedCodes||{},hints:saved.hints||{},solved:saved.solved||{},ratings:saved.ratings||{},inputs:saved.inputs||{},manualRunPassed:saved.manualRunPassed||{}};
 // Remove old prefilled input-variable scaffolds from lessons 3-5, but preserve any real student solution.
 for(const lesson of lessons.filter(l=>l.id>=3&&l.id<=5)){for(const task of lesson.tasks){const key=lesson.id+'-'+task.id;const code=saved.codes&&saved.codes[key];if(typeof code!=='string'||!code.trim())continue;const lines=code.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);const isOnlyStarter=lines.length>0&&lines.every(line=>line.startsWith('#')||/^[A-Za-z_][A-Za-z0-9_]*\s*=\s*(?:int\s*\(\s*)?input\s*\(\s*\)\s*\)?(?:\s*#.*)?$/.test(line));if(isOnlyStarter){const comments=lines.filter(line=>line.startsWith('#'));state.codes[key]=comments.length?comments.join('\n'):'# Напиши программу';}}}
 
@@ -1223,7 +1223,7 @@ function getLesson(id){return lessons.find(l=>l.id===id)}
 function levelOrder(level){return {past:1,pro:2,boss:3,hard:4}[level]||1}
 function renderNav(){
   lessonNav.innerHTML='';
-  lessons.forEach(l=>{
+  lessons.filter(l=>l.id!==7).forEach(l=>{
     const wrap=document.createElement('div');
     wrap.className='lesson '+(state.openLessons[l.id]?'open':'');
     const head=document.createElement('button');
@@ -1275,6 +1275,38 @@ function renderNav(){
         body.appendChild(b);
       });
     });
+    if(l.id===6){
+      const hw=getLesson(7);
+      if(hw){
+        const hwWrap=document.createElement('div');
+        hwWrap.className='homework-nav '+(state.openLessons[7]?'open':'');
+        hwWrap.style.cssText='margin:10px 0 4px;border:1px solid #303747;border-radius:12px;overflow:hidden;background:#252b39';
+        const hwHead=document.createElement('button');
+        hwHead.type='button';
+        hwHead.className='lesson-head homework-nav-head';
+        hwHead.style.cssText='width:100%;padding:12px 10px;background:#252b39;color:#fff;font-size:13px;';
+        hwHead.innerHTML=`<span>▸</span><span class="lesson-head-title"><strong>Домашнее задание.</strong> <span>Практика по теме «Цикл while»</span></span><span class="lesson-head-arrow">›</span>`;
+        hwHead.onclick=()=>{state.openLessons[7]=!state.openLessons[7];saveState();renderNav()};
+        hwWrap.appendChild(hwHead);
+        const hwBody=document.createElement('div');
+        hwBody.className='lesson-body';
+        hwBody.style.display=state.openLessons[7]?'block':'none';
+        hwBody.style.padding='6px';
+        const hwIntro=document.createElement('div');
+        hwIntro.className='lesson-intro';
+        hwIntro.textContent='Домашняя практика по теме «Цикл while»';
+        hwBody.appendChild(hwIntro);
+        hw.tasks.forEach(t=>{
+          const b=document.createElement('button');
+          b.className='task-button '+(t.key===state.currentKey?'active ':'')+(state.solved[t.key]?'solved':'');
+          b.innerHTML=`<span class="task-stars">${t.stars||''}</span><span>${t.title}</span><span class="task-check">${state.solved[t.key]?'✓':''}</span>`;
+          b.onclick=()=>selectTask(t.key);
+          hwBody.appendChild(b);
+        });
+        hwWrap.appendChild(hwBody);
+        body.appendChild(hwWrap);
+      }
+    }
     wrap.appendChild(body);
     lessonNav.appendChild(wrap);
   });
