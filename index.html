@@ -1960,19 +1960,19 @@ async function runInteractive(){
  interactiveRunButton.disabled=false;interactiveRunButton.textContent='▶ Запустить код';
  if(!result.ok){
    if(result.cancelled){
-     const transcript=result.transcript&&result.transcript.length?result.transcript.join('\\n')+'\\n':'';
+     const transcript=result.transcript&&result.transcript.length?result.transcript.join('\n')+'\n':'';
      showConsoleOutput(transcript+'Ввод отменён. Запусти программу ещё раз, чтобы продолжить.',false);
      showStatus('info','Ввод отменён. Это не считается попыткой решения.');
      return;
    }
    const friendly=explainPythonError(result.error);
-   const transcript=result.transcript&&result.transcript.length?result.transcript.join('\\n')+'\\n\\n':'';
+   const transcript=result.transcript&&result.transcript.length?result.transcript.join('\n')+'\n\n':'';
    showConsoleOutput(transcript+friendly,false);
    showStatus('error','⚠️ Программа завершилась с ошибкой. Ошибка не считается попыткой решения. Прочитай объяснение в терминале, исправь код и запусти снова.');
    return;
  }
  const actual=result.output;
- const transcript=result.transcript&&result.transcript.length?result.transcript.join('\\n')+'\\n':'';
+ const transcript=result.transcript&&result.transcript.length?result.transcript.join('\n')+'\n':'';
  showConsoleOutput(transcript+(actual||'(программа ничего не вывела)'),true);
  if(freeTerminalLesson!==null){
    showStatus('success','Программа выполнилась без ошибки. В свободном терминале решение не оценивается.');
