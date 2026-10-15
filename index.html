@@ -1289,6 +1289,15 @@ function renderNav(){
     theoryBtn.textContent='📖 Теория занятия';
     theoryBtn.onclick=()=>openLessonTheory(l.id);
     body.appendChild(theoryBtn);
+    if(l.id===6){
+      const animationBtn=document.createElement('button');
+      animationBtn.type='button';
+      animationBtn.className='lesson-theory-link while-animation-nav-button';
+      animationBtn.textContent='🪙 Анимация работы цикла while';
+      animationBtn.title='Открыть интерактивную пошаговую анимацию цикла while';
+      animationBtn.onclick=openWhileAnimation;
+      body.appendChild(animationBtn);
+    }
     const freeBtn=document.createElement('button');
     freeBtn.type='button';
     freeBtn.className='lesson-theory-link free-terminal-link';
@@ -1352,15 +1361,6 @@ function renderNav(){
         hwWrap.appendChild(hwBody);
         body.appendChild(hwWrap);
       }
-    }
-    if(l.id===6){
-      const animationBtn=document.createElement('button');
-      animationBtn.type='button';
-      animationBtn.className='lesson-theory-link while-animation-nav-button';
-      animationBtn.textContent='🪙 Анимация работы цикла while';
-      animationBtn.title='Открыть интерактивную пошаговую анимацию цикла while';
-      animationBtn.onclick=openWhileAnimation;
-      body.appendChild(animationBtn);
     }
     wrap.appendChild(body);
     lessonNav.appendChild(wrap);
