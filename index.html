@@ -75,7 +75,16 @@ body.quiz-mode .quiz-view{display:block}
 .debug-panel.open{display:block}.debug-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:13px 15px;background:#202532;color:#f2f5fb}.debug-title{font-weight:800}.debug-close{border:0;border-radius:7px;padding:7px 10px;cursor:pointer;background:#394255;color:#fff}
 .debug-controls{display:flex;gap:7px;flex-wrap:wrap;padding:12px;background:#eef1f8;border-bottom:1px solid #dfe4ee}.debug-controls button{border:0;border-radius:8px;padding:9px 12px;font-size:12px;font-weight:800;cursor:pointer;background:#4d65d9;color:#fff}.debug-controls button.secondary{background:#fff;color:#303746;border:1px solid #d6ddea}.debug-controls button:disabled{opacity:.4;cursor:not-allowed}
 .debug-layout{display:block;padding:0 12px 12px}.debug-layout>.debug-card{display:none}.debug-layout>.debug-card:first-child{display:block;background:transparent;border:0;border-radius:0}.debug-layout>.debug-card:first-child>h4,.debug-layout #debugVars,.debug-layout #debugOutput{display:none}.debug-layout .debug-input-row{margin-top:8px;border-radius:8px}.debug-panel.open{box-shadow:0 5px 18px rgba(25,35,60,.08)}.debug-card{background:#fff;border:1px solid #e0e5ef;border-radius:10px;overflow:hidden;min-width:0}.debug-card h4{margin:0;padding:10px 12px;background:#f0f3f9;border-bottom:1px solid #e0e5ef;font-size:12px;color:#3a4558}.debug-vars{padding:10px 12px;font:13px Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere;min-height:52px}.debug-vars .empty{color:#858d9c}.debug-mini-output{padding:10px 12px;min-height:70px;max-height:220px;overflow:auto;background:#151a25;color:#eef2f8;font:13px/1.55 Consolas,monospace;white-space:pre-wrap}.debug-message{padding:10px 13px;font-size:12px;line-height:1.5;color:#596579;border-top:1px solid #e0e5ef;background:#fff}.debug-message.error{color:#a12626;background:#fff1f1}.debug-message.success{color:#216d3a;background:#edfaf0}.debug-input-row{display:flex;gap:7px;padding:10px;background:#151a25}.debug-input-row[hidden]{display:none!important}.debug-input-row input{flex:1;min-width:0;border:1px solid #596579;border-radius:7px;background:#0f1420;color:#fff;padding:9px;font:13px Consolas,monospace}.debug-input-row button{border:0;border-radius:7px;background:#2eaa72;color:white;padding:8px 12px;font-weight:bold;cursor:pointer}.CodeMirror-linebackground.cm-debug-current{background:rgba(246,190,66,.38)!important}.CodeMirror-gutter-elt.cm-debug-current-gutter{background:#f4d477!important;color:#3b2b00!important;font-weight:bold!important}.CodeMirror-linebackground.cm-debug-error{background:rgba(235,82,82,.32)!important}.CodeMirror-gutter-elt.cm-debug-error-gutter{background:#ffdada!important;color:#a12626!important;font-weight:bold!important}
-@media(max-width:700px){.debug-layout{grid-template-columns:1fr}.debug-mini-output{max-height:180px}}
+/* Результат шага отображается непосредственно под соответствующей строкой кода */
+.debug-inline-widget{box-sizing:border-box;margin:3px 12px 7px 4px;padding:8px 11px;border:1px solid #d6e0f3;border-left:4px solid #657be0;border-radius:8px;background:#f2f5ff;color:#33415e;font:12px/1.5 Arial,sans-serif;white-space:normal;box-shadow:0 2px 5px rgba(25,40,80,.05)}
+.debug-inline-widget .debug-inline-title{font-weight:800;margin-bottom:3px;color:#354b9c}
+.debug-inline-widget .debug-inline-vars{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
+.debug-inline-widget .debug-inline-var{display:inline-block;padding:3px 7px;border-radius:5px;background:#fff;border:1px solid #dce3f2;color:#6550a4;font:12px Consolas,monospace}
+.debug-inline-widget.is-output{border-left-color:#2d9d68;background:#eefaf3;color:#205d3a}
+.debug-inline-widget.is-output .debug-inline-title{color:#237548}
+.debug-inline-widget.is-condition{border-left-color:#d49b28;background:#fff8e8;color:#765516}
+.debug-inline-widget.is-error{border-left-color:#d64c4c;background:#fff1f1;color:#922c2c}
+@media(max-width:700px){.debug-layout{grid-template-columns:1fr}.debug-mini-output{max-height:180px}.debug-inline-widget{margin-right:6px;font-size:11px}}
 
 </style>
 <style id="quiz-design-fix">
@@ -2320,6 +2329,7 @@ document.addEventListener('click',function(e){
  if(!panel||!openBtn||!editor||!terminal||!terminalOutput)return;
  let terminalSnapshot=null;
  let lines=[], pc=0, vars={}, output='', history=[], waitingInput=null, finished=false, active=false, currentLine=-1, errorLine=-1, steps=0, inputValues=[], inputCursor=0, loops=[], terminalLog=[], pendingPrintedLine=null;
+ let inlineWidgets=[];
  const MAX_STEPS=2000;
  function clone(v){return JSON.parse(JSON.stringify(v));}
  function snapshot(){return {pc,vars:clone(vars),output,waitingInput:waitingInput?clone(waitingInput):null,finished,steps,inputValues:clone(inputValues),inputCursor,loops:clone(loops),currentLine,errorLine,terminalLog:clone(terminalLog),pendingPrintedLine};}
@@ -2349,6 +2359,33 @@ document.addEventListener('click',function(e){
  function findFollowingClause(end,indent){let j=end;while(j<lines.length){if(!lines[j].trim()||lines[j].trim().startsWith('#')){j++;continue;}if(indentOf(lines[j])!==indent)return null;const t=lines[j].trim();if(/^(elif\b|else\s*:)/.test(t))return j;return null;}return null;}
  function clearMarks(){try{editor.eachLine((line)=>{});for(let i=0;i<editor.lineCount();i++){editor.removeLineClass(i,'background','cm-debug-current');editor.removeLineClass(i,'gutter','cm-debug-current-gutter');editor.removeLineClass(i,'background','cm-debug-error');editor.removeLineClass(i,'gutter','cm-debug-error-gutter');}}catch(e){}}
  function markLine(n,err){clearMarks();if(n>=0&&n<editor.lineCount()){editor.addLineClass(n,'background',err?'cm-debug-error':'cm-debug-current');editor.addLineClass(n,'gutter',err?'cm-debug-error-gutter':'cm-debug-current-gutter');editor.refresh();editor.scrollIntoView({line:n,ch:0},100);requestAnimationFrame(()=>{editor.refresh();});}}
+ function clearInlineWidgets(){
+  inlineWidgets.forEach(w=>{try{editor.removeLineWidget(w);}catch(e){}});inlineWidgets=[];
+ }
+ function renderInlineAnnotation(){
+  clearInlineWidgets();
+  if(!panel.classList.contains('open')||currentLine<0||currentLine>=lines.length)return;
+  const lineText=(lines[currentLine]||'').trim();
+  const note=(msgEl.textContent||'').trim();
+  const widget=document.createElement('div');
+  let kind='';
+  if(/^print\s*\(/.test(lineText))kind='is-output';
+  else if(/^(if|elif|while|for)\b/.test(lineText))kind='is-condition';
+  if(errorLine===currentLine)kind='is-error';
+  widget.className='debug-inline-widget '+kind;
+  const title=document.createElement('div');title.className='debug-inline-title';
+  title.textContent=errorLine===currentLine?'Объяснение ошибки':/^print\s*\(/.test(lineText)?'Вывод программы':/^(if|elif|while|for)\b/.test(lineText)?'Проверка условия':'Результат шага';
+  widget.appendChild(title);
+  const detail=document.createElement('div');
+  detail.textContent=waitingInput?'Ожидается ввод: введи значение в поле терминала.':note||'Команда выполнена.';
+  widget.appendChild(detail);
+  if(/^print\s*\(/.test(lineText)&&output.trim()){
+    const out=document.createElement('div');out.style.marginTop='4px';out.style.fontWeight='700';out.textContent='Выведено: '+output.trim().split('\n').slice(-1)[0];widget.appendChild(out);
+  }
+  const keys=Object.keys(vars);
+  if(keys.length){const list=document.createElement('div');list.className='debug-inline-vars';keys.forEach(k=>{const v=document.createElement('span');v.className='debug-inline-var';v.textContent=k+': '+pyString(vars[k]);list.appendChild(v);});widget.appendChild(list);}
+  try{inlineWidgets.push(editor.addLineWidget(currentLine,widget,{above:false,coverGutter:false,noHScroll:true}));}catch(e){}
+ }
  function render(){
   varsEl.innerHTML='';const keys=Object.keys(vars);if(!keys.length){varsEl.innerHTML='<span class="empty">Пока переменных нет.</span>';}else keys.forEach(k=>{const row=document.createElement('div');row.textContent=k+' = '+pyString(vars[k]);varsEl.appendChild(row);});
   outEl.textContent=output||'Вывод пока пуст.';
@@ -2357,16 +2394,14 @@ document.addEventListener('click',function(e){
   msgEl.className='debug-message'+(errorLine>=0?' error':finished?' success':'');
   if(panel.classList.contains('open')){
     terminal.classList.add('show');terminalOutput.classList.remove('empty','error');terminalOutput.classList.add('debug-output-mode');
-    const visibleLog=terminalLog.filter(line=>!/^# Подсказка:/.test(line)&&!/^# Строка \d+:/.test(line));
-    const trace=Object.keys(vars).map(k=>'# '+k+' = '+pyString(vars[k]));
-    const stateLine=waitingInput?'# Ожидание ввода: '+(waitingInput.name||'input()'):finished?'# Программа завершена.':currentLine>=0?'# Текущая строка: '+(currentLine+1):'# Нажми «Вперёд», чтобы начать.';
-    const ordered=[];
-    if(output.trim()) ordered.push(...output.replace(/\n$/,'').split('\n'));
-    ordered.push(stateLine);
-    if(trace.length) ordered.push(...trace);
-    terminalOutput.textContent=ordered.join('\n');
+    const terminalLines=[];
+    if(output.trim())terminalLines.push(...output.replace(/\n$/,'').split('\n'));
+    if(waitingInput)terminalLines.push('Ожидается ввод для '+(waitingInput.name||'input()')+'.');
+    else if(finished&&errorLine<0)terminalLines.push('Программа завершена.');
+    terminalOutput.textContent=terminalLines.join('\n')||'Отладка готова. Нажми «Вперёд». Результаты шагов появляются возле строк кода.';
     terminalOutput.scrollTop=terminalOutput.scrollHeight;
-  } else terminalOutput.classList.remove('debug-output-mode');
+    renderInlineAnnotation();
+  } else {terminalOutput.classList.remove('debug-output-mode');clearInlineWidgets();}
  }
  function message(text,type){msgEl.textContent=text;msgEl.className='debug-message'+(type?' '+type:'');}
  function fail(err,line){errorLine=line;finished=true;waitingInput=null;markLine(line,true);message('Ошибка в строке '+(line+1)+': '+err,'error');render();}
@@ -2409,7 +2444,7 @@ document.addEventListener('click',function(e){
  function back(){if(history.length<=1)return;history.pop();restore(history[history.length-1]);render();if(currentLine>=0)markLine(currentLine,errorLine>=0);else clearMarks();}
  function runToEnd(){let count=0;while(!finished&&!waitingInput&&count<MAX_STEPS){executeStep();count++;}if(!finished&&!waitingInput){finished=true;message('Остановлено по лимиту шагов: возможно, цикл бесконечный.','error');render();}}
  function openDebugger(){terminalSnapshot={text:terminalOutput.textContent,className:terminalOutput.className,consoleClass:terminal.className};panel.classList.add('open');openBtn.setAttribute('aria-expanded','true');openBtn.textContent='🐞 Скрыть отладку';editor.setOption('readOnly','nocursor');editor.refresh();reset();markLine(significant(0),false);panel.scrollIntoView({behavior:'smooth',block:'nearest'});}
- function closeDebugger(){panel.classList.remove('open');openBtn.setAttribute('aria-expanded','false');openBtn.textContent='🐞 Отладка по шагам';clearMarks();editor.setOption('readOnly',originalEditorReadOnly);if(terminalSnapshot){terminalOutput.textContent=terminalSnapshot.text;terminalOutput.className=terminalSnapshot.className;terminal.className=terminalSnapshot.consoleClass;terminalSnapshot=null;}inputRow.hidden=true;terminalOutput.classList.remove('debug-output-mode');active=false;}
+ function closeDebugger(){clearInlineWidgets();panel.classList.remove('open');openBtn.setAttribute('aria-expanded','false');openBtn.textContent='🐞 Отладка по шагам';clearMarks();editor.setOption('readOnly',originalEditorReadOnly);if(terminalSnapshot){terminalOutput.textContent=terminalSnapshot.text;terminalOutput.className=terminalSnapshot.className;terminal.className=terminalSnapshot.consoleClass;terminalSnapshot=null;}inputRow.hidden=true;terminalOutput.classList.remove('debug-output-mode');active=false;}
  // Keep the launch toggle inside the terminal card with comfortable spacing.
  const launchRow=$('debugOpenButton')?.parentElement;
  const ioBlock=terminal.closest('.io-block');
