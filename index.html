@@ -1918,8 +1918,71 @@ async function checkPhone(code){for(const input of [['50','50'],['60','55'],['40
 function checkRouletteOutput(output){const lines=normalizeOutput(output).split('\n').map(x=>x.trim()).filter(Boolean);if(!lines.length)return false;const m=lines[0].match(/^Выпавший номер:\s*(0|00|[1-9]|[1-2][0-9]|3[0-6])$/);if(!m)return false;const v=m[1];if(v==='0'||v==='00')return lines.length===2&&lines[1]===`Выигравшая ставка: ${v}`;const n=Number(v);if(lines.length!==5)return false;const red=new Set([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]);const color=red.has(n)?'красное':'черное';const parity=n%2===0?'четное':'нечетное';const range=n<=18?'от 1 до 18':'от 19 до 36';return lines[1]===`Выигравшая ставка: ${n}`&&lines[2]===`Выигравшая ставка: ${color}`&&lines[3]===`Выигравшая ставка: ${parity}`&&lines[4]===`Выигравшая ставка: ${range}`}
 async function checkTask(t,code){if(t.checker==='phone')return checkPhone(code);if(t.checker==='guess')return checkGuessProject(code);if(t.checker==='roulette'){const r=await runOneTest(code,[]);return !r.ok?{type:'execution_error',error:r.error}:{type:checkRouletteOutput(r.output)?'success':'wrong_answer',actual:r.output,expected:'Проверь формат вывода по условию задачи.'}}for(const test of (t.tests||[])){const r=await runOneTest(code,test.input);if(!r.ok)return {type:'execution_error',error:r.error};if(normalizeComparableOutput(r.output)!==normalizeComparableOutput(test.expected))return {type:'wrong_answer',expected:test.expected,actual:r.output}}return {type:'success'}}
 function getStdinValues(){const raw=String(stdinInput.value||'').replace(/\r\n/g,'\n');if(raw==='')return [];const values=raw.split('\n');if(values.length&&values[values.length-1]==='')values.pop();return values}
+
+// Интерактивный запуск: каждый input() запрашивает новое значение у ученика.
+// Этот режим используется только кнопкой «Запустить код»; скрытые проверки
+// по-прежнему получают заранее заданные тестовые данные через runOneTest().
+function runInteractiveWithPrompts(code){
+  return new Promise(resolve=>{
+    let output='';
+    const transcript=[];
+    let cancelled=false;
+    function inputFun(promptText){
+      const promptLabel=String(promptText||'Введите значение: ');
+      const answer=window.prompt(promptLabel);
+      if(answer===null){
+        cancelled=true;
+        throw new Error('Ввод отменён пользователем.');
+      }
+      transcript.push(promptLabel+answer);
+      return answer;
+    }
+    Sk.configure({
+      output:text=>{output+=text;},
+      inputfun:inputFun,
+      read:builtinRead,
+      __future__:Sk.python3,
+      execLimit:10000
+    });
+    Sk.misceval.asyncToPromise(()=>Sk.importMainWithBody('<stdin>',false,code,true))
+      .then(()=>resolve({ok:true,output:normalizeOutput(output),transcript,cancelled:false}),
+        error=>resolve({ok:false,error:String(error),transcript,cancelled}))
+  });
+}
 function showConsoleOutput(text,ok=true){consoleBox.classList.add('show');consoleOutput.className='console-output'+(ok?'':' error');consoleOutput.textContent=text||'(программа ничего не вывела)'}
-async function runInteractive(){const code=normalizeCode(editor.getValue());if(!code){showStatus('warning','Сначала напиши программу.');return}const values=getStdinValues();state.inputs[currentTask().key]=stdinInput.value;saveState();interactiveRunButton.disabled=true;interactiveRunButton.textContent='⏳ Запускаем...';showStatus('info','▶ Программа запускается на твоих входных данных...');const result=await runOneTest(code,values);interactiveRunButton.disabled=false;interactiveRunButton.textContent='▶ Запустить код';if(!result.ok){const friendly=explainPythonError(result.error);showConsoleOutput(friendly,false);showStatus('error','⚠️ Программа завершилась с ошибкой. Запуск и синтаксическая ошибка не считаются попыткой решения. Прочитай объяснение в терминале, исправь код и запусти снова.');return}const actual=result.output;showConsoleOutput(actual,true);if(freeTerminalLesson!==null){showStatus('success','Программа выполнилась без ошибки. В свободном терминале решение не оценивается.');return}const t=currentTask();let publicMatch=null;if(Array.isArray(t.tests)){publicMatch=t.tests.find(test=>normalizeOutput((test.input||[]).join('\n'))===normalizeOutput(stdinInput.value));}if(publicMatch){if(normalizeComparableOutput(actual)===normalizeComparableOutput(publicMatch.expected)){state.manualRunPassed[t.key]=true;saveState();updateSubmitButton();showStatus('success','✅ На выбранном тесте программа дала правильный результат. Теперь можно нажать «Отправить на проверку» — там программа пройдёт скрытые тесты.')}else{const diagnosis=explainWrongOutput(publicMatch.expected,actual);showConsoleOutput(`${actual||'(программа ничего не вывела)'}\n\n⚠️ Результат не совпал с ожидаемым.\n\n${diagnosis}`,false);showStatus('warning',`⚠️ Нашли отличие в результате. Посмотри объяснение в терминале и попробуй исправить программу.\n\n${diagnosis}`)}return}state.manualRunPassed[t.key]=true;saveState();updateSubmitButton();showStatus('success','✅ Программа выполнилась без ошибки. Проверь результат на экране, попробуй ещё несколько входных данных и, когда будешь уверен(а), нажми «Отправить на проверку».')}
+async function runInteractive(){
+ const code=normalizeCode(editor.getValue());
+ if(!code){showStatus('warning','Сначала напиши программу.');return}
+ state.inputs[currentTask().key]=stdinInput.value;saveState();
+ interactiveRunButton.disabled=true;interactiveRunButton.textContent='⏳ Запускаем...';
+ showStatus('info','▶ Программа запускается. Если встретится input(), появится запрос на ввод. Можно вводить значения по одному, как в терминале.');
+ const result=await runInteractiveWithPrompts(code);
+ interactiveRunButton.disabled=false;interactiveRunButton.textContent='▶ Запустить код';
+ if(!result.ok){
+   if(result.cancelled){
+     const transcript=result.transcript&&result.transcript.length?result.transcript.join('\\n')+'\\n':'';
+     showConsoleOutput(transcript+'Ввод отменён. Запусти программу ещё раз, чтобы продолжить.',false);
+     showStatus('info','Ввод отменён. Это не считается попыткой решения.');
+     return;
+   }
+   const friendly=explainPythonError(result.error);
+   const transcript=result.transcript&&result.transcript.length?result.transcript.join('\\n')+'\\n\\n':'';
+   showConsoleOutput(transcript+friendly,false);
+   showStatus('error','⚠️ Программа завершилась с ошибкой. Ошибка не считается попыткой решения. Прочитай объяснение в терминале, исправь код и запусти снова.');
+   return;
+ }
+ const actual=result.output;
+ const transcript=result.transcript&&result.transcript.length?result.transcript.join('\\n')+'\\n':'';
+ showConsoleOutput(transcript+(actual||'(программа ничего не вывела)'),true);
+ if(freeTerminalLesson!==null){
+   showStatus('success','Программа выполнилась без ошибки. В свободном терминале решение не оценивается.');
+   return;
+ }
+ // Интерактивный ввод не обязан совпадать с тестом из поля ввода.
+ // Успешный запуск разрешает отправить решение на скрытую проверку.
+ state.manualRunPassed[currentTask().key]=true;saveState();updateSubmitButton();
+ showStatus('success','✅ Программа выполнилась без ошибки. Можно запускать её снова и вводить новые значения. Когда будешь уверен(а), нажми «Отправить на проверку» — решение проверится на скрытых тестах.');
+}
 async function sendTaskResult(t){
   if(!authSession||authSession.role!=='student')return {success:false,skipped:true,error:'Не выполнен вход в аккаунт ученика.'};
   const name=authSession.name;
