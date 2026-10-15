@@ -1942,7 +1942,8 @@ terminalInput.addEventListener('keydown',event=>{
 });
 function runOneTestInteractive(code){
  return new Promise(resolve=>{
-  let output='';
+  let terminalText='';
+  let programOutput='';
   const enteredInputs=[];
   const runId=++terminalRunId;
   let finished=false;
@@ -1950,24 +1951,31 @@ function runOneTestInteractive(code){
    if(runId!==terminalRunId)return;
    consoleBox.classList.add('show');
    consoleOutput.className='console-output'+(finished?'':'');
-   consoleOutput.textContent=output||'';
+   consoleOutput.textContent=terminalText||'';
    consoleOutput.scrollTop=consoleOutput.scrollHeight;
   }
   function inputFun(prompt){
-   return new Promise((inputResolve,reject)=>{
-    if(runId!==terminalRunId){reject(new Error('Запуск остановлен.'));return}
-    const promptText=String(prompt==null?'':prompt);
-    output+=promptText;
-    renderOutput();
-    terminalInputResolver=value=>{enteredInputs.push(value);output+=value+'\n';renderOutput();inputResolve(value)};
+   if(runId!==terminalRunId)return Sk.misceval.promiseToSuspension(Promise.reject(new Error('Запуск остановлен.')));
+   const promptText=String(prompt==null?'':prompt);
+   terminalText+=promptText;
+   renderOutput();
+   const waitingForInput=new Promise((inputResolve,reject)=>{
+    terminalInputResolver=value=>{
+     enteredInputs.push(value);
+     terminalText+=value+'\n';
+     renderOutput();
+     inputResolve(value);
+    };
     terminalInput.value='';
     terminalInputRow.style.display='flex';
     terminalInput.placeholder='Введи ответ и нажми Enter';
     requestAnimationFrame(()=>terminalInput.focus());
    });
+   /* Skulpt должен получить Suspension, чтобы действительно приостановить Python до ответа из терминала. */
+   return Sk.misceval.promiseToSuspension(waitingForInput);
   }
   Sk.configure({
-   output:text=>{output+=text;renderOutput()},
+   output:text=>{programOutput+=text;terminalText+=text;renderOutput()},
    inputfun:inputFun,
    inputfunTakesPrompt:true,
    read:builtinRead,
@@ -1980,13 +1988,14 @@ function runOneTestInteractive(code){
    terminalInputResolver=null;
    terminalInputRow.style.display='none';
    renderOutput();
-   resolve({ok:true,output:normalizeOutput(output),inputs:enteredInputs})
+   resolve({ok:true,output:normalizeOutput(programOutput),inputs:enteredInputs,terminal:terminalText})
   },error=>{
    if(runId!==terminalRunId)return;
    finished=true;
    terminalInputResolver=null;
    terminalInputRow.style.display='none';
-   resolve({ok:false,error:String(error)})
+   renderOutput();
+   resolve({ok:false,error:String(error),terminal:terminalText})
   });
  });
 }
