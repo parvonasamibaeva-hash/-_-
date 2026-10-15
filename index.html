@@ -75,16 +75,23 @@ body.quiz-mode .quiz-view{display:block}
 .debug-panel.open{display:block}.debug-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:13px 15px;background:#202532;color:#f2f5fb}.debug-title{font-weight:800}.debug-close{border:0;border-radius:7px;padding:7px 10px;cursor:pointer;background:#394255;color:#fff}
 .debug-controls{display:flex;gap:7px;flex-wrap:wrap;padding:12px;background:#eef1f8;border-bottom:1px solid #dfe4ee}.debug-controls button{border:0;border-radius:8px;padding:9px 12px;font-size:12px;font-weight:800;cursor:pointer;background:#4d65d9;color:#fff}.debug-controls button.secondary{background:#fff;color:#303746;border:1px solid #d6ddea}.debug-controls button:disabled{opacity:.4;cursor:not-allowed}
 .debug-layout{display:block;padding:0 12px 12px}.debug-layout>.debug-card{display:none}.debug-layout>.debug-card:first-child{display:block;background:transparent;border:0;border-radius:0}.debug-layout>.debug-card:first-child>h4,.debug-layout #debugVars,.debug-layout #debugOutput{display:none}.debug-layout .debug-input-row{margin-top:8px;border-radius:8px}.debug-panel.open{box-shadow:0 5px 18px rgba(25,35,60,.08)}.debug-card{background:#fff;border:1px solid #e0e5ef;border-radius:10px;overflow:hidden;min-width:0}.debug-card h4{margin:0;padding:10px 12px;background:#f0f3f9;border-bottom:1px solid #e0e5ef;font-size:12px;color:#3a4558}.debug-vars{padding:10px 12px;font:13px Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere;min-height:52px}.debug-vars .empty{color:#858d9c}.debug-mini-output{padding:10px 12px;min-height:70px;max-height:220px;overflow:auto;background:#151a25;color:#eef2f8;font:13px/1.55 Consolas,monospace;white-space:pre-wrap}.debug-message{padding:10px 13px;font-size:12px;line-height:1.5;color:#596579;border-top:1px solid #e0e5ef;background:#fff}.debug-message.error{color:#a12626;background:#fff1f1}.debug-message.success{color:#216d3a;background:#edfaf0}.debug-input-row{display:flex;gap:7px;padding:10px;background:#151a25}.debug-input-row[hidden]{display:none!important}.debug-input-row input{flex:1;min-width:0;border:1px solid #596579;border-radius:7px;background:#0f1420;color:#fff;padding:9px;font:13px Consolas,monospace}.debug-input-row button{border:0;border-radius:7px;background:#2eaa72;color:white;padding:8px 12px;font-weight:bold;cursor:pointer}.CodeMirror-linebackground.cm-debug-current{background:rgba(246,190,66,.38)!important}.CodeMirror-gutter-elt.cm-debug-current-gutter{background:#f4d477!important;color:#3b2b00!important;font-weight:bold!important}.CodeMirror-linebackground.cm-debug-error{background:rgba(235,82,82,.32)!important}.CodeMirror-gutter-elt.cm-debug-error-gutter{background:#ffdada!important;color:#a12626!important;font-weight:bold!important}
-/* Результат шага отображается непосредственно под соответствующей строкой кода */
-.debug-inline-widget{box-sizing:border-box;margin:3px 12px 7px 4px;padding:8px 11px;border:1px solid #d6e0f3;border-left:4px solid #657be0;border-radius:8px;background:#f2f5ff;color:#33415e;font:12px/1.5 Arial,sans-serif;white-space:normal;box-shadow:0 2px 5px rgba(25,40,80,.05)}
-.debug-inline-widget .debug-inline-title{font-weight:800;margin-bottom:3px;color:#354b9c}
-.debug-inline-widget .debug-inline-vars{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
-.debug-inline-widget .debug-inline-var{display:inline-block;padding:3px 7px;border-radius:5px;background:#fff;border:1px solid #dce3f2;color:#6550a4;font:12px Consolas,monospace}
-.debug-inline-widget.is-output{border-left-color:#2d9d68;background:#eefaf3;color:#205d3a}
-.debug-inline-widget.is-output .debug-inline-title{color:#237548}
-.debug-inline-widget.is-condition{border-left-color:#d49b28;background:#fff8e8;color:#765516}
-.debug-inline-widget.is-error{border-left-color:#d64c4c;background:#fff1f1;color:#922c2c}
-@media(max-width:700px){.debug-layout{grid-template-columns:1fr}.debug-mini-output{max-height:180px}.debug-inline-widget{margin-right:6px;font-size:11px}}
+/* Отладочные пояснения в стиле inline-комментариев IDE */
+.CodeMirror .CodeMirror-linewidget{overflow:visible!important}
+.CodeMirror .CodeMirror-linewidget .debug-inline-widget{display:block!important;box-sizing:border-box!important;width:calc(100% - 18px)!important;max-width:none!important;margin:4px 10px 9px 8px!important;padding:9px 12px!important;border:1px solid #38465d!important;border-left:3px solid #7f8fae!important;border-radius:7px!important;background:#202a3b!important;color:#d9e2f2!important;font:12px/1.55 Consolas,Monaco,monospace!important;white-space:normal!important;box-shadow:0 3px 9px rgba(16,24,40,.12)!important;overflow-wrap:anywhere!important}
+.CodeMirror .CodeMirror-linewidget .debug-inline-widget *{box-sizing:border-box!important;display:block!important;float:none!important;white-space:normal!important}
+.CodeMirror .CodeMirror-linewidget .debug-inline-widget .debug-inline-title{margin:0 0 4px!important;color:#a9b9d6!important;font:700 11px/1.4 Arial,sans-serif!important;letter-spacing:.2px!important;text-transform:uppercase!important}
+.CodeMirror .CodeMirror-linewidget .debug-inline-widget .debug-inline-detail{display:block!important;margin:0!important;color:#e1e8f5!important;line-height:1.55!important}
+.CodeMirror .CodeMirror-linewidget .debug-inline-widget .debug-inline-vars{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(120px,max-content))!important;gap:4px 12px!important;margin-top:7px!important;padding-top:7px!important;border-top:1px solid #3a465b!important}
+.CodeMirror .CodeMirror-linewidget .debug-inline-widget .debug-inline-var{display:block!important;min-width:0!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;color:#b9a7ff!important;font:12px/1.5 Consolas,Monaco,monospace!important;overflow-wrap:anywhere!important}
+.CodeMirror .CodeMirror-linewidget .debug-inline-widget .debug-inline-var:before{content:'# ';color:#7184a5!important}
+.CodeMirror .CodeMirror-linewidget .debug-inline-widget .debug-inline-output{display:block!important;margin-top:5px!important;padding:5px 8px!important;border-radius:5px!important;background:#173c30!important;color:#a9ebc3!important;font:12px/1.5 Consolas,Monaco,monospace!important}
+.CodeMirror .CodeMirror-linewidget .debug-inline-widget.is-output{border-left-color:#43bd83!important;background:#1d302f!important}
+.CodeMirror .CodeMirror-linewidget .debug-inline-widget.is-output .debug-inline-title{color:#7fe0ad!important}
+.CodeMirror .CodeMirror-linewidget .debug-inline-widget.is-condition{border-left-color:#e5b34f!important;background:#342e23!important}
+.CodeMirror .CodeMirror-linewidget .debug-inline-widget.is-condition .debug-inline-title{color:#f4d18a!important}
+.CodeMirror .CodeMirror-linewidget .debug-inline-widget.is-error{border-left-color:#f06d78!important;background:#39262e!important;color:#ffd5d8!important}
+.CodeMirror .CodeMirror-linewidget .debug-inline-widget.is-error .debug-inline-title{color:#ff9da5!important}
+@media(max-width:700px){.CodeMirror .CodeMirror-linewidget .debug-inline-widget{width:calc(100% - 10px)!important;margin-left:4px!important;margin-right:4px!important;padding:8px!important;font-size:11px!important}.CodeMirror .CodeMirror-linewidget .debug-inline-widget .debug-inline-vars{grid-template-columns:1fr 1fr!important}}
 
 </style>
 <style id="quiz-design-fix">
@@ -2367,23 +2374,29 @@ document.addEventListener('click',function(e){
   if(!panel.classList.contains('open')||currentLine<0||currentLine>=lines.length)return;
   const lineText=(lines[currentLine]||'').trim();
   const note=(msgEl.textContent||'').trim();
+  const isPrint=/^print\s*\(/.test(lineText);
+  const isCondition=/^(if|elif|while|for)\b/.test(lineText);
   const widget=document.createElement('div');
-  let kind='';
-  if(/^print\s*\(/.test(lineText))kind='is-output';
-  else if(/^(if|elif|while|for)\b/.test(lineText))kind='is-condition';
+  let kind=isPrint?'is-output':isCondition?'is-condition':'';
   if(errorLine===currentLine)kind='is-error';
   widget.className='debug-inline-widget '+kind;
   const title=document.createElement('div');title.className='debug-inline-title';
-  title.textContent=errorLine===currentLine?'Объяснение ошибки':/^print\s*\(/.test(lineText)?'Вывод программы':/^(if|elif|while|for)\b/.test(lineText)?'Проверка условия':'Результат шага';
+  title.textContent=errorLine===currentLine?'# Объяснение ошибки':isPrint?'# Вывод программы':isCondition?'# Проверка условия':'# Состояние после шага';
   widget.appendChild(title);
-  const detail=document.createElement('div');
-  detail.textContent=waitingInput?'Ожидается ввод: введи значение в поле терминала.':note||'Команда выполнена.';
+  const detail=document.createElement('div');detail.className='debug-inline-detail';
+  let explanation=waitingInput?'Программа ожидает ввод. Введи значение в терминале и нажми «Ввести».':note||'Команда выполнена.';
+  detail.textContent='# '+explanation;
   widget.appendChild(detail);
-  if(/^print\s*\(/.test(lineText)&&output.trim()){
-    const out=document.createElement('div');out.style.marginTop='4px';out.style.fontWeight='700';out.textContent='Выведено: '+output.trim().split('\n').slice(-1)[0];widget.appendChild(out);
+  if(isPrint&&output.trim()){
+    const out=document.createElement('div');out.className='debug-inline-output';
+    out.textContent='# Выведено: '+output.trim().split('\n').slice(-1)[0];widget.appendChild(out);
   }
   const keys=Object.keys(vars);
-  if(keys.length){const list=document.createElement('div');list.className='debug-inline-vars';keys.forEach(k=>{const v=document.createElement('span');v.className='debug-inline-var';v.textContent=k+': '+pyString(vars[k]);list.appendChild(v);});widget.appendChild(list);}
+  if(keys.length){
+    const list=document.createElement('div');list.className='debug-inline-vars';
+    keys.forEach(k=>{const v=document.createElement('div');v.className='debug-inline-var';v.textContent=k+' = '+pyString(vars[k]);list.appendChild(v);});
+    widget.appendChild(list);
+  }
   try{inlineWidgets.push(editor.addLineWidget(currentLine,widget,{above:false,coverGutter:false,noHScroll:true}));}catch(e){}
  }
  function render(){
