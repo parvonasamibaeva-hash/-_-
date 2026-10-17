@@ -1444,7 +1444,24 @@ function renderNav(){
         hwHead.className='lesson-head homework-nav-head';
         hwHead.style.cssText='width:100%;padding:12px 10px;background:#252b39;color:#fff;font-size:13px;';
         hwHead.innerHTML=`<span>▸</span><span class="lesson-head-title"><strong>Домашнее задание.</strong> <span>Практика по теме «Цикл while»</span></span><span class="lesson-head-arrow">›</span>`;
-        hwHead.onclick=()=>{state.openLessons[6]=true;state.openLessons[7]=!state.openLessons[7];saveState();renderNav()};
+        hwHead.addEventListener('click',()=>{
+          // Открываем раздел продолжения и сразу выбираем первую доступную задачу.
+          state.openLessons[6]=true;
+          state.openLessons[7]=true;
+          saveState();
+          renderNav();
+          const isThursdayGroup=!!(authSession&&authSession.role==='student'&&String(authSession.group||'').toLowerCase()==='thursday');
+          const unfinished= isThursdayGroup ? lesson6Tasks.filter(task=>!state.solved['6-'+task.id]) : [];
+          const targetKey=unfinished.length ? '6-'+unfinished[0].id : (hw.tasks[0] ? hw.tasks[0].key : null);
+          if(targetKey){
+            selectTask(targetKey);
+            // Re-open the homework/continuation branch after selectTask re-renders navigation.
+            state.openLessons[6]=true;
+            state.openLessons[7]=true;
+            saveState();
+            renderNav();
+          }
+        });
         hwWrap.appendChild(hwHead);
         const hwBody=document.createElement('div');
         hwBody.className='lesson-body';
